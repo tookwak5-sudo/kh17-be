@@ -44,7 +44,7 @@
 이미지를 문서에 넣을 수 있다.
 설명은 이미지가 안나올 때 보여줄 글자입니다.
 
-![카카오 라이언](https://kr.pinterest.com/lunaperiwinkle/gif/)
+![카카오 라이언](https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20160605_67%2Fwoowa97_1465060022919Iufcb_JPEG%2F%25B6%25F3%25C0%25CC%25BE%25F0.jpg&type=a340)
 
 내가 가진 이미지를 넣으려면 Github에 이미지를 올려둔 뒤 그 주소를 써야한다
 
