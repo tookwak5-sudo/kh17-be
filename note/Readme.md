@@ -46,6 +46,6 @@
 
 ![카카오 라이언](https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20160605_67%2Fwoowa97_1465060022919Iufcb_JPEG%2F%25B6%25F3%25C0%25CC%25BE%25F0.jpg&type=a340)
 
-내가 가진 이미지를 넣으려면 Github에 이미지를 올려둔 뒤 그 주소를 써야한다
+내가 가진 이미지를 넣으려면 Github에 이미지를 올려둔 뒤 그 주소를 써야한다 (./이미지이름) //같은 폴더의 하위항목에 있어야 적용된다.
 
 ![설명](./lion.png)
