@@ -41,4 +41,10 @@
 
 # 이미지(image)
 
+이미지를 문서에 넣을 수 있다.
+설명은 이미지가 안나올 때 보여줄 글자입니다.
+
+![카카오 라이언](https://kr.pinterest.com/lunaperiwinkle/gif/)
+
+내가 가진 이미지를 넣으려면 Github에 이미지를 올려둔 뒤 그 주소를 써야한다
 
