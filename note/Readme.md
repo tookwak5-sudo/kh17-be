@@ -48,4 +48,4 @@
 
 내가 가진 이미지를 넣으려면 Github에 이미지를 올려둔 뒤 그 주소를 써야한다
 
-![설명](C:\Users\user\Downloads\lion)
+![설명](lion.png)
