@@ -1,4 +1,4 @@
-package day3;
+package data;
 
 public class Test08PC방요금계산기2 {
 	public static void main(String[] args) {
