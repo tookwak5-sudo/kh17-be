@@ -44,8 +44,8 @@ public class Test08PC방요금계산기2 {
 		
 		
 		//출력
-		System.out.println(hour);
+		System.out.println(hour + "시간" + minute + "분");
 		System.out.println(minute);
-		System.out.println(price);
+		System.out.println(price + "원");
 	}
 }

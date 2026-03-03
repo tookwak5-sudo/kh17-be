@@ -22,7 +22,7 @@ public class Test08PC방요금계산기2 {
 			System.out.println(uT); //손님의 이용시간
 			
 			//160분 이용 
-			System.out.println(fare); // 손님의 pc방 요금
+			System.out.println(fare + "원"); // 손님의 pc방 요금
 			
 			
 		}
