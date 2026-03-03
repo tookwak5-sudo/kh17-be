@@ -18,6 +18,16 @@ public class Test09편의점키오스크 {
 		*/ 
 		//n+m 할인행사 진행
 		
+		int kimbapCount = 5;
+		int kimbapPrice  = 1500;
+		
+		int free = kimbapCount / 2; // 무료 개수
+		int fare = (kimbapCount - free);
+		
+		int price = fare * kimbapPrice;
+		
+		System.out.println(fare);
+		 /*
 		// 입력
 		int n = 1;  // 요구 김밥 개수 (n>=1)
 		int m = 1; // n개 구매 시 추가되는 김밥 개수 (m>=1)
@@ -31,6 +41,6 @@ public class Test09편의점키오스크 {
 		// 출력
 		System.out.println(price);
 		
-		
+		*/
 	}
 }
