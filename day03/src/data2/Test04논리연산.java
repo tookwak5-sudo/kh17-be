@@ -9,11 +9,15 @@ public class Test04논리연산 {
 		// 14<= age <= 19; 이건 안됨 
 		// why?  한 번에 계산이 안됨 // python같은 최신 언어는 가능 java는 안됨
 		boolean teen = (age >=14) && (age <= 19); // 자바 방식 (AND) 연산
-		System.out.println(teen); // 13세면 앞에 가 F 뒤에가 T가 나오기 때문에 // 반드시 근거가 있어야함
+		System.out.println(teen); // 13세면 앞연산이 'F' 뒤연산이 'T' 가 나오기 때문에 // 반드시 근거가 있어야함
 		
 		// -(예) 무임승차 65세 이상 / 7세 이하
 		
 		boolean free = (age >= 65) || (age <= 7);
 		System.out.println(free);
+		
+		// 정리하면
+		//- 논리는 and(&&)와 or(||)로 연결할 수 있다.
+		//- 다양한 상황들을 고려해서 하나의 판들을 만들어낼 수 있다.
 	}
 }
