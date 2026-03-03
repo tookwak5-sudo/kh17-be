@@ -24,5 +24,6 @@ public class Test08PC방요금계산기2 {
 			//160분 이용 
 			System.out.println(fare); // 손님의 pc방 요금
 			
+			
 		}
 }
