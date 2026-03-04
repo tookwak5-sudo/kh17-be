@@ -9,7 +9,7 @@ public class Test02지각판정기 {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("입실시각 : ");
 		int time = sc.nextInt(); // 0905는 8진수이므로 9는 입력이 안됨.
-		
+	
 		//처리
 		int hour = time / 100;
 		int minute = time % 100;

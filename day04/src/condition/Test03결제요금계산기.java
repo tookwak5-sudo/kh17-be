@@ -40,6 +40,7 @@ public class Test03결제요금계산기 {
 		//출력  // 변수는 블록 스코프(block scope)를 가짐 따라서 각 중괄호 안에 같은 이름을 가진 변수를 넣을 수 있다. 
 		if(event) {
 			int cash = price * people * (100-discount) / 100;
+			//int cash = price * people * 0.	85;
 			System.out.println("할인된 가격" + cash + "원");			
 		}
 		else {
