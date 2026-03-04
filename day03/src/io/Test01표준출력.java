@@ -24,7 +24,7 @@ public class Test01표준출력 {
 		//- %f는 실수가 1개 들어갈 자리라는 뜻
 		//- %c는 글자가 1개 들어갈 자리라는 뜻
 		//- %s는 문자열이 1개 들어갈 자리라는 뜻
-		System.out.printf("%d + %d = %d\n", 10, 20, 30);  //
+		System.out.printf("%d + %d = %d\n", 10, 20, 30);  
 	}
 }
 

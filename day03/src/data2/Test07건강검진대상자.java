@@ -37,7 +37,7 @@ public class Test07건강검진대상자 {
 		//계산 결과만 가지고 조합
 		
 		//입력
-		int birth = 1994;
+		int birth = 1992;
 		int year = 2026;
 		
 		int age = year - birth + 1; // 한국 나이 계산
