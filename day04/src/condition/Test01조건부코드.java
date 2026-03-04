@@ -21,7 +21,7 @@ public class Test01조건부코드 {
 		if(even == true){  // even이 true면 실행되는 블럭
 			System.out.println("짝수");
 		}
-	
+
 		//메뉴에 Run -> Coverage // 유효 코드 찾을 수 있음
 	}
 }
