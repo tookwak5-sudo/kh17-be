@@ -5,7 +5,7 @@ public class Test03학점계산기2 {
 		//입력
 		String grade = "A+";
 		int score = 70;
-		
+	
 		//처리
 		if(score >= 90 && score <=100) {
 			grade = "A+";
@@ -21,19 +21,6 @@ public class Test03학점계산기2 {
 		}
 		else {
 			grade = "F";
-		}
-		
-		switch(grade) {
-		case "A+":		
-		break;
-		case "A":
-			break;
-		case "B":
-			break;
-		case "C":
-			break;
-		default:
-		break;
 		}
 		//출력
 		
