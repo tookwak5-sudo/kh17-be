@@ -37,8 +37,7 @@ public class Test04여행사프로모션 {
 		else { // 봄			
 			sale = springDiscount;
 			season = "봄";
-		}
-		
+		}		
 		int discountPrice = price * sale / 100; //할인율
 		int total = price - discountPrice;
 		//출력
@@ -48,7 +47,6 @@ public class Test04여행사프로모션 {
 		System.out.println("계절 : " + season);// 계절
 		System.out.println("할인 전 가격: " + price + "원");
 		System.out.println("할인 비율: " + sale + "%"); // 할인율
-		System.out.println("할인 가격: " + total + "원");// 예상 비용
-		
+		System.out.println("할인 가격: " + total + "원");// 예상 비용		
 	}
 }
