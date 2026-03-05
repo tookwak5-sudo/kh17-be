@@ -16,20 +16,20 @@ import java.util.Scanner;
 public class Test03만나이계산기 {
 	public static void main(String[] args) {
 		
-		int birthYear = 2025;
-		int birthMonth = 4;
+//		int birthYear = 2025;
+//		int birthMonth = 4;
+//		
+//		int year = 2026;
+//		int month = 3;
+//		
+//		int diffYear = year - birthYear;
+//		int diff= diffYear * 12 + month - birthMonth;  
+//	
+//		int globalAge = diff / 12;
+//		
+//		System.out.println("만 나이 :" + globalAge + "세 (" + diff + ")");
 		
-		int year = 2026;
-		int month = 3;
 		
-		int diffYear = year - birthYear;
-		int diff= diffYear * 12 + month - birthMonth;  
-	
-		int globalAge = diff / 12;
-		
-		System.out.println("만 나이 :" + globalAge + "세 (" + diff + ")");
-		
-		/*
 		//입력
 		Scanner sc = new Scanner(System.in); //sc = 통로 : 에너지가 굉장히 많이 드는 도구 (전기 엄청 잡아먹는 전자제품)
 		
@@ -50,6 +50,6 @@ public class Test03만나이계산기 {
 			
 		//출력
 		System.out.println("만 나이: " + globalAge + "세  (" + diff + " 개월)" );
-		*/
+		
 	}
 }
