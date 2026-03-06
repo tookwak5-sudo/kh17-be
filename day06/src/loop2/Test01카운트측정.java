@@ -13,6 +13,7 @@ public class Test01카운트측정 {
 		int count = 0;		// 홀수의 개수
 		for(int i =1; i<=10; i++) {
 			if(i%2 == 1) {
+				//System.out.println(i);
 				count++;				
 			}
 		}		
