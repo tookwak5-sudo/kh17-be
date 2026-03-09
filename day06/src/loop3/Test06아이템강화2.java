@@ -45,13 +45,13 @@ public class Test06아이템강화2 {
 		}		
 		
 		int total = success + fail + stay;
-		int suc =(int) ((double) success / total * 100); 
-		int fal = (int) ((double) fail / total * 100);
-		int st =(int) ((double) stay / total * 100);
+		int suc = success * 100 / total; 
+		int fal = fail * 100 / total;
+		int sty = stay * 100 / total;
 		
 		System.out.println("★★★강화가 완료되었습니다★★★");
 		System.out.println("성공횟수 : " + success + "("+suc + "%)");
-		System.out.println("실패횟수 : " + fail +"("+ fail + "%)" );
-		System.out.println("유지횟수 : " + stay + "("+ stay + "%)");
+		System.out.println("실패횟수 : " + fail +"("+ fal + "%)" );
+		System.out.println("유지횟수 : " + stay + "("+ sty + "%)");
 	}
 }
