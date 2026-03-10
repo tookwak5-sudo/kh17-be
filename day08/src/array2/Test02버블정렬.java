@@ -1,0 +1,22 @@
+package array2;
+
+public class Test02버블정렬 {
+	public static void main(String[] args) {
+		//배열 준비
+		int[] data = new int[] {30, 50, 20, 10, 40};
+		
+		//1회차 버블정렬 중 첫 동작
+		if(data[0] > data[1]) { // 앞 데이터가 크다면
+			int backup = data[0];
+			data[0] = data[1];
+			data[1] = backup;
+		}
+		
+		//출력
+		for(int i =0; i < data.length; i++) {
+			System.out.print(data[i]);
+			System.out.print("\t");
+		}
+		System.out.println();
+	}
+}
