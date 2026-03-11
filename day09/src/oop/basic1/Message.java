@@ -6,5 +6,5 @@ public class Message {
 	String sender; //"메세지"에는 작성자라는 문자열 정보가 있어요
 	String content; // "메세지"에는 본문이라는 문자열 정보가 있어요
 	String time; 
-	int count; //"메세지"에는 읽지 않은 사람 수 라는 정수정보가 있어요
+	int count; //"메세지"에는 읽지 않은 사람 수 라는 정수 정보가 있어요
 }
