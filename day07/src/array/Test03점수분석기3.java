@@ -41,5 +41,7 @@ public class Test03점수분석기3 {
 		}
 		double average = (double) total / scoreList.length;
 		System.out.println("평균 점수 : " + average);
+		
+	
 	}
 }

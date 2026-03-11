@@ -24,7 +24,7 @@ public class Test02이차원배열생성실습7 {
 			int y = r.nextInt(size);
 			System.out.println("(" + x + "," + y + ") 위치에" + i+ "를 추가");
 			if(numbers[x][y] == 0) {//숫자가 들어간 적 없는 칸이면
-				numbers[x][y] = i;//숫자를 넣으세용;
+				numbers[x][y] = i;//숫자를 넣으세요;
 			}
 			else {
 				//다시 뽑으세요
