@@ -60,7 +60,6 @@ public class Player {
 		this.setCash(cash);
 		this.setLevel(level);
 	}
-	
 	public void show() {
 		System.out.println("<플레이어 정보>");
 		System.out.println("아이디 : " + this.id); // get메소드가 아닌 것은 필드를 가져와도 무방
@@ -70,5 +69,4 @@ public class Player {
 		System.out.println("소지금 : " + this.getCash() + "원");
 		System.out.println("--------------------");
 	}
-	
 }
