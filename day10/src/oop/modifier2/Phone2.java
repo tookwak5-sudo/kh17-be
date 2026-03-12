@@ -86,11 +86,11 @@ public class Phone2 {
 		System.out.println("통신사 : " + this.getTelecom());
 		if(this.isContractExist()) {//약정기간이 있으면
 			System.out.println("판매가 : " + this.getPrice() + "원 (월 " + this.getMonthlyPrice() + "원)");
+			System.out.println("약정기간 : " + this.getContract() + "개월");
 		}
 		else {
-			System.out.println("판매가 : " + this.getExtraPrice(10) + "원 (약정기간 없을 경우 10% 인상됩니다.");
+			System.out.println("판매가 : " + this.getExtraPrice(10) + "원 (약정기간 없을 경우 10% 인상됩니다.)");
 		}
 		
-		System.out.println("약정기간 : " + this.getContract());
 	}
 }
