@@ -1,6 +1,6 @@
 package oop.method7;
 
-public class Service {
+public class PrintService {
 	//멤버 필드(변수)
 	String name;
 	String category;
@@ -26,6 +26,7 @@ public class Service {
 	}
 	void setPrice(int price) { //가격은 1천원단위 100원 단위는 자동으로 빠짐
 		//if(price % 1000 !=0) return;
+		if(price < 0) return;
 		this.price =price / 1000 * 1000;
 	}
 	void setDeliveryType(String deliveryType) {
