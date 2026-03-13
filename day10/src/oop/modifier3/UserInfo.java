@@ -1,4 +1,4 @@
-package oop.constructor2;
+package oop.modifier3;
 
 public class UserInfo {
 	private String id;

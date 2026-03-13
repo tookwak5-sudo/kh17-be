@@ -20,7 +20,7 @@ public class Test02문자열데이터 {
 		System.out.println("c = " + c);
 		
 		//-참조형 데이터이므로 리모컨 버튼 처럼 쓸 수있는 기능이 제공
-		System.out.println(a.length()); // a 리모컨에 있는 length를 눌러라 -> 글자 수 
+		System.out.println(a.length() + "!"); // a 리모컨에 있는 length를 눌러라 -> 글자 수 
 		System.out.println(b.length()); // b 리모컨에 있는 length를 눌러라 
 		//System.out.println(c.length()); // c는 리모컨이 아니다. 즉, 참조형 데이터만 쓸 수  있는 기능이 존재
 		

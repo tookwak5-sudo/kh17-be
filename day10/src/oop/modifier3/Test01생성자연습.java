@@ -1,4 +1,4 @@
-package oop.constructor2;
+package oop.modifier3;
 
 public class Test01생성자연습 {
 	public static void main(String[] args) {

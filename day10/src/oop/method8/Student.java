@@ -18,6 +18,7 @@ public class Student {
 			this.korean = korean;
 		}
 	}
+	
 	// 0~100점 사이일 경우 영어 점수를 설정하는 세터메소드
 //	void setEnglish(int english) {
 //		if(english >= 0 && english <= 100) {
@@ -80,23 +81,3 @@ public class Student {
 		System.out.println("평균 : " + this.getAverage());
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

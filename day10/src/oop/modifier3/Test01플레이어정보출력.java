@@ -1,4 +1,4 @@
-package oop.constructor2;
+package oop.modifier3;
 
 public class Test01플레이어정보출력 {
 	public static void main(String[] args) {

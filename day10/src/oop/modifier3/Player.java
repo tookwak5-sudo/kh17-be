@@ -1,10 +1,11 @@
-package oop.constructor2;
+package oop.modifier3;
 
 public class Player {
 	private String id;
 	private String type;
 	private int level;
 	private long cash;
+	
 	public String getId() {
 		return id;
 	}
