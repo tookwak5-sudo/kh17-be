@@ -41,6 +41,7 @@ public class File {
 	public void execute() {
 		System.out.println("["+ this.getFilename() + "]파일 실행 기능");
 	}
+	
 	public void information() {
 		System.out.println("<파일 정보>");
 		System.out.println("이름 : "  + this.getFilename());
