@@ -44,45 +44,60 @@ public class Book {
 		return rent;
 	}
 	
-	public void setStatus(int status) {
+	private void setStatus(int status) {
 		switch(status) {
 		case 1, 2, 3, 4:
 			this.status = status;
 		}
 	}
-	public int getRentState() {
+	private int getRentState() {
 		return status;
 	}
-	//추가 부가세가 포함된 최종금액
+	public void setStatusValue(String status) {
+		switch(status) {
+		case "대여가능": this.setStatus(1); break;
+		case "대여중" : this.setStatus(2); break;
+		case "예약중" : this.setStatus(3); break;
+		default : this.setStatus(4); break;
+		}
+	}
+	
+	//추가
+	//부가세
 	public int getAddFee(int rate) {
 		return this.rent *(rate) / 100;
 	}
-	
+	// 최종금액
 	public int getTotalPrice() {
 		return getRent() + getAddFee(10);
 	}
+	//가상 getter
 	public String getStatusValue() {
 		if(status == 1) return "대여가능";
 		if(status == 2) return "대여중";
 		if(status == 3) return "예약중";
 		return "대여불가";
 	}
-//	public String getPossible() {
-//		if(this.rentState) return "대여가능";
-//		else return "대여중";
-//	}
+ 
 	
 	//생성자
 	public Book(String name, String genre, int page, int rent) {
 		this(name, genre, page, rent, 1);
 	}
 	
-	public Book(String name, String genre, int page, int rent, int status) {
+	private Book(String name, String genre, int page, int rent, int status) {
 		this.setName(name);
 		this.setGenre(genre);
 		this.setPage(page);
 		this.setRent(rent);
 		this.setStatus(status);
+	}
+	public Book(String name, String genre, int page, int rent, String status) {
+		this.setName(name);
+		this.setGenre(genre);
+		this.setPage(page);
+		this.setRent(rent);
+		this.setStatusValue(status);
 	}
 	
 	public void show() {
