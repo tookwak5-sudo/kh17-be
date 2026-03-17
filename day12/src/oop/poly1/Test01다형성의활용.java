@@ -6,12 +6,12 @@ public class Test01다형성의활용 {
 		
 		Box box = new Box();
 		
-		FriedChicken chicken = new FriedChicken(); //private Chicken chicken에 상위형태로 (업캐스팅)되어 보관됨
+		Chicken chicken = new FriedChicken(); //private Chicken chicken에 상위형태로 (업캐스팅)되어 보관됨
 		
 		box.setChicken(chicken); // Friedchicken이 Chicken으로 업캐스팅되어 보관된다.
 		
 		//상자에 양념치킨 보관
-		Spicychicken chicken2 = new Spicychicken();
+		Chicken chicken2 = new SpicyChicken();
 		box.setChicken(chicken2); // SpicyChicken이 Chicken으로 업캐스팅되어 보관된다.
 		
 	}

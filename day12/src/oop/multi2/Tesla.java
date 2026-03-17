@@ -13,7 +13,6 @@ public class Tesla extends Vehicle implements Chargable, Autonomous {
 	public void autoDrive() {
 		System.out.println("테슬라 자동 주행 기능 사용가능");
 	}
-
 	@Override
 	public void autoParking() {
 		System.out.println("테슬라 자동 주차 기능 사용가능");
@@ -30,6 +29,4 @@ public class Tesla extends Vehicle implements Chargable, Autonomous {
 	public void stopEngine() {
 		System.out.println("테슬라 시동 off");
 	}
-
-
 }
