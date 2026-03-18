@@ -11,7 +11,8 @@ public class Test01하이브리드클래스 {
 		// int version
 		int a = 10;
 		int b = 20;
-		int c = a + b;
+		//int c = a + b;
+		int c = Integer.max(a, b);
 		System.out.println("c= " + c);
 		
 		
