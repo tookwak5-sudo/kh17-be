@@ -19,14 +19,14 @@ public class Test01예외처리가필요한이유2 {
 			
 			int price = money / people;
 			int remain = money % people;
-			
+		
 			System.out.println("한 명당 " + price + "원 씩 입금해주시면 됩니다.");
 			System.out.println("자투리금액 : " + remain + "원");
 		}
 		catch(ArithmeticException e) { //ArithmeticException에 대한 플랜B
 			System.err.println("사람은 1명 이상이어야 합니다");
 		}
-		catch(InputMismatchException a) { // InputMismatchException에 대한 플랜 B
+		catch(InputMismatchException e) { // InputMismatchException에 대한 플랜 B
 			System.err.println("올바른 숫자를 입력하세요");
 		}
 		

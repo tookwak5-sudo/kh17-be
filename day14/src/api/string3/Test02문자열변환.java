@@ -4,7 +4,7 @@ public class Test02문자열변환 {
 	public static void main(String[] args) {
 		//문자열과 다른 데이터간의 변환
 		//-(ex)String과 int가 서로 변환이 되는가?
-		
+
 		//모든 데이터는 String 클래스의 valueOf 메소드로 String으로 변경이 가능하다
 		int a = 100;
 		//String b = (String) a; // 안들어감(형태가 다름) 

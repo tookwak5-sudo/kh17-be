@@ -11,7 +11,7 @@ public class Test02자동변환 {
 		Integer d = new Integer(500);
 		Integer e = Integer.valueOf(500);
 		Integer f = Integer.valueOf(500);
-		
+	
 		System.out.println(a == b); // true?
 		System.out.println(b == c); // b와 c는 다른 대상
 		System.out.println(a == e); // true?

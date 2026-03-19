@@ -9,8 +9,7 @@ public class Test01하이브리드클래스3 {
 		
 		//복잡한 계산 : 2진수 변환
 		
-		int number = 158;
-		
+		int number = 158;	
 //		StringBuffer buffer = new StringBuffer();
 //		for(int i = number; i > 0; i /= 2) {
 //			buffer.insert(0, i % 2);

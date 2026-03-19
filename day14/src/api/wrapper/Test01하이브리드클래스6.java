@@ -14,6 +14,5 @@ public class Test01하이브리드클래스6 {
 		System.out.println("큰 수  = " + c);
 		
 		
-		
 	}
 }

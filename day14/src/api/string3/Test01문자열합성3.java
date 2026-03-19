@@ -11,6 +11,7 @@ public class Test01문자열합성3 {
 		long begin = System.currentTimeMillis();
 		for(int i = 1; i <= 10000000; i++) {
 			star.append("*");
+	
 		}
 		long end = System.currentTimeMillis();
 		
