@@ -28,16 +28,16 @@ public class Test03예외메지처리 {
 			System.out.println("자투리금액 : " + remain + "원");
 		}
 		catch(Exception e) { // 플랜 B
-		//	System.out.println(e); // 예외 정보가 담긴 객체
-			//1. 사용자에게 뭘 보여줄 것인가?
-//			if(e.getMessage() == null) {
-//				System.out.println("알수없는 오류가 발생했습니다.");
-//			}
-//			else {
-//				System.err.println("오류 - " + e.getMessage());
-//			}
+			System.out.println(e); // 예외 정보가 담긴 객체
+		//	1. 사용자에게 뭘 보여줄 것인가?
+			if(e.getMessage() == null) {
+				System.out.println("알수없는 오류가 발생했습니다.");
+			}
+			else {
+				System.err.println("오류 - " + e.getMessage());
+			}
 			//2. 개발자는 뭘 확인할 수 있게 할 것인가?
-			e.printStackTrace();
+		//	e.printStackTrace();
 		}
 	}
 }

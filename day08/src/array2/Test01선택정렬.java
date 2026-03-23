@@ -14,14 +14,14 @@ public class Test01선택정렬 {
 				min = data[i];
 			}
 		}
-		System.out.println(min);
+//		System.out.println(min);
 		//교체
 		
 		
 		
 		// 출력
-//		for(int i = 0; i< data.length; i++) {
-//			System.out.println(data[i]);
-//		}
+		for(int i = 0; i< data.length; i++) {
+			System.out.println(data[i]);
+		}
 	}
 }
