@@ -18,6 +18,10 @@ public class Test04미니탐색기해설file {
 		String input = sc.nextLine();
 		sc.close();
 		
+		FileExplorer explorer = new FileExplorer(input);
+		
+		
+		
 		File target = new File(input);
 		
 		if(target.isFile()) { // 파일이라면
