@@ -22,7 +22,7 @@ public class Test02파일생성삭제 {
 		
 		//파일 지우는 명령
 		//target.delete(); //파일 삭제
-		File target2 = new File("files", "change.txt");
-		target.renameTo(target2);
+		File target2 = new File("files", "change.txt"); 
+		target.renameTo(target2); // traget2의 정보로 이름을 바꿔버림
 	}
 }
