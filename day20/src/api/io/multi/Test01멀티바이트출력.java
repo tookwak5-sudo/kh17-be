@@ -26,7 +26,7 @@ public class Test01멀티바이트출력 {
 		//stream.write(바이트);
 		data.writeInt(100); // `100`을 int로 생각하고 조각내서 출력하라 (예상 아마 4조각으로 나눠서 전송하겠지?)
 		data.writeDouble(100); // `100`을 double로 생각하고 조각내서 출력하라(예상 아마 8조각으로 나눠서 전송하겠지?)
-		data.writeChar(100); // // `100`을 double로 생각하고 조각내서 출력하라(예상 아마 8조각으로 나눠서 전송하겠지?)
+		data.writeChar(100); // `100`을 double로 생각하고 조각내서 출력하라(예상 아마 8조각으로 나눠서 전송하겠지?)
 		data.writeFloat(100);
 		data.writeLong(100);
 		

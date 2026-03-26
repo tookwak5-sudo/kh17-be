@@ -13,6 +13,7 @@ public class Test02멀티바이트입력 {
 		
 		//준비물 생성
 		File target = new File("files", "multi.kh"); // 디렉토리 만드나? No 디렉토리가 없으면 못읽는게 정상
+		
 		FileInputStream stream = new FileInputStream(target);
 		BufferedInputStream buffer = new BufferedInputStream(stream);
 		DataInputStream data = new DataInputStream(buffer);
