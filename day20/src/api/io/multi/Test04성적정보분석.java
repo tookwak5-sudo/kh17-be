@@ -43,7 +43,7 @@ public class Test04성적정보분석 {
 			sum += getScore[i];
 		}
 		// 평균
-		float average = (float) sum / getScore.length; 
+		double average = (double) sum / getScore.length; 
 		System.out.println("전체 평균 점수 : " + average + "점");
 	}
 }

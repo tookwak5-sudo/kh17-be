@@ -22,7 +22,7 @@ public class Test03성적정보저장 {
 		
 		Scanner sc = new Scanner(System.in);
 		
-		
+		//굳이 배열로 쓸 이유가 없네.. 
 		for(int i = 0; i< 10; i++) {
 			System.out.print("점수" );
 			int score = sc.nextInt();
