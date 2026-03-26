@@ -37,12 +37,12 @@ public class Test04미니탐색기해설file {
 			for(File file : files) {
 				String type = file.isFile() ? "[파일]" : "[폴더]";
 				System.out.println("-> " + file.getName() + " " + type);
-				if(file.isFile()) {
-					System.out.println("-> " + file.getName() + " " + "[파일]");
-				}
-				else {
-					System.out.println("-> " + file.getName() + " " + "[폴더]");
-				}
+//				if(file.isFile()) {
+//					System.out.println("-> " + file.getName() + " " + "[파일]");
+//				}
+//				else {
+//					System.out.println("-> " + file.getName() + " " + "[폴더]");
+//				}
 			}
 		}
 		else {
