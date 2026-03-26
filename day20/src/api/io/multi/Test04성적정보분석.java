@@ -22,8 +22,8 @@ public class Test04성적정보분석 {
 		for(int i = 0; i< getScore.length; i++) {
 			getScore[i] = data.readInt();
 		}
-		
 		data.close();
+		
 		for(int i = 0; i < getScore.length; i++) {
 			System.out.println("학생" + (i+1) + "의 성적 : " + getScore[i] + "점");
 		}
