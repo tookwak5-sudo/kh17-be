@@ -2,7 +2,8 @@
 
 drop table phone;
 create table phone(
-phone_no number not null unique,
+-- phone_no number not null unique, 여러개 가능, 변경이 가능하지만 중복은 안되는 데이터 
+phone_no number primary key, -- 한 개만 가능, 변경이 불가능한 데이터 - 조금 더 이상적인 구조
 phone_name varchar(60byte) not null,
 phone_memory number(3) not null,
 phone_telecom varchar(9byte) not null,
