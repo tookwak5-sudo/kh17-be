@@ -1,0 +1,29 @@
+-- DCL
+-- 수정 (update)
+-- 기존에 저장되어 있는 데이터를 변경하는 작업
+-- 형식 : update 테이블명 set 변경할내용 [조건];
+-- 데이터가 변하는 명령이므로 commit/rollback이 필요
+-- 조건은 사실상 무조건 적는다고 봐야한다 (전체를 수정하는 경우는 극히 드물다)
+
+-- 모든 상품 가격을 0으로 변경
+update item set item_price = 0;
+
+-- (Q) 1번 상품을 분류를 과자로, 가격을 1500원으로 변경 (가장 일반적인 형태, 1개 항목만 수정)
+update item set item_type = '과자', item_price = 1700 where item_no = 1;
+
+-- (Q) 7번 상품의 가격을 100원 할인
+
+-- update item set item_price -= 100 where item_no = 7; -- 오라클에는 복합 데이터 연산이 없음
+-- update item set item_price =- 100 where item_no = 7; -- -100원이 되어버림
+update item set item_price = item_price-100 where item_no = 7;
+
+
+-- (Q) 과자를 10%할인
+update item set item_price = item_price * 0.9 where item_type = '과자';
+update item set item_price = item_price * 90 / 100 where item_type = '과자';
+-- 구분할 필요없이 그냥 문제없이 처리
+
+-- 되돌리기
+rollback;
+
+select * from item where item_type = '과자';
