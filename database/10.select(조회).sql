@@ -76,7 +76,7 @@ select * from book where instr(book_title, '마법사') > 0; -- 즉, 0보다 크
 -- 정규표현식 -- 패턴이 복잡할 때 사용, 매우 복잡한 걸 찾을 수 있다 대신 그만큼 느림 
 select * from book where REGEXP_LIKE(book_title, '마법사');
 
--- "해리포터" 시리즈 조회
+-- "해리포터" 시리즈 조회 (접두사를 찾을 때 - like '%')
 select * from book where book_title like '%해리포터%';
 select * from book where instr(book_title,'해리포터') = 1;
 
@@ -124,7 +124,8 @@ where to_timestamp(book_publication_date, 'YYYY-MM-DD')
 		to_timestamp('2001-01-01 00:00:00.000', 'YYYY-MM-DD HH24:MI:SS.FF3')
 		and 
 		to_timestamp('2006-06-30 23:59:59.999', 'YYYY-MM-DD HH24:MI:SS.FF3');
-
+ -- 날짜는 사용자가 입력하지만 시간 같은 경우는 개발자가 입력해놔야 한다. 
+ -- 특히, 주시간 설정을 안해놓을 경우 00:00:00초로 설정되기 때문에 마지막 날이 누락되는 경우가 생길 수 있다
 -- (Q) 최근 90일 사이에 출판된 도서 조회
 select * from book
 where to_timestamp(book_publication_date, 'YYYY-MM-DD')
