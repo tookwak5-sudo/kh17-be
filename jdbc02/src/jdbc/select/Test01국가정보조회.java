@@ -15,7 +15,7 @@ public class Test01국가정보조회 {
 		// Object[] params = {};  // 홀더가 없기 때문에 .. 필요 x
 		//jdbcTemplate.update(sql); // 실행은 되지만 적합하지 않는
 		// select에서 실행을 하려면 클래스를 하나 만들어야함
-		
+			
 		CountryMapper countryMapper = new CountryMapper(); // 내가 준비한 반환도구
 		List<CountryDto> list = jdbcTemplate.query(sql, countryMapper);
 		
