@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jdbc.dto.BookDto;
+import jdbc.mapper.BookMapper;
 import jdbc.util.JdbcUtils;
 
 public class Test03도서정보조회 {

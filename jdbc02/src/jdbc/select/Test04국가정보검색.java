@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jdbc.dto.CountryDto;
+import jdbc.mapper.CountryMapper;
 import jdbc.util.JdbcUtils;
 
 public class Test04국가정보검색 {

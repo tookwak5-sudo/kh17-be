@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jdbc.dto.CountryDto;
+import jdbc.mapper.CountryMapper;
 import jdbc.util.JdbcUtils;
 
 public class Test01국가정보조회 {

@@ -1,9 +1,11 @@
-package jdbc.select;
+package jdbc.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+
+import jdbc.dto.LectureDto;
 
 public class LectureMapper implements RowMapper<LectureDto>{
 	@Override

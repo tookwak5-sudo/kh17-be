@@ -1,9 +1,11 @@
-package jdbc.select;
+package jdbc.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+
+import jdbc.dto.CountryDto;
 
 // // 조회된 결과(ResultSet)의 행(Rows)을 CountryDto()에 연결(Mapping)시키는 도구
 // - select*from country로 나온 결과가 CountryDto의 어떤 필드에 들어가야 하는지 알려주는 클래스

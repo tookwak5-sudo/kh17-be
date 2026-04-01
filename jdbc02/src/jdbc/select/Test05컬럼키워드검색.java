@@ -1,17 +1,23 @@
 package jdbc.select;
 
 import java.util.List;
+import java.util.Scanner;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jdbc.dto.CountryDto;
+import jdbc.mapper.CountryMapper;
 import jdbc.util.JdbcUtils;
 
 public class Test05컬럼키워드검색 {
 	public static void main(String[] args) {
 		//입력
 		// - [국가명][시아    ][검색] 과 같은 상황을 구현
- 		String column = "country_capital";
-		String keyword = "시아";
+ 		Scanner sc = new Scanner(System.in);
+ 		System.out.println("나라 항목 ");
+		String column = sc.nextLine();
+		System.out.println("나라 키워드 ");
+		String keyword = sc.nextLine();
 		
 		//처리
 		// - colum은 구문에 들어갈 값이고, keyword는 데이터로 배치될 값이다

@@ -1,4 +1,4 @@
-package jdbc.select;
+package jdbc.dto;
 
 //Country 테이블의 한 줄을 보관할 클래스
 // - 필드 + setter/getter + 기본생성자

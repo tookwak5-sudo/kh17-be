@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import jdbc.dto.LectureDto;
+import jdbc.mapper.LectureMapper;
 import jdbc.util.JdbcUtils;
 
 public class Test02강좌정보조회 {

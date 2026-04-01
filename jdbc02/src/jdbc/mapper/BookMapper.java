@@ -1,9 +1,11 @@
-package jdbc.select;
+package jdbc.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+
+import jdbc.dto.BookDto;
 
 public class BookMapper implements RowMapper<BookDto>{
 
