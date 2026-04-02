@@ -10,9 +10,8 @@ import jdbc.dto.BookDto;
 public class BookMapper implements RowMapper<BookDto>{
 
 	@Override
-	public BookDto mapRow(ResultSet rs, int idx) throws SQLException {
+	public BookDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		BookDto bookDto = new BookDto();
-		//System.out.println(rs);
 		bookDto.setBookId(rs.getInt("book_id"));
 		bookDto.setBookTitle(rs.getString("book_title"));
 		bookDto.setBookAuthor(rs.getString("book_author"));
@@ -23,5 +22,6 @@ public class BookMapper implements RowMapper<BookDto>{
 		bookDto.setBookGenre(rs.getString("book_genre"));
 		return bookDto;
 	}
+	
 	
 }
