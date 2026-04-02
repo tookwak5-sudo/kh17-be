@@ -16,9 +16,9 @@ public class CountryDto { // Dto (DataTransfer Object)
 					+ countryName + ", countryCapital=" + countryCapital + ", countryPopulation=" + countryPopulation + "]";
 		}
 		
-
 	public CountryDto() {
-		}
+		
+	}
 
 	public long getCountryNo() {
 		return countryNo;

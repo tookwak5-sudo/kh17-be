@@ -10,6 +10,10 @@ public class Test02국가정보등록 {
 	public static void main(String[] args) {
 		
 		
+		String countryRegion = "아시아";
+		String countryName = "북한";
+		String countryCapital = "평양";
+		long population = 20000000L;
 		//연결 도구
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.OracleDriver"); // DB종류안내
@@ -20,13 +24,6 @@ public class Test02국가정보등록 {
 		// 실행도구
 		JdbcTemplate jdbcTemplate = new JdbcTemplate();
 		jdbcTemplate.setDataSource(dataSource); // 연결정보를 건내주기
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		String countryRegion = "아시아";
-		String countryName = "북한";
-		String countryCapital = "평양";
-		long population = 20000000L;
 		
 		String sql = "insert into country("
 				+ "country_no, country_region, country_name, "

@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class Test04도서정보등록 {
 	public static void main(String[] args) {
-		
 		//입력정보
 		String bookTitle = "나의 라임 오렌지나무";
 		String bookAuthor = "조제 마우루 지 바스콘셀루스";
