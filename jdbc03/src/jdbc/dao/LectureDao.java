@@ -1,4 +1,4 @@
-package jdbc.dao;
+	package jdbc.dao;
 
 import java.util.List;
 import java.util.Set;
@@ -72,5 +72,15 @@ public class LectureDao {
 		Object[] params = { keyword };
 		LectureMapper lecturemapper = new LectureMapper();
 		return jdbcTemplate.query(sql, lecturemapper, params);
+	}
+	
+	//상세검색
+	public LectureDto selectOne(int lectureNo) {
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from lecture where lecture_no =?";
+		Object[] params = {lectureNo};
+		LectureMapper lectureMapper = new LectureMapper();
+		List<LectureDto> list = jdbcTemplate.query(sql, lectureMapper, params);
+		return list.isEmpty() ? null : list.get(0);
 	}
 }

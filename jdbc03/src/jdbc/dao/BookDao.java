@@ -85,4 +85,15 @@ public class BookDao {
 		BookMapper bookMapper = new BookMapper();
 		return jdbcTemplate.query(sql, bookMapper, params);
 	}
+	
+	//상세검색
+	public BookDto selectOne(int bookId) {
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from book where book_id = ?";
+		Object[] params = { bookId };
+		BookMapper bookMapper = new BookMapper();
+		List<BookDto> list = jdbcTemplate.query(sql, bookMapper, params);
+//		return list.size() ==0 ? null : list.get(0);
+		return list.isEmpty() ? null : list.get(0);
+	}
 }

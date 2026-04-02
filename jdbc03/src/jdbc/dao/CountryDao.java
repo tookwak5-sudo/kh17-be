@@ -101,7 +101,14 @@ public class CountryDao {
 		}
 		
 		//상세 메소드
-		
-		
-		
+		//- 기본키(primary key)를 이용하여 단 하나의 데이터만 찾는 검색 (없을 수도 있음)
+		//- 목록과 동일하게 조회한 다음 변환 코드를 거쳐 객체로 반환하도록 처리
+		public CountryDto selectOne(int countryNo) {
+			JdbcTemplate jdbcTemplate = JdbcUtils.create();
+			String sql = "select * from country where country_no =?";
+			Object[] params = {countryNo};
+			CountryMapper countryMapper = new CountryMapper(); // 조회에 반드시 필요한 코드
+			List<CountryDto> list = jdbcTemplate.query(sql, countryMapper, params); // 일단 목록으로 조회
+			return list.isEmpty() ? null : list.get(0);
+		}
 }
