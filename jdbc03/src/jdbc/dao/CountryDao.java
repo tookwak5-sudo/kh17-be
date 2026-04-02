@@ -90,7 +90,7 @@ public class CountryDao {
 //			if(column == null || keyword == null) return List.of(); //검색항목이 없으면 비어있는 결과 반환
 			
 //			if(column이 country_region, country_name, country_capital 중 하나가 아니면 그만둬!);
-			Set<String> allowList = Set.of("country_region, country_name, country_capital");
+			Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
 			if(allowList.contains(column) == false) return List.of(); //허용되는 검색 항목이 아니면 비어있는 결과 반환
 			
 			JdbcTemplate jdbcTemplate = JdbcUtils.create();

@@ -1,8 +1,12 @@
 package jdbc.dao;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import jdbc.dto.LectureDto;
+import jdbc.mapper.LectureMapper;
 import jdbc.util.JdbcUtils;
 
 public class LectureDao {
@@ -45,5 +49,28 @@ public class LectureDao {
 		String sql = "delete lecture where lecture_no = ?";
 		Object[] params = { lecture_no };
 		return jdbcTemplate.update(sql, params) > 0;
+	}
+	
+	//조회
+	public List<LectureDto> selectList(){
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from lecture order by lecture_no asc";
+		//Object[] params = {}; //홀더 없음
+		LectureMapper mapper = new LectureMapper();
+		return jdbcTemplate.query(sql, mapper);
+	}
+	
+	//검색
+	public List<LectureDto> selectList(String column, String keyword){
+		
+		if(column == null || keyword == null) return selectList();//또는 return List.of()
+		Set<String> allowList = Set.of("lecture_title", "lecture_category", "lecture_type");
+		if(!allowList.contains(column)) return selectList(); //또는 return List.of()
+		
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from lecture where instr("+ column +", ?) > 0 order by lecture_no asc";
+		Object[] params = { keyword };
+		LectureMapper lecturemapper = new LectureMapper();
+		return jdbcTemplate.query(sql, lecturemapper, params);
 	}
 }

@@ -20,8 +20,4 @@ public class LectureMapper implements RowMapper<LectureDto>{
 		lectureDto.setLectureType(rs.getString("lecture_type"));
 		return lectureDto;
 	}
-
-
-
-	
 }

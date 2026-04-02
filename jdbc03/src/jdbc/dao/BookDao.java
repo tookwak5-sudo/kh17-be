@@ -1,8 +1,13 @@
 package jdbc.dao;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import jdbc.dto.BookDto;
+import jdbc.mapper.BookMapper;
 import jdbc.util.JdbcUtils;
 
 public class BookDao {
@@ -51,4 +56,33 @@ public class BookDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
+	//목록 조회 및 검색
+	
+	//조회
+	public List<BookDto> selectList(){
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from book";
+		BookMapper bookmapper = new BookMapper(); //조회할 때는 mapper가 꼭 필요하다
+		return jdbcTemplate.query(sql, bookmapper);
+	}
+	//검색
+	public List<BookDto> selectList(String column, String keyword){
+		if(column == null || keyword == null) return List.of();
+//		Set<String> allowList = Set.of("book_title", "book_author", "book_publisher", "book_genre");
+//		if(!allowList.contains(column)) return selectList();
+		
+		//set하고 같은 결과가 나오는 코드
+		String[] allowList = new String[] {
+				"book_title", "book_author", "book_publication_date",
+				"book_publisher", "book_genre"
+		};
+		if(Arrays.binarySearch(allowList, column) == -1) return List.of();
+		
+		
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "select * from book where instr("+ column +", ?) > 0 order by "+ column +" book_id asc";
+		Object[] params = { keyword };
+		BookMapper bookMapper = new BookMapper();
+		return jdbcTemplate.query(sql, bookMapper, params);
+	}
 }
