@@ -19,4 +19,30 @@ public class LectureDao {
 		};
 		jdbcTemplate.update(sql, params);
 	}
+	public boolean update(LectureDto lectureDto) {
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "update lecture set "
+				+ "lecture_title =?, "
+				+ "lecture_category =?, "
+				+ "lecture_duration =?, "
+				+ "lecture_price =?, "
+				+ "lecture_type =? "
+				+ "where lecture_no =?";
+		Object[] params = {
+				lectureDto.getLectureTitle(), lectureDto.getLectureCategory(),
+				lectureDto.getLectureDuration(), lectureDto.getLecturePrice(),
+				lectureDto.getLectureType(), lectureDto.getLectureNo()
+		};
+		return jdbcTemplate.update(sql, params) > 0; 
+//		int row = jdbcTemplate.update(sql, params);
+//		return row > 0;
+	}
+	
+	//삭제
+	public boolean delete(int lecture_no) {
+		JdbcTemplate jdbcTemplate = JdbcUtils.create();
+		String sql = "delete lecture where lecture_no = ?";
+		Object[] params = { lecture_no };
+		return jdbcTemplate.update(sql, params) > 0;
+	}
 }
