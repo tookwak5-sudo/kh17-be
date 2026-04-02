@@ -6,6 +6,7 @@ import jdbc.dto.BookDto;
 import jdbc.util.JdbcUtils;
 
 public class BookDao {
+	//삽입
 	public void insert(BookDto bookDto) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
 		String sql = "insert into book("
@@ -42,6 +43,7 @@ public class BookDao {
 		return rows > 0;
 	}
 	
+	//삭제
 	public boolean delete(int bookId) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
 		String sql = "delete book where book_id =?";

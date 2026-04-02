@@ -1,8 +1,12 @@
 package jdbc.dao;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import jdbc.dto.CountryDto;
+import jdbc.mapper.CountryMapper;
 import jdbc.util.JdbcUtils;
 
 //DAO(Data Access Object)
@@ -62,4 +66,42 @@ public class CountryDao {
 			Object[] params = {countryNo};
 			return jdbcTemplate.update(sql, params) > 0;
 		}
+		
+		//조회 메소드
+		//- CountryDto  목록 (List<CountryDto>)을 반환하도록 구현
+		public List<CountryDto> selectList(){
+			JdbcTemplate jdbcTemplate = JdbcUtils.create();
+			String sql = "select * from country order by country_no asc";
+//			Object[] params = {}; //홀더 없음	
+			CountryMapper mapper = new CountryMapper();
+			
+//			List<CountryDto> list = jdbcTemplate.query(sql, mapper);
+//			return list;
+			return jdbcTemplate.query(sql, mapper);
+		}
+		
+		//검색 메소드
+		// - column 키워드 검색
+		// - 반환 형은 목록과 동일
+		public List<CountryDto> selectList(String column, String keyword){
+		//	if(데이터가 부족하면) return this.selectList(); // 목록 반환
+		// column.equals(null) 이런건 존재할 수 없음 / 쉽게, null은 참조를 할 수 없음
+			if(column == null || keyword == null) return selectList(); // 검색 항목이 없으면 목록 반환
+//			if(column == null || keyword == null) return List.of(); //검색항목이 없으면 비어있는 결과 반환
+			
+//			if(column이 country_region, country_name, country_capital 중 하나가 아니면 그만둬!);
+			Set<String> allowList = Set.of("country_region, country_name, country_capital");
+			if(allowList.contains(column) == false) return List.of(); //허용되는 검색 항목이 아니면 비어있는 결과 반환
+			
+			JdbcTemplate jdbcTemplate = JdbcUtils.create();
+			String sql = "select * from country where instr("+ column +", ?) > 0 order by country_no asc";
+			Object[] params = { keyword };
+			CountryMapper countryMapper = new CountryMapper();
+			return jdbcTemplate.query(sql, countryMapper, params);
+		}
+		
+		//상세 메소드
+		
+		
+		
 }

@@ -6,6 +6,7 @@ import jdbc.dto.LectureDto;
 import jdbc.util.JdbcUtils;
 
 public class LectureDao {
+	//삽입
 	public void insert(LectureDto lectureDto) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create(); // 이 한 줄로 DB 도구 생성이 끝남
 		String sql = "insert into lecture("
@@ -19,6 +20,7 @@ public class LectureDao {
 		};
 		jdbcTemplate.update(sql, params);
 	}
+	//수정
 	public boolean update(LectureDto lectureDto) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
 		String sql = "update lecture set "
@@ -37,7 +39,6 @@ public class LectureDao {
 //		int row = jdbcTemplate.update(sql, params);
 //		return row > 0;
 	}
-	
 	//삭제
 	public boolean delete(int lecture_no) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
