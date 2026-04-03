@@ -13,7 +13,7 @@ public class Exam04음원수정 {
 		musicDto.setMusicArtist("수정 작가");
 		musicDto.setMusicAlbum("수정 엘범");
 		musicDto.setMusicRelease("2023-08-08");
-		musicDto.setMusicPlay(20000);
+		musicDto.setMusicPlay(20000L);
 		musicDto.setMusicLike(300);
 		musicDto.setMusicdislike(400);
 		musicDto.setMusicGenre("발라드");

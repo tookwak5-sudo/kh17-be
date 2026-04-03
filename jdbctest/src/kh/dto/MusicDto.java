@@ -1,38 +1,39 @@
 package kh.dto;
 
 public class MusicDto {
-	private int musicID;
+	private long musicID;
 	private String musicTitle;
 	private String musicArtist;
 	private String musicAlbum;
 	private String musicRelease;
-	private long musicPlay;
+	private Long musicPlay; //null 가능 여부를 항상 주의하기
 	private long musicLike;
 	private long musicdislike;
 	private String musicGenre;
-	private long musicRankPoint;
+	
+	
 	
 	@Override
 	public String toString() {
 		return "MusicDto [musicID=" + musicID + ", musicTitle=" + musicTitle + ", musicArtist=" + musicArtist
 				+ ", musicAlbum=" + musicAlbum + ", musicRelease=" + musicRelease + ", musicPlay=" + musicPlay
-				+ ", musicLike=" + musicLike + ", musicdislike=" + musicdislike + ", musicGenre=" + musicGenre + "]";
+				+ ", musicLike=" + musicLike + ", musicdislike=" + musicdislike + ", musicGenre=" + musicGenre
+				+ ", getPoint()=" + getPoint() + "]";
+	}
+
+	//가상의 getter
+	public long getPoint() {
+		return musicPlay * 2 + musicLike * 5 - musicdislike * 10;
 	}
 	
 	public MusicDto() {
 		super();
 	}
 
-	public long getMusicRankPoint() {
-		return musicRankPoint;
-	}
-	public void setMusicRankPoint(long musicRankPoint) {
-		this.musicRankPoint = musicRankPoint;
-	}
-	public int getMusicID() {
+	public long getMusicID() {
 		return musicID;
 	}
-	public void setMusicID(int musicID) {
+	public void setMusicID(long musicID) {
 		this.musicID = musicID;
 	}
 	public String getMusicTitle() {
@@ -62,7 +63,7 @@ public class MusicDto {
 	public long getMusicPlay() {
 		return musicPlay;
 	}
-	public void setMusicPlay(long musicPlay) {
+	public void setMusicPlay(Long musicPlay) {
 		this.musicPlay = musicPlay;
 	}
 	public long getMusicLike() {

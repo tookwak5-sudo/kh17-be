@@ -13,12 +13,13 @@ public class MusicMapper implements RowMapper<MusicDto>{
 	@Override
 	public MusicDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		MusicDto musicDto = new MusicDto();
-		musicDto.setMusicID(rs.getInt("music_id"));
+		musicDto.setMusicID(rs.getLong("music_id"));
 		musicDto.setMusicTitle(rs.getString("music_title"));
 		musicDto.setMusicArtist(rs.getString("music_artist"));
 		musicDto.setMusicAlbum(rs.getString("music_album"));
 		musicDto.setMusicRelease(rs.getString("music_release"));
-		musicDto.setMusicPlay(rs.getLong("music_play"));
+		//musicDto.setMusicPlay(rs.getLong("music_play")); // long일 때 (not null일 때, null이 0으로 바뀜)
+		musicDto.setMusicPlay(rs.getObject("music_play", Long.class)); // Long일 때 가능(null 가능)
 		musicDto.setMusicLike(rs.getLong("music_like"));
 		musicDto.setMusicdislike(rs.getLong("music_dislike"));
 		musicDto.setMusicGenre(rs.getString("music_genre"));

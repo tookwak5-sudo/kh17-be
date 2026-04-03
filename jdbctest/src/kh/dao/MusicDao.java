@@ -10,6 +10,8 @@ import kh.mapper.MusicMapper;
 import kh.util.JdbcUtils;
 
 public class MusicDao {
+	
+	
 	//삽입
 	public void insert(MusicDto musicDto) {
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
@@ -39,14 +41,11 @@ public class MusicDao {
 	public List<MusicDto> selectList(String column, String keyword){
 		//if(데이터가 부족하면)  return this.selectList(); // 목록반환
 		if(column == null || keyword == null) return selectList();
-		Set<String> allowList = Set.of("music_title,", "music_artist", "music_album", "music_rank_point");
+		Set<String> allowList = Set.of("music_title", "music_artist", "music_album");
 		if(allowList.contains(column) == false) return List.of();
 		
 		JdbcTemplate jdbcTemplate = JdbcUtils.create();
 		String sql = "select * from music where instr("+ column +", ?) > 0 order by "+ column +" asc";
-		if(column != null && keyword == null) {
-			String rankSql = "select music_play * 2 + music_like * 5 - music_dislike * 10";
-		}
 		Object[] params = { keyword };
 		MusicMapper musicMapper = new MusicMapper();
 		return jdbcTemplate.query(sql, musicMapper, params);
