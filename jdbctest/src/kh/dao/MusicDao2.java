@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import kh.dto.MusicChartDto;
 import kh.dto.MusicDto;
+import kh.mapper.MusicChartMapper;
 import kh.mapper.MusicMapper;
 import kh.util.JdbcUtils;
 
@@ -13,6 +15,7 @@ public class MusicDao2 {
 	//자주 쓰는 도구들을 필드로 미리 정의
 	private JdbcTemplate jdbcTemplate = JdbcUtils.create();
 	private MusicMapper musicMapper = new MusicMapper();
+	private MusicChartMapper musicChartMapper = new MusicChartMapper();
 	private Set<String> allowColumns = Set.of(
 				"music_title", "music_artist", "music_album", "music_genre"
 			);
@@ -60,22 +63,42 @@ public class MusicDao2 {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
-	//조회
-	public List<MusicDto> selectList(){
-		String sql = "select * from music order by music_id asc";
-		return jdbcTemplate.query(sql, musicMapper);
-	}
+	//목록 및 검색
+		public List<MusicDto> selectList(){
+			String sql = "select * from music order by music_id asc";
+			return jdbcTemplate.query(sql, musicMapper);
+		}
+		public List<MusicDto> selectList(String column, String keyword) {
+			if(column == null || keyword == null) return selectList();
+			//if(column.strip().isEmpty() || keyword.strip().isEmpty()) return selectList();
+			if(column.isBlank() || keyword.isBlank()) return selectList();
+			
+			if(!allowColumns.contains(column)) return List.of();
+			
+			String sql = "select * from music "
+								+ "where instr("+column+", ?) > 0 "
+								+ "order by "+column+" asc, music_id asc";
+			Object[] params = { keyword };
+			return jdbcTemplate.query(sql, musicMapper, params);
+		}
 	
-	//검색
-	public List<MusicDto> selectList(String column, String keyword){
-		//if(데이터가 부족하면)  return this.selectList(); // 목록반환
-		if(column == null || keyword == null) return selectList();
-		if(allowColumns.contains(column) == false) return List.of();
-		String sql = "select * from music where instr("+ column +", ?) > 0 order by "+ column +" asc";
+	public List<MusicChartDto> selectListRank(){
+		String sql = "select * from music_chart";
+		return jdbcTemplate.query(sql, musicChartMapper);
+	}
+	public List<MusicChartDto> selectListRank(String column, String keyword) {
+		if(column == null || keyword == null) return selectListRank();
+		//if(column.strip().isEmpty() || keyword.strip().isEmpty()) return selectList();
+		if(column.isBlank() || keyword.isBlank()) return selectListRank();
+		
+		if(!allowColumns.contains(column)) return List.of();
+		
+		String sql = "select * from music_chart "
+						+ "where instr("+column+", ?) > 0 "
+						+ "order by music_point desc, music_id asc";
 		Object[] params = { keyword };
-		return jdbcTemplate.query(sql, musicMapper, params);
+		return jdbcTemplate.query(sql, musicChartMapper, params);
 	}
-	
 	
 	//상세검색
 	public MusicDto selectOne(long musicId) { // 기본키가 들어옴
