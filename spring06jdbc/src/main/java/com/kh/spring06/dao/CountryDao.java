@@ -31,4 +31,21 @@ public class CountryDao {
 				};
 		jdbcTemplate.update(sql, params);
 	}
+	
+	
+	//수정 메소드
+	public boolean update(CountryDto countryDto) {
+		String sql = "update country set country_region =?, "
+				+ "country_name =?, "
+				+ "country_capital =?, "
+				+ "country_population =? "
+				+ "where country_no =?";
+		Object[] params = {
+				countryDto.getCountryRegion(), countryDto.getCountryName(), 
+				countryDto.getCountryCapital(), countryDto.getCountryPopulation(),
+				countryDto.getCountryNo()
+		};
+		int rows = jdbcTemplate.update(sql, params);
+		return rows > 0; // 한 줄로 표현
+	}
 }
