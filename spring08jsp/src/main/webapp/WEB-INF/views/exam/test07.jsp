@@ -35,7 +35,7 @@
 
 <h2>다음 검색엔진 검색창</h2>
 <form action="https://search.daum.net/search">
-	<input type ="text" name="q" placeholder="검색어 입력">
+	<input type ="text" name="q" placeholder="검색어 입력" required="required">
 	<input type ="hidden" name="w" value="tot">
 	<input type ="hidden" name="DA" value="YZR">
 	<input type ="hidden" name="t__nil_searchbox" value="btn">
