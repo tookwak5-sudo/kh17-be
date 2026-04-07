@@ -1,5 +1,8 @@
 package com.kh.spring06.dao;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -48,4 +51,38 @@ public class CountryDao {
 		int rows = jdbcTemplate.update(sql, params);
 		return rows > 0; // 한 줄로 표현
 	}
+	
+	//삭제 메소드
+	public boolean delete(int countryNo) {
+		String sql = "delete country where country_no =?"	;
+		Object[] params = {countryNo};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
+	
+	
+	//조회 메소드
+	public List<CountryDto> selectList(){
+		String sql = "select * from country order by country_no asc";
+		return jdbcTemplate.query(sql, countryMapper);
+	}
+	
+	//검색 메소드
+	public List<CountryDto> selectList(String column, String keyword){
+		if(column == null || keyword == null) return selectList();
+		
+		Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
+		if(allowList.contains(column) == false) return List.of(); 
+		
+		String sql = "select * from country where instr("+ column +", ?) > 0 order by country_no asc";
+		Object[] params = { keyword };
+		return jdbcTemplate.query(sql, countryMapper, params);
+	}
+	
+	//상세 메소드
+			public CountryDto selectOne(int countryNo) {
+				String sql = "select * from country where country_no =?";
+				Object[] params = {countryNo};
+				List<CountryDto> list = jdbcTemplate.query(sql, countryMapper, params); // 일단 목록으로 조회
+				return list.isEmpty() ? null : list.get(0);
+			}
 }

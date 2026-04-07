@@ -68,7 +68,9 @@ public class QuizController {
 			//null로 처리되는 게 싫으면 defaultVale로 값을 지정할 수 잇음
 			@RequestParam(required = false) String end) {
 		LocalDate a = LocalDate.parse(begin);
-		LocalDate b = end  == null ? LocalDate.now() : LocalDate.parse(end);
+		boolean c = end == null;
+		LocalDate b = c ? LocalDate.now() : LocalDate.parse(end);
+		//LocalDate b = end  == null ? LocalDate.now() : LocalDate.parse(end);
 		long days = ChronoUnit.DAYS.between(a, b);
 		return "기간" + days + "일";
 	}
