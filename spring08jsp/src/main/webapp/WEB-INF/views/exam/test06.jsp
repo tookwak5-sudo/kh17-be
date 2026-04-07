@@ -16,3 +16,4 @@
 	<input name="query">
 	<button>전송</button>
 </form>
+

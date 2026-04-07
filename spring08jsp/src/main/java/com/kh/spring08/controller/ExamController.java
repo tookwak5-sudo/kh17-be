@@ -35,4 +35,9 @@ public class ExamController {
 	public String test06() {
 		return "/WEB-INF/views/exam/test06.jsp";
 	}
+	
+	@RequestMapping("/test07")
+	public String test07() {
+		return "/WEB-INF/views/exam/test07.jsp";
+	}
 }
