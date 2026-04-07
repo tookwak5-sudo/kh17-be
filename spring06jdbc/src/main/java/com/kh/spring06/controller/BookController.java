@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class BookController {
 	@Autowired
 	private BookDao bookDao;
-	
-	
 	
 	//등록
 	@RequestMapping("/insert")
@@ -90,7 +89,7 @@ public class BookController {
 		return buffer.toString();
 	}
 	
-	//오류 메세지 매핑
+		//오류 메세지 매핑
 		@RequestMapping("/notFound") // 404
 		public String notFound() {
 			return "존재하지 않는 도서 정보 입니다.";
