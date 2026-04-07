@@ -8,6 +8,7 @@
 	- 종료 태그가 없음
 	- src(source) 속성으로 이미지의 주소를 제공해야 한다
 	- widdth, hegiht로 크기 설정 가능(단위 : px), 비율(%)도 가능
+	- alt 속성을 통해 이미지에 대한 설명(접근성 향상을 위한) 설정 가능
 -->
  
 <h1>예제 4번 - 이미지</h1>
@@ -27,3 +28,14 @@
 
 <!-- <imge src="C:\Users\user\Downloads\lion.gif" width="200"> -->
 <img src="/lion.gif" width="200">
+
+<hr>
+<!-- 
+	더미 이미지(dummy image)
+	- 개발 단계에서 이미지가 준비되지 않았을 때 사용할 수 있는 대체 이미지
+	- 여러 업체들이 제공해주는 사이트가 존재 
+-->
+<img src="https://dummyimage.com/200x200/000000/fff&text=duck"> <br>
+<img src="https://picsum.photos/200"> <br>
+<img src="https://picsum.photos/id/77/200"> <br>
+<img alt="번져 보이는 이미지" src="https://picsum.photos/id/77/200?grayscale"> <br>
