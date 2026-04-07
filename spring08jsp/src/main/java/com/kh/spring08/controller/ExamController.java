@@ -25,4 +25,14 @@ public class ExamController {
 	public String test04() {
 		return "/WEB-INF/views/exam/test04.jsp";
 	}
+	
+	@RequestMapping("/test05")
+	public String test05() {
+		return "/WEB-INF/views/exam/test05.jsp";
+	}
+	
+	@RequestMapping("/test06")
+	public String test06() {
+		return "/WEB-INF/views/exam/test06.jsp";
+	}
 }
