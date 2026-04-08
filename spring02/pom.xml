@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 1번줄에는 반드시 xml 헤더라는 코드가 등장해야한다 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+<!--	
+	Maven 기술 정보
+	- maven에서 쓰고 있는 현재 모델의 버전 (4.0.0에서 변하지 않은지 10년이 넘음)
+-->
+	<modelVersion>4.0.0</modelVersion>
+	
+<!--	
+	프로젝트를 만들기 위한 원천기술 정보(근본)
+	- 우리가 쓰고 있는 기술이 Spring Boot 기반임을 명시하기 위한 설정
+-->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.13</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	
+<!--	
+	프로젝트 생성 시 설정한 정보
+	- 처음에 잘못 설정했더라도 이곳을 수정하면 다시 원하는대로 바꿀 수 있음
+	- 변경하면 반드시 갱신 처리(maven update) 해야함
+-->
+	<groupId>com.kh</groupId>
+	<artifactId>spring02</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>spring02</name>
+	
+<!--	작성 시 생략한 정보들 (설명, 홈페이지주소, 라이선스, 개발자 연락처, 공급처, ...)-->
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	
+<!--	
+		properties는 문서 내에서 사용할 변수를 정의할 대 사용 
+		- 정해진 이름을 설정하게 되면 스프링부트가 알아서 읽어서 처리
+-->
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+	
+<!--
+		dependencies에는 프로젝트에서 사용해야할 라이브러리 정보를 작성
+		- 과거에는 lib라는 폴더에 실물파일을 넣어서 프로젝트  Build Path에 직접 추가했었다
+		- 이제는 문서로 대상만 정확히 지정하면 알아서 최적의 버전을 다운 받는다. (groupId와 artifactId 사용)
+		- scope는 특정 시점에만 실행해야 할 때 지정하는 옵션
+		- version은 일반적으로 지정하지 않아도 되지만, 스프링에서 모르는건 알려줘야 한다	
+-->
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+		
+	</dependencies>
+
+<!--
+		최초 배포 파일을 만들기 위한 과정을 정의
+		- 사용할 기술이나 버전등을 명시																																									
+-->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
