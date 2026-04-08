@@ -5,7 +5,7 @@
  
  <form action="https://www.youtube.com/results">
  	<input name="search_query">
-	<button>move</button> 
+	<button>검색</button> 
  </form>
  
  <h2>네이버쇼핑 상품 검색창</h2>

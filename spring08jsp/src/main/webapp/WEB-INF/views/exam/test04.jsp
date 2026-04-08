@@ -19,13 +19,11 @@
 	width="200px">
 	
 <hr>
-
 <!-- 
 	내가 가진 이미지를 출력
 	- 보안상의 이슈로 하드디스크에 있는 이미지는 표시할 수 없다 (물리적 위치는 표시 불가능)
 	- 프로젝트에 포함된 주소를 가지는 이미지만 가능 (static 폴더)
 -->
-
 <!-- <imge src="C:\Users\user\Downloads\lion.gif" width="200"> -->
 <img src="/lion.gif" width="200">
 
