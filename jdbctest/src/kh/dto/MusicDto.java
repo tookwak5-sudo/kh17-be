@@ -11,8 +11,6 @@ public class MusicDto {
 	private long musicdislike;
 	private String musicGenre;
 	
-	
-	
 	@Override
 	public String toString() {
 		return "MusicDto [musicID=" + musicID + ", musicTitle=" + musicTitle + ", musicArtist=" + musicArtist
