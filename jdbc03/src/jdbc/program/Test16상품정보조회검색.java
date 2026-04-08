@@ -20,6 +20,7 @@ public class Test16상품정보조회검색 {
 		if(list.isEmpty()) {
 			System.out.println("결과가 존재하지 않습니다.");
 		}
+		
 		else {
 			System.out.println("상품 종류 : " + list.size() + "개");
 			Format f = new DecimalFormat("#,##0.##");
