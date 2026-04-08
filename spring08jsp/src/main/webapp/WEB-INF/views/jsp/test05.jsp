@@ -2,7 +2,8 @@
     pageEncoding="UTF-8"%>
 
    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-   
+ 
+  
    
 <%-- 
 	지금 구현하고 싶은 코드
@@ -12,6 +13,7 @@
 		System.out.prinltn("당첨");
 	}
 --%>  
+
    <h1>주사위 10개</h1>
   <c:forEach var="number" items="${dice}">
    <h2>
