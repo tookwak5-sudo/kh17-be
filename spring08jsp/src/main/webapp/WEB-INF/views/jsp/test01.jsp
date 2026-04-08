@@ -21,4 +21,3 @@ message : ${message} <br><br>
 dice : ${dice} <br><br>
 lotto : ${lotto} <br><br>
 hello : ${hello} <br><br> 
-   
