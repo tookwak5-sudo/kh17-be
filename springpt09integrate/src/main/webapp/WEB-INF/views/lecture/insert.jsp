@@ -4,7 +4,10 @@
 
 <h1>신규 강좌 등록</h1>
 
-<!-- <form action="/lecture/insert2"> -->
+<!-- <form action="/lecture/insert2"> 
+  	 메소드 안적으면 get, 
+  	 나중에 파일같은거를 추가할 수 있음, 주소로 파일을 보내기엔 크기가 부담스러워서 post로 보냄에 따라 제약조건들이 추가됨
+ -->
 <form action="./insert" method="post">
 	강좌명 <input type="text" name="lectureTitle" placeholder="정보처리 산업기사 필기" required> <br><br>
 <!-- 	카테고리 <input type="text" name="lectureCategory" placeholder="시험" required> <br><br> -->
