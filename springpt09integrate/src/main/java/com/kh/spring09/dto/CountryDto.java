@@ -1,51 +1,25 @@
 package com.kh.spring09.dto;
 
-//등록 없이 필요할 때마다 만들어서 사용 // 일회용이기 때문에//
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+//lombok에서 제공하는 어노테이션으로 필드를 제외한 나머지 기본요소를 생성
+//- 이 라이브러리는 이클립스를 속여야 하는 라이브러리 (추가 설치 작업이 필요)
+//- 프로젝트에만 적용하면 원하는 효과를 보기 어렵다
+//- @Setter : 세터메소드 생성
+//- @Getter : 게터메소드 생성
+//- @NoArgsConstructor : 기본생성자 생성
+//- @ToString : toString() 메소드 생성
+//@Setter @Getter @NoArgsConstructor @ToString
+//- @Data : 세터 + 게터 + toString()
+@Data
 public class CountryDto {
 	private int countryNo;
 	private String countryRegion;
 	private String countryName;
 	private String countryCapital;
 	private long countryPopulation;
-	
-	@Override
-	public String toString() {
-		return "CountryDto [countryNo=" + countryNo + ", countryRegion=" + countryRegion + ", countryName="
-				+ countryName + ", countryCapital=" + countryCapital + ", countryPopulation=" + countryPopulation + "]";
-	}
-	public CountryDto() {
-		super();
-	}
-	public int getCountryNo() {
-		return countryNo;
-	}
-	public void setCountryNo(int countryNo) {
-		this.countryNo = countryNo;
-	}
-	public String getCountryRegion() {
-		return countryRegion;
-	}
-	public void setCountryRegion(String countryRegion) {
-		this.countryRegion = countryRegion;
-	}
-	public String getCountryName() {
-		return countryName;
-	}
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
-	}
-	public String getCountryCapital() {
-		return countryCapital;
-	}
-	public void setCountryCapital(String countryCapital) {
-		this.countryCapital = countryCapital;
-	}
-	public long getCountryPopulation() {
-		return countryPopulation;
-	}
-	public void setCountryPopulation(long countryPopulation) {
-		this.countryPopulation = countryPopulation;
-	}
-	
-	
 }
