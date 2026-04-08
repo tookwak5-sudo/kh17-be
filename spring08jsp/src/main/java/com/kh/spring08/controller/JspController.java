@@ -1,10 +1,12 @@
 package com.kh.spring08.controller;
 
-import java.text.DecimalFormat;
-import java.text.Format;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,5 +60,33 @@ public class JspController {
 		model.addAttribute("cny", krw*exchangeToCny);
 		model.addAttribute("jpy", krw*exchangeToJpy);
 		return "/WEB-INF/views/jsp/test03.jsp";
+	}
+	
+	@RequestMapping("/test04")
+	public String test04(Model model) {
+		//배열이나 List와 같이 여러개의 데이터가 묶여있는 경우 이를 전달하여 출력하는 과정을 보고싶어
+		Random r = new Random();
+		
+		Set<Integer> lotto = new TreeSet<>();
+		while(lotto.size() < 6) {
+			lotto.add(r.nextInt(45) + 1);
+		}
+		
+		model.addAttribute("lotto", lotto); // 저장소 전달
+		
+		return "/WEB-INF/views/jsp/test04.jsp";
+	}
+	
+	@RequestMapping("/test05")
+	public String test05(Model model) {
+		Random r = new Random(); 
+		List<Integer> dice = new ArrayList<>();
+		while(dice.size() < 10) { //10개가 되면 그만
+			dice.add(r.nextInt(6) + 1);
+		}
+		
+		model.addAttribute("dice", dice); // dice란 이름으로 화면에 전달
+		
+		return "/WEB-INF/views/jsp/test05.jsp"; //연결할 화면을 지정하여 반환
 	}
 }
