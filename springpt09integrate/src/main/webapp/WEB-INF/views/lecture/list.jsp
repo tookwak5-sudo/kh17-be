@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+
 <!-- 제목 -->
 <h1>강좌 목록 조회</h1>
 
@@ -24,31 +25,45 @@
 
 <!-- 결과출력 -->
 <h2>강좌 수: ${list.size()}</h2>
-<c:forEach var="lectureDto" items="${list}">
-<div>
-	<h3>
-		[${lectureDto.lectureNo}] 
-		${lectureDto.lectureTitle}
-	</h3>
-	카테고리 : ${lectureDto.lectureCategory} <br>
-	강의 시간 : ${lectureDto.lectureDuration} <br>
-	수강료 : <fmt:formatNumber value="${lectureDto.lecturePrice}" pattern="#,##0"/>원<br>
-	수업유형 : ${lectureDto.lectureType}
-</div>
-<!-- <table border=1 > <thead> -->
-<!-- 	<tr> -->
-<!-- 		<th>강의명</th> -->
-<!-- 		<th>카테고리</th>	 -->
-<!-- 		<th>강의시간	</th> -->
-<!-- 		<th>수강료</th> -->
-<!-- 		<th>강의유형</th> -->
-<!-- 	</tr> -->
-<!-- 	</thead> -->
-<!-- 	<tbody></tbody> -->
-<%-- 		<td>${lectureDto.lectureTitle}</td> --%>
-<%-- 		<td>${lectureDto.lectureCategory}</td> --%>
-<%-- 		<td>${lectureDto.lectureDuration}</td> --%>
-<%-- 		<td>${lectureDto.lecturePrice}원</td> --%>
-<%-- 		<td>${lectureDto.lectureType}</td> --%>
-<!-- 	</table> -->
-</c:forEach>
+
+<table border=1 width=1000px> <thead>
+	<tr>
+		<th>강의번호</th>	
+		<th width="20%">강의명</th>
+		<th>카테고리</th>	
+		<th>강의시간	</th>
+		<th>수강료</th>
+		<th>강의유형</th>
+	</tr>
+		</thead>
+		<tbody align="center">
+			<c:forEach var="lectureDto" items="${list}">
+			<tr>
+				<style>
+					td {color: green}
+				</style>
+				<td>${lectureDto.lectureNo}</td>				
+				<td align="left">${lectureDto.lectureTitle}</td>
+				<td>${lectureDto.lectureCategory}</td>
+				<td align="right">${lectureDto.lectureDuration}</td>
+				<td align="right">
+				<fmt:formatNumber 
+					value="${lectureDto.lecturePrice}" 
+					pattern="#,##0"></fmt:formatNumber>원
+				</td>
+				<td>${lectureDto.lectureType}</td>
+			</tr>
+			</c:forEach>
+		</tbody>
+</table>
+
+<!-- <div> -->
+<!-- 	<h3> -->
+<%-- 		[${lectureDto.lectureNo}]  --%>
+<%-- 		${lectureDto.lectureTitle} --%>
+<!-- 	</h3> -->
+<%-- 	카테고리 : ${lectureDto.lectureCategory} <br> --%>
+<%-- 	강의 시간 : ${lectureDto.lectureDuration} <br> --%>
+<%-- 	수강료 : <fmt:formatNumber value="${lectureDto.lecturePrice}" pattern="#,##0"/>원<br> --%>
+<%-- 	수업유형 : ${lectureDto.lectureType} --%>
+<!-- </div> -->

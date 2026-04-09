@@ -3,9 +3,6 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="gold" value="40" />
-<c:set var="silver" value="44" />
-<c:set var="bronze" value="42" />
 
 <h1> 파리 올림픽 참여 국가 순위</h1>
 
@@ -24,10 +21,10 @@
 		<tr>
 			<td>1</td>
 			<td>미국</td>
-			<td>${gold}</td>
-            <td>${silver}</td>
-            <td>${bronze}</td>
-			<td><strong>${gold + silver + bronze}</strong></td>
+			<td>40</td>
+            <td>44</td>
+            <td>43</td>
+			<td><%= 40 + 44 + 43 %></td>
 		</tr>
 		<tr>
 			<td>2</td>
