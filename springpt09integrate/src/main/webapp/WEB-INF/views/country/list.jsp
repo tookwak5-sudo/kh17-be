@@ -37,11 +37,15 @@
 		</thead>
 		<!-- 데이터 영억 -->
 		<tbody align="center">
+			<c:forEach var="countryDto" items="${list}">
 			<tr>
-				<c:forEach var="countryDto" items="${list}">
 				<td>${countryDto.countryNo}</td>
 				<td>${countryDto.countryRegion}</td>
-				<td>${countryDto.countryName}</td>
+				<td>
+					<a href="./detail?countryNo=${countryDto.countryNo}">
+						${countryDto.countryName}
+					</a>
+				</td>
 				<td>${countryDto.countryCapital}</td>
 				<td align="right">
 					<fmt:formatNumber 

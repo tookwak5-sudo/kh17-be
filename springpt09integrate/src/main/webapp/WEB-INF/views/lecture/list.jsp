@@ -9,7 +9,7 @@
 <h1>강좌 목록 조회</h1>
 
 <!-- 검색창 -->
-<form action="./list" method="post">
+<form action="./list" method="Get">
 	<select name="column">
 		<option value="lecture_title" ${param.column == "lecture_title" ? "selected" : ""}>강좌명</option>
 		<option value="lecture_category" ${param.column == 'lecture_category' ? 'selected' : ''}>카테고리</option>
@@ -43,8 +43,17 @@
 					td {color: green}
 				</style>
 				<td>${lectureDto.lectureNo}</td>				
-				<td align="left">${lectureDto.lectureTitle}</td>
-				<td>${lectureDto.lectureCategory}</td>
+				<td align="left">
+					<a href="./detail?lectureNo=${lectureDto.lectureNo}">
+						${lectureDto.lectureTitle}
+					</a>	
+				</td>
+				<td>
+					<!-- 카테고리를 클릭하면 해당 카테고리의 강좌만 보이게 -->
+					<a href="./list?column=lecture_category&keyword=${lectureDto.lectureCategory}">
+						${lectureDto.lectureCategory}
+					</a>
+				</td>
 				<td align="right">${lectureDto.lectureDuration}</td>
 				<td align="right">
 				<fmt:formatNumber 
