@@ -19,7 +19,8 @@
 	<button>검색</button>
 </form>
 
-
+<!-- 등록링크 -->
+<a href="./insert">신규 등록하기</a>
 
 <!-- 결과 출력 -->
 <h2>결과 수 : ${list.size()}</h2>

@@ -23,11 +23,11 @@
 <a href="./insert">신규 등록하기</a>
 
 <!-- 결과출력 -->
-
 <h2>강좌 수: ${list.size()}</h2>
 <c:forEach var="lectureDto" items="${list}">
 <div>
-	<h3>[${lectureDto.lectureNo}] 
+	<h3>
+		[${lectureDto.lectureNo}] 
 		${lectureDto.lectureTitle}
 	</h3>
 	카테고리 : ${lectureDto.lectureCategory} <br>
