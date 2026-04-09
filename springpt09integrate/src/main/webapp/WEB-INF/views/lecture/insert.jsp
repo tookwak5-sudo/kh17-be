@@ -30,5 +30,6 @@
 		<option>혼합</option>
 	</select>
 	<br><br>
-	<button>강좌생성</button>	
+	<button>강좌생성</button>
+	 <h4><a href="./list">목록으로 이동하기</a></h4>	
 </form>

@@ -17,7 +17,7 @@ public class CountryDao {
 	private JdbcTemplate jdbcTemplate; 
 	@Autowired
 	private CountryMapper countryMapper;
-	
+	Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
 	//필요한 기능 등록
 	//등록
 	public void insert(CountryDto countryDto) {
@@ -70,7 +70,7 @@ public class CountryDao {
 	public List<CountryDto> selectList(String column, String keyword){
 		if(column == null || keyword == null) return selectList();
 		
-		Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
+		
 		if(allowList.contains(column) == false) return List.of(); 
 		
 		String sql = "select * from country where instr("+ column +", ?) > 0 order by country_no asc";
