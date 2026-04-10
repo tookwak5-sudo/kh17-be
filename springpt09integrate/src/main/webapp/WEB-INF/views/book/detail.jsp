@@ -3,6 +3,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
 <h1>도서 상세정보</h1>
 
 <!-- <ul> -->
@@ -50,3 +52,5 @@
 	<li><a href="./edit?bookId=${bookDto.bookId}">수정</a></li>
 	<li><a href="./delete?bookId=${bookDto.bookId}">삭제</a></li>
 </ul>
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

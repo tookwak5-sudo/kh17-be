@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>신규 강좌 등록</h1>
 
@@ -33,3 +34,6 @@
 	<button>강좌생성</button>
 	 <h4><a href="./list">목록으로 이동하기</a></h4>	
 </form>
+
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

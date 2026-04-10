@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <!-- 제목 -->
 <h1>강좌 목록 조회</h1>
@@ -76,3 +77,5 @@
 <%-- 	수강료 : <fmt:formatNumber value="${lectureDto.lecturePrice}" pattern="#,##0"/>원<br> --%>
 <%-- 	수업유형 : ${lectureDto.lectureType} --%>
 <!-- </div> -->
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

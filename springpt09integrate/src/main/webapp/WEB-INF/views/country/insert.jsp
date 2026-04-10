@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
  <h1>국가정보 등록 페이지</h1>
     
 <!-- 절대경로    /country/insert2 -->
@@ -14,3 +16,5 @@
   인구 <input type="text" name="countryPopulation"> <br><br>
   <button>등록하기</button>
   </form> 
+  
+  <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

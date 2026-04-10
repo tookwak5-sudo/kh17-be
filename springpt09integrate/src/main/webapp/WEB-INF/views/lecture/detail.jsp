@@ -3,6 +3,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
 <h1>강좌 상세조회</h1>
 
 <ul>
@@ -22,3 +24,5 @@
 	<li><p><a href="./edit?lectureNo=${lectureDto.lectureNo}">수정</a></p></li>
 	<li><p><a href="./delete?lectureNo=${lectureDto.lectureNo}">삭제</a></p></li>
 </ul>
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

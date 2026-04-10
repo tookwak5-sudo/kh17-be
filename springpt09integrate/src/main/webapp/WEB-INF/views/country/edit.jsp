@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
 <h1>국가 정보 수정</h1>
 
 <form action="./edit" method="post">
@@ -13,3 +15,5 @@
 	인구 <input type="text" name="countryPopulation" value="${countryDto.countryPopulation}"> <br><br>
 	<button><em>수정하기</em></button>
 </form>
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
 <h1>도서정보 등록</h1>
 
 <!-- 
@@ -29,4 +31,6 @@ action없으면 지금 현재주소라 actiond을 빼도 무방
 	</select>
 	<br><br>
 	<button>도서정보 등록</button>
+	
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
 </form>
