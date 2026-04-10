@@ -60,10 +60,36 @@ public class CountryController {
 		CountryDto countryDto = countryDao.selectOne(countryNo);
 		//잘못된 번호인 경우(countryDto==null) 이를 오류(500)로 처리하고 싶습니다.
 		if(countryDto == null) {
-			throw new TargetNotfoundException("없어!");
+			throw new TargetNotfoundException("존재하지 않는 국가");
 		}
 		model.addAttribute("countryDto", countryDto);
 		return "/WEB-INF/views/country/detail.jsp";
 	}
 	
+	//삭제 매핑
+	@RequestMapping("/delete")
+	public String delete(@RequestParam int countryNo) {
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
+		
+		countryDao.delete(countryNo);
+		return "redirect:./list";//상대경로
+//		return "redirect:country/list"; //절대경로
+	}
+	
+	//수정 매핑
+	@GetMapping("/edit")
+	public String edit(@RequestParam int countryNo, Model model) {
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
+		
+		model.addAttribute("countryDto", countryDto);
+		return "/WEB-INF/views/country/edit.jsp";
+	}
+	
+	@PostMapping("/edit")
+	public String edit(@ModelAttribute CountryDto countryDto) {
+		countryDao.update(countryDto); //오류 검사는 get에서 이미 진행했기 때문에 굳이 중복해서 하지 않음
+		return "redirect:./detail?countryNo=" + countryDto.getCountryNo();
+	}
 }

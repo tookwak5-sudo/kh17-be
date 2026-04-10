@@ -18,9 +18,11 @@
 	<li>인구 : ${countryDto.countryPopulation}명</li>
 </ul>
 
-<p><a href="./list">목록으로 이동</a></p>
-<p><a href="./insert">신규등록</a></p>
-
-<a href="./list">목록으로 이동</a><br>
-<a href="./insert">신규등록</a>
+<ol>
+	<li><p><a href="./list">목록으로 이동</a></p></li>
+	<li><p><a href="./insert">신규등록</a></p></li>
+	<li><p><a href="./edit?countryNo=${countryDto.countryNo}">수정</a></p></li>
+	<li><p><a href="./delete?countryNo=${countryDto.countryNo}">삭제</a></p></li>
+	<%-- <p><a href="./delete?countryNo="${param.countryNo}"></a></p> --%>
+</ol>
 

@@ -75,7 +75,7 @@ public class LectureDao {
 		}
 		
 		//상세검색
-		public LectureDto selectOne(long lectureNo) {
+		public LectureDto selectOne(int lectureNo) {
 			String sql = "select * from lecture where lecture_no =?";
 			Object[] params = {lectureNo};
 			List<LectureDto> list = jdbcTemplate.query(sql, lectureMapper, params);

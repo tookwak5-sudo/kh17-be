@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.LectureDao;
 import com.kh.spring09.dto.LectureDto;
+import com.kh.spring09.exception.TargetNotfoundException;
 
 @Controller
 @RequestMapping("/lecture")
@@ -49,9 +50,32 @@ public class LectureController {
 	}
 	@RequestMapping("/detail")
 	public String detail(Model model, @RequestParam int lectureNo) {
-		LectureDto lecturDto = lectureDao.selectOne(lectureNo);
-		
-		model.addAttribute("lectureDto", lecturDto);
+		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
+		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
+		model.addAttribute("lectureDto", lectureDto);
 		return "/WEB-INF/views/lecture/detail.jsp";
+	}
+	@RequestMapping("/delete")
+	public String delete(@RequestParam int lectureNo) {
+		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
+		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
+		
+		lectureDao.delete(lectureNo);
+		return "redirect:./list";
+//		return "redirect:lecture/list";
+	}
+	
+	@GetMapping("/edit")
+	public String edit(@RequestParam int lectureNo, Model model) {
+		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
+		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
+		
+		model.addAttribute("lectureDto",lectureDto);
+		return "/WEB-INF/views/lecture/edit.jsp";
+	}
+	@PostMapping("/edit")
+	public String edit(@ModelAttribute LectureDto lectureDto) {
+		lectureDao.update(lectureDto);
+		return "redirect:./detail?lectureNo=" + lectureDto.getLectureNo();
 	}
 }

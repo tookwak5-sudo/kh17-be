@@ -14,9 +14,9 @@
 	카테고리 
 	<select name="lectureCategory" required>
 		<option value="">선택하세요</option>
-		<option>이론</option>
-		<option>실습</option>
-		<option>시험</option>
+		<option ${lectureDto.lectureCategory == '이론' ? 'selected' : ''}>이론</option>
+		<option ${lectureDto.lectureCategory == '실습' ? 'selected' : ''}>실습</option>
+		<option ${lectureDto.lectureCategory == '시험' ? 'selected' : ''}>시험</option>
 	</select>
 	<br><br>
 	강의시간 <input type="number" name="lectureDuration" min="30" step="30" value="30" required> <br><br>
@@ -25,9 +25,9 @@
 	강의형태
 	<select name="lectureType" required>
 		<option value="">선택하세요</option>
-		<option>온라인</option>
-		<option>오프라인</option>
-		<option>혼합</option>
+		<option ${lectureDto.lectureType == '온라인' ? 'selected' : ''}>온라인</option>
+		<option ${lectureDto.lectureType == '오프라인' ? 'selected' : ''}>오프라인</option>
+		<option ${lectureDto.lectureType == '혼합' ? 'selected' : ''}>혼합</option>
 	</select>
 	<br><br>
 	<button>강좌생성</button>

@@ -13,15 +13,12 @@
 	<li>수강료 ${lectureDto.lecturePrice}</li>
 	<li>강의유형 ${lectureDto.lectureType}</li>
 </ul>
-	<a href="./list">목록으로 이동</a> <br>
-	<a href="./insert">강좌등록</a>
 
-<c:if test="">
-	<%@ page isErrorPage="true" %>
-<html>
-<body>
-    <h2>서비스 이용에 불편을 드려 죄송합니다.</h2>
-    <p>오류 내용: <%= exception.getMessage() %></p>
-</body>
-</html>
-</c:if>
+
+<!-- 이동 창 -->
+<ul style="color: red">
+	<li ><p><a href="./list">목록으로 이동</a></p></li>
+	<li><p><a href="./insert">신규등록</a></p></li>
+	<li><p><a href="./edit?lectureNo=${lectureDto.lectureNo}">수정</a></p></li>
+	<li><p><a href="./delete?lectureNo=${lectureDto.lectureNo}">삭제</a></p></li>
+</ul>

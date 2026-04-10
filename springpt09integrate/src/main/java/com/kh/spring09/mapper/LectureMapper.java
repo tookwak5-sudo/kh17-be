@@ -14,7 +14,7 @@ public class LectureMapper implements RowMapper<LectureDto>{
 	@Override
 	public LectureDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		LectureDto lectureDto = new LectureDto();
-		lectureDto.setLectureNo(rs.getLong("lecture_no"));
+		lectureDto.setLectureNo(rs.getInt("lecture_no"));
 		lectureDto.setLectureTitle(rs.getString("lecture_title"));
 		lectureDto.setLectureCategory(rs.getString("lecture_category"));
 		lectureDto.setLectureDuration(rs.getInt("lecture_duration"));

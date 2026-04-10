@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class LectureDto {
-	private long lectureNo;
+	private int lectureNo;
 	private String lectureTitle;
 	private String lectureCategory;
 	private int lectureDuration;
