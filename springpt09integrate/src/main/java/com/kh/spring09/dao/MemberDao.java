@@ -17,7 +17,7 @@ public class MemberDao {
 	@Autowired
 	private MemberMapper memberMapper;
 	Set<String> allowColumns = Set.of(
-			"memberId", "memberNickname", "memberContact", "memberLevel");
+			"member_id", "member_nickname", "member_contact", "member_level");
 	
 	//등록
 	public void insert(MemberDto memberDto) {
@@ -25,14 +25,13 @@ public class MemberDao {
 				+ "member_no, member_id, member_email, "
 				+ "member_password, member_nickname, member_birth, "
 				+ "member_contact, member_post, member_address1, "
-				+ "member_address2, member_level, member_message, member_join, member_change, member_point) "
-				+ "values(member_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "member_address2, member_level, member_message, member_point) "
+				+ "values(member_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		Object[] params = {
-				memberDto.getMemberId(), memberDto.getMemberEmail(),
-				memberDto.getMemberPassword(), memberDto.getMemberNickname(), memberDto.getMemberBirth(),
-				memberDto.getMemberContact(), memberDto.getMemberPost(), memberDto.getMemberAddress1(),
-				memberDto.getMemberAddress2(),memberDto.getMemberLevel(), memberDto.getMemberMessage(),
-				memberDto.getMemberJoin(), memberDto.getMemberChange(), memberDto.getMemberPoint()
+				memberDto.getMemberId(), memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
+				memberDto.getMemberNickname(), memberDto.getMemberBirth(), memberDto.getMemberContact(), 
+				memberDto.getMemberPost(), memberDto.getMemberAddress1(), memberDto.getMemberAddress2(), 
+				memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint()
 		};
 		jdbcTemplate.update(sql, params);
 	}
@@ -49,13 +48,16 @@ public class MemberDao {
 				+ "member_post=?, "
 				+ "member_address1=?, "
 				+ "member_address2=?, "
-				+ "member_message=? "
+				+ "member_level=?, "
+				+ "member_message=?, "
+				+ "member_change=SYSTIMESTAMP, "
+				+ "member_point=? "
 				+ "where member_no= ?";
 		Object[] params = {
-				memberDto.getMemberId(), memberDto.getMemberEmail(),
-				memberDto.getMemberPassword(), memberDto.getMemberNickname(), memberDto.getMemberBirth(),
-				memberDto.getMemberContact(), memberDto.getMemberPost(), memberDto.getMemberAddress1(),
-				memberDto.getMemberAddress2(), memberDto.getMemberMessage(), memberDto.getMemberNo()
+			memberDto.getMemberId(), memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
+			memberDto.getMemberNickname(), memberDto.getMemberBirth(), memberDto.getMemberContact(),
+			memberDto.getMemberPost(), memberDto.getMemberAddress1(), memberDto.getMemberAddress2(),
+			memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint(), memberDto.getMemberNo()
 		};
 		return jdbcTemplate.update(sql, params) > 0;
 	}
@@ -76,12 +78,12 @@ public class MemberDao {
 	//검색
 	public List<MemberDto> selectList(String column, String keyword){
 		if(column == null || keyword == null) return selectList();
-		if(column.isBlank() || keyword.isBlank()) return List.of();
+		if(column.isBlank() || keyword.isBlank()) return selectList();
 		if(allowColumns.contains(column) == false) return List.of();
 		
-		String sql = "select * from member where instr("+column+", ?) > 0 order by member_no asc";
-		Object[] params = {keyword};
-		return jdbcTemplate.query(sql, memberMapper);
+		String sql = "select * from member where instr("+ column +", ?) > 0 order by member_no asc";
+		Object[] params = { keyword };
+		return jdbcTemplate.query(sql, memberMapper, params);
 	}
 	
 	//상세조회
@@ -90,5 +92,13 @@ public class MemberDao {
 		Object[] params = {memberNo};
 		List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
 		return list.isEmpty() ? null : list.get(0);
+	}
+	
+	//아이디조회
+	public MemberDto selectOne(String memberId) {
+	    String sql = "select * from member where member_id = ?";
+	    Object[] params = {memberId};
+	    List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+	    return list.isEmpty() ? null : list.get(0);
 	}
 }

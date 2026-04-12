@@ -23,4 +23,6 @@ public class MemberDto {
 	private LocalDateTime memberChange; // 최종 비밀번호 변경일 
 	private String memberBlock; //차단여부
 	private long memberPoint;
+
+	
 }

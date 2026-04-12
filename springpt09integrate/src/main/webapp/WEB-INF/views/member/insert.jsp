@@ -6,8 +6,6 @@
 <h1>회원정보 등록</h1>
 
 <form action="./insert" method="post">
-	<input type="hidden" name="memberLevel" value="브론즈">
-	<input type="hidden" name="memberPoint" value="0">
 	아이디 <input type="text" name="memberId"> <br><br>
 	이메일 <input type="text" name="memberEmail"> <br><br>
 	비번 <input type="text" name="memberPassword"> <br><br>
@@ -17,7 +15,17 @@
 	우편번호 <input type="text" name="memberPost"> <br><br>
 	기본주소 <input type="text" name="memberAddress1"> <br><br>
 	상세주소 <input type="text" name="memberAddress2"> <br><br>
+	등급 <select name="memberLevel">
+    <option value="브론즈">브론즈</option>
+    <option value="실버">실버</option>
+    <option value="골드">골드</option>
+    <option value="플래">플래</option>
+    <option value="다이아">다이아</option>
+    <option value="관리자">관리자</option>
+</select>
+<br><br>
 	상태메세지 <input type="text" name="memberMessage"> <br><br>
+	포인트 <input type="number" name="memberPoint" value="0"> <br><br>
 	<button>회원가입</button>
 </form>
 

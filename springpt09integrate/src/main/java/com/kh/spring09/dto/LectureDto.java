@@ -10,5 +10,4 @@ public class LectureDto {
 	private int lectureDuration;
 	private long lecturePrice;
 	private String lectureType;
-	
 }
