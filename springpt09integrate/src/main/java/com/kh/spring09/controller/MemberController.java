@@ -64,7 +64,7 @@ public class MemberController {
 			return "/WEB-INF/views/member/login.jsp";
 		}
 		@PostMapping("/login")
-		public String login(@ModelAttribute MemberDto memberDto) { // 아이디 비밀번호 존재
+		public String login(@ModelAttribute MemberDto memberDto, HttpSession session) { // 아이디 비밀번호 존재
 			//[1] 사용자가 입력한 아이디를 이용하여  DB에 대상이 존재하는지 조회
 			MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
 			if(findMemberDto == null) {
@@ -79,11 +79,33 @@ public class MemberController {
 			}
 			
 			//[3] 이 회원의 member_block 상태가 Y라면 차단
+			if(findMemberDto.getMemberBlock().equals("Y")) {
+				return "redirect:./block";
+			}
 			
 			//[4] 차단되지 않았다면 로그인 성공
 			//-로그인 시간을 갱신
 			memberDao.updateMemberLogin(findMemberDto.getMemberId());
+			
+			//- 세션(HttpSession)에 로그인 되었음을 표시
+			session.setAttribute("loginId", findMemberDto.getMemberId());
+			session.setAttribute("loginLevel", findMemberDto.getMemberLevel());
+			
 			return "redirect:/";
+		}
+		
+		//로그아웃
+		//- 로그인 시 세션에 저장한 정보를 제거하는 작업
+		@RequestMapping("/logout")
+		public String logout(HttpSession session) {
+			session.removeAttribute("loginId");
+			session.removeAttribute("loginLevel");
+			return "redirect:/";
+		}
+		
+		@RequestMapping("/block")
+		public String block() {
+			return "/WEB-INF/views/member/block.jsp";
 		}
 		
 //		@PostMapping("/login")
@@ -155,8 +177,4 @@ public class MemberController {
 		memberDao.update(memberDto);
 		return "redirect:./detail?memberNo="+ memberDto.getMemberId();
 	}
-	
-	
-	
-	
 }

@@ -44,7 +44,20 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 		    return list.isEmpty() ? null : list.get(0);
 		}
 	
-	//수정
+	//수정 메소드
+	
+	public boolean updateMemberLogin(String memberId) {
+		String sql = "update member set member_login = systimestamp where member_id=?";
+		Object[] params = {memberId};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
+	
+//	public boolean updateMemberBlock(String memberId) {
+//		String sql = "update member set member_block = 'Y' where member_id=?";
+//		Object[] params = {memberId};
+//		return jdbcTemplate.update(sql, params) > 0;
+//	}
+
 	public boolean update(MemberDto memberDto) {
 		String sql = "update member set "
 				+ "member_email=?, "
