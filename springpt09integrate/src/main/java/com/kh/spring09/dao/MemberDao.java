@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.mapper.MemberMapper;
 
-@Repository
-public class MemberDao {
+@Repository              //POJO(Plane Old java Ojbect) 클래스 지향
+public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 상속을 받았기 때문에 무조건 작성해줘야함
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
@@ -22,24 +22,31 @@ public class MemberDao {
 	//등록
 	public void insert(MemberDto memberDto) {
 		String sql = "insert into member("
-				+ "member_no, member_id, member_email, "
-				+ "member_password, member_nickname, member_birth, "
-				+ "member_contact, member_post, member_address1, "
-				+ "member_address2, member_level, member_message, member_point) "
-				+ "values(member_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "member_id, member_email, member_password, "
+				+ "member_nickname, member_birth, member_contact, "
+				+ "member_post, member_address1, member_address2, "
+				+ "member_message) "
+				+ "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		Object[] params = {
 				memberDto.getMemberId(), memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
 				memberDto.getMemberNickname(), memberDto.getMemberBirth(), memberDto.getMemberContact(), 
 				memberDto.getMemberPost(), memberDto.getMemberAddress1(), memberDto.getMemberAddress2(), 
-				memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint()
+				memberDto.getMemberMessage()
 		};
 		jdbcTemplate.update(sql, params);
 	}
 	
+	//아이디조회
+		public MemberDto selectOne(String memberId) {
+		    String sql = "select * from member where member_id = ?";
+		    Object[] params = {memberId};
+		    List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+		    return list.isEmpty() ? null : list.get(0);
+		}
+	
 	//수정
 	public boolean update(MemberDto memberDto) {
 		String sql = "update member set "
-				+ "member_id=?, "
 				+ "member_email=?, "
 				+ "member_password=?, "
 				+ "member_nickname=?, "
@@ -52,20 +59,20 @@ public class MemberDao {
 				+ "member_message=?, "
 				+ "member_change=SYSTIMESTAMP, "
 				+ "member_point=? "
-				+ "where member_no= ?";
+				+ "where member_id= ?";
 		Object[] params = {
-			memberDto.getMemberId(), memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
+			memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
 			memberDto.getMemberNickname(), memberDto.getMemberBirth(), memberDto.getMemberContact(),
 			memberDto.getMemberPost(), memberDto.getMemberAddress1(), memberDto.getMemberAddress2(),
-			memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint(), memberDto.getMemberNo()
+			memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint(), memberDto.getMemberId() 
 		};
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
 	//삭제
-	public boolean delete(long memberNo) {
+	public boolean delete(String memberId) {
 		String sql = "delete member where member_no =?";
-		Object[] params = {memberNo};
+		Object[] params = {memberId};
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
@@ -86,19 +93,13 @@ public class MemberDao {
 		return jdbcTemplate.query(sql, memberMapper, params);
 	}
 	
-	//상세조회
-	public MemberDto selectOne(long memberNo) {
-		String sql = "select * from member where member_no=? ";
-		Object[] params = {memberNo};
-		List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
-		return list.isEmpty() ? null : list.get(0);
-	}
+//	//상세조회
+//	public MemberDto selectOne(long memberNo) {
+//		String sql = "select * from member where member_no=? ";
+//		Object[] params = {memberNo};
+//		List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+//		return list.isEmpty() ? null : list.get(0);
+//	}
+//	
 	
-	//아이디조회
-	public MemberDto selectOne(String memberId) {
-	    String sql = "select * from member where member_id = ?";
-	    Object[] params = {memberId};
-	    List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
-	    return list.isEmpty() ? null : list.get(0);
-	}
 }

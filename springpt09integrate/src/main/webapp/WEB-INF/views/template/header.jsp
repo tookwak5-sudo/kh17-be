@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+		<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
 <!-- 템플릿 페이지에서 상대경로로 작성할 경우 작동하지 않을 수 있다 -->
