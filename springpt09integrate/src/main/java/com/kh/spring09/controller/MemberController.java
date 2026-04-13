@@ -58,6 +58,13 @@ public class MemberController {
 		return "/WEB-INF/views/member/joinFinish.jsp";
 	}
 	
+	//비밀번호 변경
+	@GetMapping("/password")
+	public String password() {
+		return "/WEB-INF/views/member/password.jsp";
+	}
+	
+	
 	//로그인
 		@GetMapping("/login")
 		public String login() {
@@ -94,7 +101,7 @@ public class MemberController {
 			return "redirect:/";
 		}
 		
-		//로그아웃
+		//로그아웃(회원 전용 기능)
 		//- 로그인 시 세션에 저장한 정보를 제거하는 작업
 		@RequestMapping("/logout")
 		public String logout(HttpSession session) {
@@ -107,24 +114,45 @@ public class MemberController {
 		public String block() {
 			return "/WEB-INF/views/member/block.jsp";
 		}
-		
-//		@PostMapping("/login")
-//		public String login(@ModelAttribute MemberDto inputDto, HttpSession session) {
-//			// 사용자가 입력한 아이디로 DB조회
-//			MemberDto findDto = memberDao.selectOne(inputDto.getMemberId());
-//			
-//			// 일치여부 확인
-//			if(findDto != null && inputDto.getMemberPassword().equals(findDto.getMemberPassword())) {
-//				session.setAttribute("loginId", findDto.getMemberId());
-//				session.setAttribute("loginLevel", findDto.getMemberLevel());
-//				return "redirect:/";
-//			}
-//			else {
-//				//로그인 실패
-//				return "redirect:./login?error";
-//			}
-//		}
 	
+		//마이페이지(회원 전용 기능)
+		//- 세션에 들어있는 아이디를 이용해서 현재 회원의 모든 정보를 화면에 전달
+		@RequestMapping("/mypage")
+		public String mypage(HttpSession session, Model model) {
+			//session에 존재하는 현재 사용자 영역에 저장된 loginId라는 이름의 값을 불러오세요!
+			String loginId = (String) session.getAttribute("loginId");
+			MemberDto memberDto = memberDao.selectOne(loginId);
+			
+			model.addAttribute("memberDto",memberDto);
+			return "/WEB-INF/views/member/mypage.jsp";
+		}
+		
+		@PostMapping("/password")
+		public String password(@RequestParam String originPw,
+				               @RequestParam String changePw, HttpSession session) {
+			//[1] 동일한 비밀번호로 변경을 시도하는 경우 차단
+			if(originPw == changePw) {
+				return "redirect:./password?error";
+			}
+			String loginId = (String) session.getAttribute("loginId");
+			MemberDto memberDto = memberDao.selectOne(loginId);
+			
+			//[2] 기존 비밀번호가 일치하지 않는 경우는 차단
+			
+			boolean isPasswordValid = originPw.equals(memberDto.getMemberPassword());
+			if(!isPasswordValid) {
+				return "redirect:./password?error";	
+			}
+			//[3] 1, 2번을 통과했다면 비밀번호 변경 처리를 수행
+			memberDto.setMemberPassword(changePw); // 기존 정보에서 비밀번호만 바꾸고
+			memberDao.updateMemberPassword(memberDto); //변경을 요청한다.
+			return "redirect:./passwordFinish";
+		}
+		@RequestMapping("/passwordFinish")
+		public String passwordFinish() {
+			return "/WEB-INF/views/member/passwordFinish.jsp";
+		}
+		
 	//목록 및 검색
 	@RequestMapping("/list")
 	public String list(Model model,

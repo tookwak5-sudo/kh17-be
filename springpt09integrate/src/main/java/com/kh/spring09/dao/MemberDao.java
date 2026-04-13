@@ -52,11 +52,15 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
-//	public boolean updateMemberBlock(String memberId) {
-//		String sql = "update member set member_block = 'Y' where member_id=?";
-//		Object[] params = {memberId};
-//		return jdbcTemplate.update(sql, params) > 0;
-//	}
+//	//비밀번호 변경
+//	public boolean updateMemberPassword(String memberId, String memberPassword) {
+	public boolean updateMemberPassword(MemberDto memberDto) {
+		String sql = "update member "
+				+ "set member_password = ?, member_change=systimestamp "
+				+ "where member_id = ?";
+		Object[] params = {memberDto.getMemberPassword(), memberDto.getMemberId()};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
 
 	public boolean update(MemberDto memberDto) {
 		String sql = "update member set "
