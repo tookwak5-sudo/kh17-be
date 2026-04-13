@@ -81,6 +81,8 @@ public class MemberController {
 			//[3] 이 회원의 member_block 상태가 Y라면 차단
 			
 			//[4] 차단되지 않았다면 로그인 성공
+			//-로그인 시간을 갱신
+			memberDao.updateMemberLogin(findMemberDto.getMemberId());
 			return "redirect:/";
 		}
 		
