@@ -58,11 +58,7 @@ public class MemberController {
 		return "/WEB-INF/views/member/joinFinish.jsp";
 	}
 	
-	//비밀번호 변경
-	@GetMapping("/password")
-	public String password() {
-		return "/WEB-INF/views/member/password.jsp";
-	}
+	
 	
 	
 	//로그인
@@ -127,6 +123,12 @@ public class MemberController {
 			return "/WEB-INF/views/member/mypage.jsp";
 		}
 		
+		//비밀번호 변경
+		@GetMapping("/password")
+		public String password() {
+			return "/WEB-INF/views/member/password.jsp";
+		}
+		
 		@PostMapping("/password")
 		public String password(@RequestParam String originPw,
 				               @RequestParam String changePw, HttpSession session) {
@@ -134,6 +136,7 @@ public class MemberController {
 			if(originPw == changePw) {
 				return "redirect:./password?error";
 			}
+			
 			String loginId = (String) session.getAttribute("loginId");
 			MemberDto memberDto = memberDao.selectOne(loginId);
 			
@@ -151,6 +154,32 @@ public class MemberController {
 		@RequestMapping("/passwordFinish")
 		public String passwordFinish() {
 			return "/WEB-INF/views/member/passwordFinish.jsp";
+		}
+		
+		//개인정보 수정
+		@GetMapping("/edit")
+		public String edit(HttpSession session, Model model) {
+			String loginId = (String) session.getAttribute("loginId");
+			
+			MemberDto memberDto = memberDao.selectOne(loginId);
+			model.addAttribute("memberDto", memberDto);
+		    
+		    return "/WEB-INF/views/member/edit.jsp";
+		}
+		
+		@PostMapping("/edit")
+		public String edit(@ModelAttribute MemberDto memberDto, HttpSession session) {
+		    String loginId = (String) session.getAttribute("loginId");
+		    
+		    MemberDto findMemberDto = memberDao.selectOne(loginId);
+		    
+		    if (findMemberDto == null || 
+		    	!findMemberDto.getMemberPassword().equals(memberDto.getMemberPassword())) {
+		    	return "redirect:./edit?error"; // 비번 틀리면 바로 퇴장
+		    }
+		    memberDto.setMemberId(loginId);
+		    memberDao.update(memberDto); 
+		    return "redirect:/"; // 메인으로 이동
 		}
 		
 	//목록 및 검색
@@ -188,21 +217,5 @@ public class MemberController {
 		return "redirect:./list";
 	}
 	
-	//수정
-	@GetMapping("/edit")
-	public String edit(@RequestParam String memberId, Model model) {
-		MemberDto memberDto = memberDao.selectOne(memberId);
-		if(memberDto == null) {
-			throw new TargetNotfoundException("존재하지 않는 회원");
-		}
-		
-		model.addAttribute("memberDto", memberDto);
-		return "/WEB-INF/views/member/edit.jsp";
-	}
 	
-	@PostMapping("/edit")
-	public String edit(@ModelAttribute MemberDto memberDto) {
-		memberDao.update(memberDto);
-		return "redirect:./detail?memberNo="+ memberDto.getMemberId();
-	}
 }

@@ -65,24 +65,20 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 	public boolean update(MemberDto memberDto) {
 		String sql = "update member set "
 				+ "member_email=?, "
-				+ "member_password=?, "
 				+ "member_nickname=?, "
 				+ "member_birth=?, "
 				+ "member_contact=?, "
 				+ "member_post=?, "
 				+ "member_address1=?, "
 				+ "member_address2=?, "
-				+ "member_level=?, "
-				+ "member_message=?, "
-				+ "member_change=SYSTIMESTAMP, "
-				+ "member_point=? "
+				+ "member_message=? "
 				+ "where member_id= ?";
 		Object[] params = {
-			memberDto.getMemberEmail(), memberDto.getMemberPassword(), 
-			memberDto.getMemberNickname(), memberDto.getMemberBirth(), memberDto.getMemberContact(),
-			memberDto.getMemberPost(), memberDto.getMemberAddress1(), memberDto.getMemberAddress2(),
-			memberDto.getMemberLevel(), memberDto.getMemberMessage(), memberDto.getMemberPoint(), memberDto.getMemberId() 
+			memberDto.getMemberEmail(), memberDto.getMemberNickname(), memberDto.getMemberBirth(), 
+			memberDto.getMemberContact(), memberDto.getMemberPost(), memberDto.getMemberAddress1(), 
+			memberDto.getMemberAddress2(), memberDto.getMemberMessage(), memberDto.getMemberId() 
 		};
+		
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
