@@ -25,7 +25,7 @@
 
 <h2><a href="./password">비밀번호 변경</a></h2>
 <h2><a href="./edit">개인정보 변경</a></h2>
-<h2><a href="#">회원탈퇴</a></h2>
+<h2><a href="./goodbye">회원탈퇴</a></h2>
 
 
 

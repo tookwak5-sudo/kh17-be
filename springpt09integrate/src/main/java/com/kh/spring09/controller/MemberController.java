@@ -162,6 +162,40 @@ public class MemberController {
 		    return "redirect:./mypage"; // 메인으로 이동
 		}
 		
+		//회원탈퇴 매핑(회원 저뇽ㅇ 기능)
+		@GetMapping("/goodbye")
+		public String goodbye() {
+		    return "/WEB-INF/views/member/goodbye.jsp";
+		}
+		
+		@PostMapping("/goodbye")
+		public String goodbye(HttpSession session, @RequestParam String memberPassword) {
+			String loginId = (String) session.getAttribute("loginId");
+			//비밀번호 검사 후 차단 코드
+		    MemberDto findMemberDto = memberDao.selectOne(loginId);
+		    boolean valid = findMemberDto.getMemberPassword().equals(memberPassword);
+		    if (!valid) {
+		    	return "redirect:./goodbye?error"; // 비번 틀리면 비밀번호 입력페이지로
+		    }
+		    // 비밀번호가 맞으면 
+			// 회원탈퇴 회원탈퇴와 로그아웃은 반드시 같이 실행되어야 한다. 아주 강한 결합도를 가지고 있음(강결합)
+			memberDao.delete(loginId);
+			
+			// 로그아웃
+			//session.invalidate(); //세션 파괴 명령 -> 동일 정보로 재가입 시, 신규사용자가 되어버림 
+			//세션 청소 명령
+			session.removeAttribute("loginId");
+			session.removeAttribute("loginLevel");
+			
+			
+			return "redirect:./goodbyeFinish";
+		}
+		
+		@RequestMapping("/goodbyeFinish")
+		public String goodbyeFinish() {
+			return "/WEB-INF/views/member/goodbyeFinish.jsp";
+		}
+		
 		//목록 및 검색
 		@RequestMapping("/list")
 		public String list(Model model,

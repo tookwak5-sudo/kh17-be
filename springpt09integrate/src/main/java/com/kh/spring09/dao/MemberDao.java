@@ -84,7 +84,7 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 	
 	//삭제
 	public boolean delete(String memberId) {
-		String sql = "delete member where member_no =?";
+		String sql = "delete member where member_Id =?";
 		Object[] params = {memberId};
 		return jdbcTemplate.update(sql, params) > 0;
 	}
