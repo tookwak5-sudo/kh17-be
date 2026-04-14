@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.MemberDao;
+import com.kh.spring09.dao.MemberExitDao;
 import com.kh.spring09.dto.MemberDto;
+import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.exception.TargetNotfoundException;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,8 @@ import jakarta.servlet.http.HttpSession;
 public class MemberController {
 	@Autowired
 	private MemberDao memberDao;
+	@Autowired
+	private MemberExitDao memberExitDao;
 	
 		//회원정보 등록(일반)
 		@GetMapping("/join")
@@ -48,7 +52,8 @@ public class MemberController {
 		@PostMapping("/login")
 		public String login(@ModelAttribute MemberDto memberDto, HttpSession session) { // 아이디 비밀번호 존재
 			//[1] 사용자가 입력한 아이디를 이용하여  DB에 대상이 존재하는지 조회
-			MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
+			//MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
+			MemberExitDto findMemberDto = memberExitDao.selectOne(memberDto.getMemberId());
 			if(findMemberDto == null) {
 				return "redirect:./login?error"; // 아이디 없음 (redirect는 GET으로만 간다.)
 			}
@@ -64,8 +69,13 @@ public class MemberController {
 			if(findMemberDto.getMemberBlock().equals("Y")) {
 				return "redirect:./block";
 			}
+			//[4] 탈퇴 예정인 회원이라면 로그인을 취소하고 안내페이지로 이동
+			if(findMemberDto.isWaitForDelete()) {
+				return "redirect:./waiting";//삭제예정 안내 페이지로 이동
+				
+			}
 			
-			//[4] 차단되지 않았다면 로그인 성공
+			//[5] 차단되지 않았다면 로그인 성공
 			//-로그인 시간을 갱신
 			memberDao.updateMemberLogin(findMemberDto.getMemberId());
 			
@@ -88,6 +98,10 @@ public class MemberController {
 		@RequestMapping("/block")
 		public String block() {
 			return "/WEB-INF/views/member/block.jsp";
+		}
+		@RequestMapping("/waiting")
+		public String waiting() {
+			return "/WEB-INF/views/member/waiting.jsp";
 		}
 	
 		//마이페이지(회원 전용 기능)
@@ -171,15 +185,17 @@ public class MemberController {
 		@PostMapping("/goodbye")
 		public String goodbye(HttpSession session, @RequestParam String memberPassword) {
 			String loginId = (String) session.getAttribute("loginId");
-			//비밀번호 검사 후 차단 코드
 		    MemberDto findMemberDto = memberDao.selectOne(loginId);
+		  
+		    
 		    boolean valid = findMemberDto.getMemberPassword().equals(memberPassword);
 		    if (!valid) {
 		    	return "redirect:./goodbye?error"; // 비번 틀리면 비밀번호 입력페이지로
 		    }
 		    // 비밀번호가 맞으면 
 			// 회원탈퇴 회원탈퇴와 로그아웃은 반드시 같이 실행되어야 한다. 아주 강한 결합도를 가지고 있음(강결합)
-			memberDao.delete(loginId);
+			//memberDao.delete(loginId); // 회원의 모든 데이터가 다 사라지는 일이 발생 (복구불가)
+			memberExitDao.insert(loginId);
 			
 			// 로그아웃
 			//session.invalidate(); //세션 파괴 명령 -> 동일 정보로 재가입 시, 신규사용자가 되어버림 
@@ -218,6 +234,8 @@ public class MemberController {
 			model.addAttribute("memberDto", memberDto);
 			return "/WEB-INF/views/member/detail.jsp";
 		}
+		
+		
 		
 		//삭제
 		@RequestMapping("/delete")

@@ -2,7 +2,6 @@ package com.kh.spring09.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -15,6 +14,7 @@ public class MemberMapper implements RowMapper<MemberDto>{
 	@Override
 	public MemberDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		MemberDto memberDto = new MemberDto();
+		//16+1개(탈퇴시각)의 정보를 옮겨담는다
 		memberDto.setMemberId(rs.getString("member_id"));
 		memberDto.setMemberEmail(rs.getString("member_email"));
 		memberDto.setMemberPassword(rs.getString("member_password"));
