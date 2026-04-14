@@ -162,7 +162,7 @@ public class MemberController {
 		    return "redirect:./mypage"; // 메인으로 이동
 		}
 		
-		//회원탈퇴 매핑(회원 저뇽ㅇ 기능)
+		//회원탈퇴 매핑(회원 전용 기능)
 		@GetMapping("/goodbye")
 		public String goodbye() {
 		    return "/WEB-INF/views/member/goodbye.jsp";
