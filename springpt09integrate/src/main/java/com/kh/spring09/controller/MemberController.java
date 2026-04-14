@@ -23,45 +23,24 @@ public class MemberController {
 	@Autowired
 	private MemberDao memberDao;
 	
+		//회원정보 등록(일반)
+		@GetMapping("/join")
+		public String join() {
+			return "/WEB-INF/views/member/join.jsp";
+		}
+		@PostMapping("/join")
+		public String join(@ModelAttribute MemberDto memberDto) {
+			memberDao.insert(memberDto);
+			return "redirect:./joinFinish";
+	//		return "redirect:/member/joinFinish";
+		}
+		
+		@RequestMapping("/joinFinish")
+		public String joinComplete() {
+			return "/WEB-INF/views/member/joinFinish.jsp";
+		}
 	
-//	//회원정보 등록(관리자)
-//	@GetMapping("/insert")
-//	public String insert() {
-//		return "/WEB-INF/views/member/insert.jsp";
-//	}
-//	@PostMapping("/insert")
-//	public String insert(@ModelAttribute MemberDto memberDto) {
-//		memberDao.insert(memberDto);
-//		
-//		return "redirect:./insertComplete";
-//	}
-//	
-//	@RequestMapping("/insertComplete")
-//	public String insertComplete() {
-//		return "/WEB-INF/views/member/insertComplete.jsp";
-//	}
-	
-	//회원정보 등록(일반)
-	@GetMapping("/join")
-	public String join() {
-		return "/WEB-INF/views/member/join.jsp";
-	}
-	@PostMapping("/join")
-	public String join(@ModelAttribute MemberDto memberDto) {
-		memberDao.insert(memberDto);
-		return "redirect:./joinFinish";
-//		return "redirect:/member/joinFinish";
-	}
-	
-	@RequestMapping("/joinFinish")
-	public String joinComplete() {
-		return "/WEB-INF/views/member/joinFinish.jsp";
-	}
-	
-	
-	
-	
-	//로그인
+		//로그인
 		@GetMapping("/login")
 		public String login() {
 			return "/WEB-INF/views/member/login.jsp";
@@ -156,66 +135,64 @@ public class MemberController {
 			return "/WEB-INF/views/member/passwordFinish.jsp";
 		}
 		
-		//개인정보 수정
+		//개인정보 수정 변경 (회원 전용 기능 - 무조건 session이 있어야함) // mypage와 동일한 패턴
 		@GetMapping("/edit")
-		public String edit(HttpSession session, Model model) {
-			String loginId = (String) session.getAttribute("loginId");
-			
+		public String edit(HttpSession session, Model model) { // 얘들은 그 어떤 어노테이션을 쓰면 안됨, 스프링에서 가져오는 데이터이 이기 때문
+			String loginId = (String) session.getAttribute("loginId"); // spring에서는 아무것도 담으라고 Object로 되어있기 때문에 다운캐스팅이 자주 일어난다
+			//loginId는 null값일 수 가 절대 없음? why? 로그인을 한 사람만 이 창으로 들어올 수 있기 때문
 			MemberDto memberDto = memberDao.selectOne(loginId);
 			model.addAttribute("memberDto", memberDto);
-		    
 		    return "/WEB-INF/views/member/edit.jsp";
 		}
 		
 		@PostMapping("/edit")
-		public String edit(@ModelAttribute MemberDto memberDto, HttpSession session) {
+		public String edit(HttpSession session, @ModelAttribute MemberDto memberDto) {
 		    String loginId = (String) session.getAttribute("loginId");
 		    
+		    //비밀번호 검사 후 차단 코드
 		    MemberDto findMemberDto = memberDao.selectOne(loginId);
-		    
-		    if (findMemberDto == null || 
-		    	!findMemberDto.getMemberPassword().equals(memberDto.getMemberPassword())) {
+		    boolean valid = findMemberDto.getMemberPassword().equals(memberDto.getMemberPassword());
+		    if (!valid) {
 		    	return "redirect:./edit?error"; // 비번 틀리면 바로 퇴장
 		    }
+		    
+		    //개인정보 변경 처리
 		    memberDto.setMemberId(loginId);
-		    memberDao.update(memberDto); 
-		    return "redirect:/"; // 메인으로 이동
+		    memberDao.update(memberDto);  // 로그인된 사용자이기 때문에 수정이 안된다는 경우는 없다 // 시스템을 믿는다
+		    return "redirect:./mypage"; // 메인으로 이동
 		}
 		
-	//목록 및 검색
-	@RequestMapping("/list")
-	public String list(Model model,
-					@RequestParam(required = false) String column,
-					@RequestParam(required = false) String keyword) {
-		List<MemberDto> list = memberDao.selectList(column, keyword);
-		
-		model.addAttribute("list",list);
-		
-		return "/WEB-INF/views/member/list.jsp";
-	}
-	
-	//상세조회
-	@RequestMapping("/detail")
-	public String detail(Model model, @RequestParam String memberId) {
-		MemberDto memberDto = memberDao.selectOne(memberId);
-		if(memberDto == null) {
-			throw new TargetNotfoundException("존재하지 않는 회원");
-		}
-		model.addAttribute("memberDto", memberDto);
-		return "/WEB-INF/views/member/detail.jsp";
-	}
-	
-	//삭제
-	@RequestMapping("/delete")
-	public String delete(@RequestParam String memberId) {
-		MemberDto memberDto = memberDao.selectOne(memberId);
-		if(memberDto == null) {
-			throw new TargetNotfoundException("존재하지 않는 회원");
+		//목록 및 검색
+		@RequestMapping("/list")
+		public String list(Model model,
+						@RequestParam(required = false) String column,
+						@RequestParam(required = false) String keyword) {
+			List<MemberDto> list = memberDao.selectList(column, keyword);
+			
+			model.addAttribute("list",list);
+			
+			return "/WEB-INF/views/member/list.jsp";
 		}
 		
-		memberDao.delete(memberId);
-		return "redirect:./list";
-	}
-	
-	
+		//상세조회
+		@RequestMapping("/detail")
+		public String detail(Model model, @RequestParam String memberId) {
+			MemberDto memberDto = memberDao.selectOne(memberId);
+			if(memberDto == null) {
+				throw new TargetNotfoundException("존재하지 않는 회원");
+			}
+			model.addAttribute("memberDto", memberDto);
+			return "/WEB-INF/views/member/detail.jsp";
+		}
+		
+		//삭제
+		@RequestMapping("/delete")
+		public String delete(@RequestParam String memberId) {
+			MemberDto memberDto = memberDao.selectOne(memberId);
+			if(memberDto == null) {
+				throw new TargetNotfoundException("존재하지 않는 회원");
+			}
+			memberDao.delete(memberId);
+			return "redirect:./list";
+		}
 }

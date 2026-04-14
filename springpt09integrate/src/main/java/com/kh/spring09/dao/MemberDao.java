@@ -61,8 +61,9 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 		Object[] params = {memberDto.getMemberPassword(), memberDto.getMemberId()};
 		return jdbcTemplate.update(sql, params) > 0;
 	}
-
-	public boolean update(MemberDto memberDto) {
+	
+	//개인정보 변경
+	public boolean update(MemberDto memberDto) { // 여기서도 비밀번호 검사를 넣을 수 있지만, DB에서 암호화를 처리하기 어렵기 때문에 처리 안함.
 		String sql = "update member set "
 				+ "member_email=?, "
 				+ "member_nickname=?, "
@@ -78,7 +79,6 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 			memberDto.getMemberContact(), memberDto.getMemberPost(), memberDto.getMemberAddress1(), 
 			memberDto.getMemberAddress2(), memberDto.getMemberMessage(), memberDto.getMemberId() 
 		};
-		
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
