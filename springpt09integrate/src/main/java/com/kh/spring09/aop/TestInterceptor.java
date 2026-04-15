@@ -1,6 +1,7 @@
 package com.kh.spring09.aop;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,12 +18,13 @@ import jakarta.servlet.http.HttpServletResponse;
  *   - postHandle() 메소드는 컨트롤러가 일을 마친 후 시점에 개입할 수 있다. (프로그래밍 작업은 끝) 
  *   - afterCompletion() 화면이 만들어진 후 시점에 개입할 수 있다. (완료 직전)
  */
-@Component
+//@Component // 단순한 하나의 작업을 처리하는 도구
+@Service // 거대한 하나의 작업을 처리하는 도구
 public class TestInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		System.out.println("테스트 인터셉터가 실행되었습니다.");
-		return true; //통과
+		return true	; //통과 
 	}
 }
