@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.kh.spring09.controller.CountryController;
+
 //스프링의 설정파일(Configuration)
 //- application.properties에 하기 어려운 설정들(ex : 계산이 필요한 경우)
 //- 인터셉터 등 홈페이지의 운영과 관련된 설정은 반드시 상속이 필요(WebMvcConfigurer)
@@ -13,7 +15,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		//등록한 인터셉터를 가져오도록 설정하고
 		@Autowired
 		private TestInterceptor testInterceptor;
-
+		
+		@Autowired
+		private MemberOnlyInterceptor memberOnlyInterceptor;
+		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			//레지스트리에 testInterceptor가 모든 주소에서 일할 수 있다고 작성해주세요.
@@ -31,6 +36,23 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			/// 만약 상세페이지가 /country/detail?countryNo=1이 아니고 /country/detail/1 → (경로변수)이라면?
 			/// → /country/**로 설정!
 			/// → /country/insert/complete, /country/list, /country/edit , /country/detail
+			///
+			
+			//memberOnltyInterceptor를 회원만 접근해야 하는 페이지에 설정
+			registry.addInterceptor(memberOnlyInterceptor).
+					addPathPatterns(
+//							"/book/**", //book전체
+//							"/lecture/insert*",//lecture 등록
+//							"/lecture/edit", //lecture 수정
+//							"/lecture/delete" //lecture 삭제
+							"/lecture//**"
+					)
+					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
+							"/lecture/list",
+							"/lecture/detail"
+					);
+				
+				
 		}
 		
 }
