@@ -1,5 +1,8 @@
 package com.kh.spring09.controller;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dao.MemberExitDao;
+import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
+import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -26,6 +32,8 @@ public class MemberController {
 	private MemberDao memberDao;
 	@Autowired
 	private MemberExitDao memberExitDao;
+	@Autowired
+	private MemberHistoryDao memberHistoryDao;
 	
 		//회원정보 등록(일반)
 		@GetMapping("/join")
@@ -36,7 +44,7 @@ public class MemberController {
 		public String join(@ModelAttribute MemberDto memberDto) {
 			memberDao.insert(memberDto);
 			return "redirect:./joinFinish";
-	//		return "redirect:/member/joinFinish";
+		//	return "redirect:/member/joinFinish";
 		}
 		
 		@RequestMapping("/joinFinish")
@@ -50,7 +58,11 @@ public class MemberController {
 			return "/WEB-INF/views/member/login.jsp";
 		}
 		@PostMapping("/login")
-		public String login(@ModelAttribute MemberDto memberDto, HttpSession session) { // 아이디 비밀번호 존재
+		public String login(@ModelAttribute MemberDto memberDto, 
+								HttpSession session, // 세션을 사용하겠다 요청
+//								@RequestHeader("User-Agent") String userAgent, //헤더값 읽기 - 이걸론 IP를 알 수 없음
+								HttpServletRequest request//요청 정보를 모두 가져오기
+								) { // 아이디 비밀번호 존재
 			//[1] 사용자가 입력한 아이디를 이용하여  DB에 대상이 존재하는지 조회
 			//MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
 			MemberExitDto findMemberDto = memberExitDao.selectOne(memberDto.getMemberId());
@@ -75,14 +87,34 @@ public class MemberController {
 				
 			}
 			
-			//[5] 차단되지 않았다면 로그인 성공
+			//[5] 차단되지 않았다면 로그인 성공 
 			//-로그인 시간을 갱신
 			memberDao.updateMemberLogin(findMemberDto.getMemberId());
+			//-로그인 이력 생성
+			MemberHistoryDto memberHistoryDto = new MemberHistoryDto();
+			memberHistoryDto.setMemberHistoryOrigin(findMemberDto.getMemberId());//아이디
+			memberHistoryDto.setMemberHistoryAddress(request.getRemoteAddr()); //IP
+			memberHistoryDto.setMemberHistoryAgent(request.getHeader("User-Agent")); //Agent
+			memberHistoryDao.insert(memberHistoryDto);
 			
 			//- 세션(HttpSession)에 로그인 되었음을 표시
 			session.setAttribute("loginId", findMemberDto.getMemberId());
 			session.setAttribute("loginLevel", findMemberDto.getMemberLevel());
 			
+			// 비밀번호 변경이 너무 오래 지났을 경우 비번 바꾸라는 멘트
+			if(findMemberDto.getMemberLogin() != null) {
+				LocalDateTime now = LocalDateTime.now(); // 현재시각
+				
+				Timestamp loginTimestamp = findMemberDto.getMemberLogin(); // 가장 최근 로그인한 시각
+				LocalDateTime loginTime = loginTimestamp.toLocalDateTime();
+				
+				long minuites = Duration.between(loginTime, now).toMinutes();
+				
+				if(minuites > 0) {
+					return "redirect:/?error";
+				}
+				
+			}
 			return "redirect:/";
 		}
 		
