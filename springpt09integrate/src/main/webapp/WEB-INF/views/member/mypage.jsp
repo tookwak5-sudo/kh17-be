@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
@@ -22,6 +23,28 @@
 	<li>최종변경일 : <fmt:formatDate value="${memberDto.memberChange	}" pattern="y년 M월 d일 E a h시 m분"></fmt:formatDate></li></li>
 </ul>
 
+<hr>
+
+<h1>최근 로그인 이력 <a href="./history">더보기</a></h1>
+
+<table border = "1" width = "600">
+	<thead>
+		<tr>
+			<th>일시</th>
+			<th>접속주소</th>
+			<th>에이전트</th>
+		</tr>
+	</thead>
+	<tbody>
+		<c:forEach var="memberHistoryDto" items="${loginHistory}">
+		<tr>
+			<td>${memberHistoryDto.memberHistoryTime}</td>
+			<td>${memberHistoryDto.memberHistoryAddress}</td>
+			<td>${memberHistoryDto.memberHistoryAgent}</td>
+		</tr>
+		</c:forEach>
+	</tbody>
+</table>
 
 <h2><a href="./password">비밀번호 변경</a></h2>
 <h2><a href="./edit">개인정보 변경</a></h2>

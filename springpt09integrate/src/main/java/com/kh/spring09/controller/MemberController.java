@@ -101,20 +101,19 @@ public class MemberController {
 			session.setAttribute("loginId", findMemberDto.getMemberId());
 			session.setAttribute("loginLevel", findMemberDto.getMemberLevel());
 			
-			// 비밀번호 변경이 너무 오래 지났을 경우 비번 바꾸라는 멘트
-			if(findMemberDto.getMemberLogin() != null) {
-				LocalDateTime now = LocalDateTime.now(); // 현재시각
-				
-				Timestamp loginTimestamp = findMemberDto.getMemberLogin(); // 가장 최근 로그인한 시각
-				LocalDateTime loginTime = loginTimestamp.toLocalDateTime();
-				
-				long minuites = Duration.between(loginTime, now).toMinutes();
-				
-				if(minuites > 0) {
-					return "redirect:/?error";
-				}
-				
+			//[6] 비밀번호 변경한 시간을 비교해서 일정시간 이상이면 비밀번호 변경 안내 페이지를 리다이렉트 <-> 리다이렉트를 안붙이면 포워드(forword)상태
+			// 비밀번호를 변경한지 30일이 지난 계정은 로그인 성공시 비밀번호 변경 안내를 추가
+			Timestamp last = findMemberDto.getMemberChange(); // 가장 최근 로그인한 시각
+			if(last == null) {//바꾼적 없으면
+				last = findMemberDto.getMemberJoin(); // 그럼 가입일로 하자
 			}
+			LocalDateTime lastChange = last.toLocalDateTime(); // 위에서 계산한 시간과
+			LocalDateTime current = LocalDateTime.now(); // 현재 시각과의
+			Duration duration = Duration.between(lastChange, current); //차이를 구해라!
+			if(duration.toDays() >= 1) {// 비밀번호 변경한지 일정시간(ex: 1시간)
+				return "redirect:./notice"; // 비밀번호 변경 알림 페이지로 이동
+			}
+			
 			return "redirect:/";
 		}
 		
@@ -142,10 +141,37 @@ public class MemberController {
 		public String mypage(HttpSession session, Model model) {
 			//session에 존재하는 현재 사용자 영역에 저장된 loginId라는 이름의 값을 불러오세요!
 			String loginId = (String) session.getAttribute("loginId");
-			MemberDto memberDto = memberDao.selectOne(loginId);
 			
+			//개인정보 조회 후 첨부
+			MemberDto memberDto = memberDao.selectOne(loginId);
 			model.addAttribute("memberDto",memberDto);
+			
+			//로그인 이력 조회 후 첨부
+			List<MemberHistoryDto> loginHistory = 
+									memberHistoryDao.selectList(loginId, 1, 10);
+			model.addAttribute("loginHistory",loginHistory);
+			
 			return "/WEB-INF/views/member/mypage.jsp";
+		}
+		
+		@RequestMapping("/history")
+		public String history(HttpSession session, Model model,
+							@RequestParam(required = false) String beginDate,
+							@RequestParam(required = false) String endDate,
+							@RequestParam(required = false, defaultValue = "1") int page,
+							@RequestParam(required = false, defaultValue = "20") int size) {
+			String loginId = (String) session.getAttribute("loginId");
+			
+			int endRow = page * size;
+			//int beginRow = endRow - (size - 1);
+			int beginRow = (page - 1) * size + 1;
+			
+			List<MemberHistoryDto> loginHistory = 
+					memberHistoryDao.selectList(loginId, beginDate, endDate, beginRow, endRow);
+			
+			model.addAttribute("loginHistory", loginHistory);
+			
+			return "/WEB-INF/views/member/history.jsp";
 		}
 		
 		//비밀번호 변경
@@ -278,5 +304,20 @@ public class MemberController {
 			}
 			memberDao.delete(memberId);
 			return "redirect:./list";
+		}
+		
+		
+		@RequestMapping("/notice")
+		public String notice() {
+			return "/WEB-INF/views/member/notice.jsp";
+		}
+		
+		
+		@RequestMapping("/later")
+		public String later(HttpSession session, Model model) {
+			String loginId = (String) session.getAttribute("loginId"); //로그인 아이디를 찾고
+			MemberDto memberDto = memberDao.selectOne(loginId); // 회원정보를 불러와서
+			memberDao.updateMemberPassword(memberDto); //그대로 업데이트(시간만 바뀜)
+			return "redirect:/"; //메인페이지로 리다이렉트
 		}
 }
