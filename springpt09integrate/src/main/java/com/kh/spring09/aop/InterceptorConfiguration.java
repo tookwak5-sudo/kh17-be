@@ -73,7 +73,5 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 						,"/admin/member/edit"
 						,"/admin/member/block"
 					);
-			
-			
 		}
 }
