@@ -4,6 +4,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
+
 <!-- 제목 -->    
 <h1>회원목록</h1>
 
@@ -61,3 +64,5 @@
 
 </c:if>
 </c:if>
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

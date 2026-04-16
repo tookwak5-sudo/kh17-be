@@ -125,7 +125,7 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 		if(allowColumns.contains(column) == false) return List.of();
 		
 		String sql = "select * from member "
-					+ "where instr("+column+", ?) > 0 "
+					+ "where instr("+column+", ?) > 0 and member_level != '마스터' "
 					+ "order by "+column+" asc, member_id asc";
 		Object[] params = { keyword };
 		return jdbcTemplate.query(sql, memberMapper, params);

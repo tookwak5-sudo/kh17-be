@@ -22,6 +22,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		@Autowired
 		private MasterOnlyInterceptor masterOnlyInterceptor;
 		
+		@Autowired
+		private MasterDenyInterceptor masterDenyInterceptor;
+		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			//레지스트리에 testInterceptor가 모든 주소에서 일할 수 있다고 작성해주세요.
@@ -60,9 +63,17 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 							,"/member/login"
 							,"/member/goodbyeFinish"
 					);
-//			//관리자 기능에 대한 검사 인터셉터 등록
-//			registry.addInterceptor(masterOnlyInterceptor)
-//						.addPathPatterns("/admin/**");
+			//관리자 기능에 대한 검사 인터셉터 등록
+			registry.addInterceptor(masterOnlyInterceptor)
+						.addPathPatterns("/admin/**");
+			
+			//관리자가 관리자를 조회하는 상황을 방지하기 위한 인터셉터 등록
+			registry.addInterceptor(masterDenyInterceptor).addPathPatterns(
+						"/admin/member/detail"
+						,"/admin/member/edit"
+						,"/admin/member/block"
+					);
+			
 			
 		}
 }

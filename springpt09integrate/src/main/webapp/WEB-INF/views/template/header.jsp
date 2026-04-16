@@ -48,7 +48,7 @@ loginLevel : ${sessionScope.loginLevel}
 	<a href="/lecture/list">강좌정보</a>
 	<a href="/book/list">도서정보</a>
 	<a href="/member/logout">로그아웃</a>
-	<a href="#">홈페이지관리</a>
+	<a href="/admin/member/list">홈페이지관리</a>
 	</c:if>
 </c:if>
 

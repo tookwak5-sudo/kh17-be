@@ -17,6 +17,7 @@ import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
+import com.kh.spring09.exception.GetOutException;
 import com.kh.spring09.exception.TargetNotfoundException;
 
 
@@ -48,9 +49,8 @@ public class AdminMemberController {
 			public String detail(@RequestParam String memberId, Model model) {
 				
 				MemberExitDto memberDto = memberExitDao.selectOne(memberId);
-				if(memberDto == null) {
-					throw new TargetNotfoundException("존재하지 않는 회원");
-				}
+//				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
+//				if(memberDto.getMemberLevel().equals("마스터")) throw new GetOutException();
 				model.addAttribute("memberDto",memberDto);
 				
 				//로그인 이력 조회 후 첨부
@@ -61,23 +61,10 @@ public class AdminMemberController {
 				return "admin/member/detail";
 			}
 			
-			//차단
-//			@GetMapping("/member/block")
-//			public String block(@RequestParam String memberId, Model model) {
-//				MemberDto memberDto = memberDao.selectOne(memberId);
-//				model.addAttribute("memberDto", memberDto);
-//			    return "admin/member/block";
-//			}
-//			@PostMapping("/member/block")
-//			public String block(@ModelAttribute MemberDto memberDto) {
-//				
-//				memberDao.updateBlock(memberDto);
-//				return "redirect:detail?memberId=" + memberDto.getMemberId();
-//			}
 			@RequestMapping("/block")
 			public String block(@RequestParam String memberId, Model model) {
 				MemberDto memberDto = memberDao.selectOne(memberId); // 없을수도 있음
-				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
+//				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
 				
 				String current = memberDto.getMemberBlock(); //현재 상태를 불러온다
 				String future = current.equals("Y") ? "N" : "Y";
@@ -93,15 +80,15 @@ public class AdminMemberController {
 			@GetMapping("/edit")
 			public String edit(@RequestParam String memberId, Model model) { // 얘들은 그 어떤 어노테이션을 쓰면 안됨, 스프링에서 가져오는 데이터이 이기 때문
 				MemberDto memberDto = memberDao.selectOne(memberId); // 정보를 조회해서
-				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
+//				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
 				model.addAttribute("memberDto", memberDto);  // 여기선 memberExitDto를 쓸 필요가 없는게, 관리자가 지운다기 보다는 접근을 못하게 가능 
 			    return "admin/member/edit";
 			}
 			
 			@PostMapping("/edit")
 			public String edit(@ModelAttribute MemberDto memberDto) {
-				MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());  // 로그인된 사용자이기 때문에 수정이 안된다는 경우는 없다 // 시스템을 믿는다
-			    if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
+//				MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
+//			    if(findMemberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
 //				memberDao.update(memberDto); //쓰면 안됨(등급과 포인트가 수정되지 않음) -> 기존걸 고치거나 신규기능을 만들기 -> 기존걸 고치는건 지양, 새로운걸 만들기!
 			    
 			    memberDao.updateByMaster(memberDto);
