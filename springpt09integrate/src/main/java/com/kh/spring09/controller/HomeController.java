@@ -10,6 +10,6 @@ public class HomeController {
 	//아무것도 안쓰거나 "/" 아무것도 안써도 "/"임
 	@RequestMapping("/")  
 	public String home() {
-		return "/WEB-INF/views/home.jsp";
+		return "home";
 	}
 }

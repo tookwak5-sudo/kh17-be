@@ -23,7 +23,7 @@ public class LectureController {
 	
 	@GetMapping("/insert")
 	public String insert() {
-		return "/WEB-INF/views/lecture/insert.jsp";
+		return "lecture/insert";
 	}
 	
 	@PostMapping("/insert")
@@ -35,7 +35,7 @@ public class LectureController {
 	
 	@RequestMapping("/insertComplete")
 	public String insertComplete() {
-		return "/WEB-INF/views/lecture/insertComplete.jsp";
+		return "lecture/insertComplete";
 	}
 	
 	@RequestMapping("/list")
@@ -46,14 +46,14 @@ public class LectureController {
 		
 		model.addAttribute("list", list);
 		
-		return "/WEB-INF/views/lecture/list.jsp";
+		return "lecture/list";
 	}
 	@RequestMapping("/detail")
 	public String detail(Model model, @RequestParam int lectureNo) {
 		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
 		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
 		model.addAttribute("lectureDto", lectureDto);
-		return "/WEB-INF/views/lecture/detail.jsp";
+		return "lecture/detail";
 	}
 	@RequestMapping("/delete")
 	public String delete(@RequestParam int lectureNo) {
@@ -71,7 +71,7 @@ public class LectureController {
 		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
 		
 		model.addAttribute("lectureDto",lectureDto);
-		return "/WEB-INF/views/lecture/edit.jsp";
+		return "lecture/edit";
 	}
 	@PostMapping("/edit")
 	public String edit(@ModelAttribute LectureDto lectureDto) {

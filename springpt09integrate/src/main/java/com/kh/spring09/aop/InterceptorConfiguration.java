@@ -19,17 +19,21 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		@Autowired
 		private MemberOnlyInterceptor memberOnlyInterceptor;
 		
+		@Autowired
+		private MasterOnlyInterceptor masterOnlyInterceptor;
+		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			//레지스트리에 testInterceptor가 모든 주소에서 일할 수 있다고 작성해주세요.
-			registry.addInterceptor(testInterceptor).addPathPatterns("/**"); // "/*"이면 ->  http://localhost:80808/0000 하위 정보 /country/insert 인서트가 안잡힌다. 
+			//registry.addInterceptor(testInterceptor).addPathPatterns("/**"); // "/*"이면 ->  http://localhost:80808/0000 하위 정보 /country/insert 인서트가 안잡힌다. 
 			
-			//주소(Path Patterns) 작성 규칙
-			//- spring 표현식의 규칙을 따른다
-			//- *을 1개 또는 2개까지 사용할 수 있다
-			//- *을 1개 쓰면 현재 작성한 엔드포인트 내에서만 범위 설정이 가능
-			//- *을 2개 쓰면 현재 엔드포인트부터 하위 엔드포인트를 모두 포함한 범위 설정이 가능
-			//(ex) 국가정보와 관련된 모든 페이지를 타겟으로 설정하고 싶다면? /country/* 로 설정! ; *의미 이 자리에 아무거나와도 된다
+			///주소(Path Patterns) 작성 규칙
+			///- spring 표현식의 규칙을 따른다
+			///- *을 1개 또는 2개까지 사용할 수 있다
+			///- *을 1개 쓰면 현재 작성한 엔드포인트 내에서만 범위 설정이 가능
+			///- *을 2개 쓰면 현재 엔드포인트부터 하위 엔드포인트를 모두 포함한 범위 설정이 가능
+			
+			///(ex) 국가정보와 관련된 모든 페이지를 타겟으로 설정하고 싶다면? /country/* 로 설정! ; *의미 이 자리에 아무거나와도 된다
 			/// → /country/* 로 설정!
 			/// → /country/insert , /country/list , /country/edit , /country/detail
 
@@ -41,18 +45,24 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			//memberOnltyInterceptor를 회원만 접근해야 하는 페이지에 설정
 			registry.addInterceptor(memberOnlyInterceptor).
 					addPathPatterns(
-//							"/book/**", //book전체
+							"/book/**" //book전체
 //							"/lecture/insert*",//lecture 등록
 //							"/lecture/edit", //lecture 수정
 //							"/lecture/delete" //lecture 삭제
-							"/lecture//**"
+							,"/lecture/**"
+							,"/member/**"
+							,"/admin/**" //admin 전체
 					)
 					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
-							"/lecture/list",
-							"/lecture/detail"
+							"/lecture/list"
+							,"/lecture/detail"
+							,"/member/join*" // joinFinish도
+							,"/member/login"
+							,"/member/goodbyeFinish"
 					);
-				
-				
+//			//관리자 기능에 대한 검사 인터셉터 등록
+//			registry.addInterceptor(masterOnlyInterceptor)
+//						.addPathPatterns("/admin/**");
+			
 		}
-		
 }

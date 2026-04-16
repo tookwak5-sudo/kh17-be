@@ -1,6 +1,5 @@
 package com.kh.spring09.exception;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +19,25 @@ public class ErrorController {
 	public String error(Exception e, Model model) {
 		e.printStackTrace(); //오류 로그를 서버에 출력하고
 		model.addAttribute("message", e.getMessage()); // 메세지 화면에 전달하고
-		return "/WEB-INF/views/error/500.jsp";
+		return "error/500";
+	}
+	
+	@ExceptionHandler(TargetNotfoundException.class)
+	public String notFound(Exception e, Model model) {
+		//원래는 오류 로그를 출력했었는데, 지금은 그냥 클릭 잘못한 거이기 때문에 따로 보내지 않음
+		model.addAttribute("message", e.getMessage());
+		return "error/404"; // 오류 페이지 연결
+		
+	}
+	@ExceptionHandler(WhoAreYouException.class)
+	public String unauthorize(Exception e, Model model) {
+		model.addAttribute("message", e.getMessage());
+		return "error/401";
+		
+	}
+	@ExceptionHandler(GetOutException.class)
+	public String forbidden(Exception e, Model model) {
+		model.addAttribute("message", e.getMessage());
+		return "error/403";
 	}
 }

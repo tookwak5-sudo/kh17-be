@@ -38,7 +38,7 @@ public class MemberController {
 		//회원정보 등록(일반)
 		@GetMapping("/join")
 		public String join() {
-			return "/WEB-INF/views/member/join.jsp";
+			return "member/join";
 		}
 		@PostMapping("/join")
 		public String join(@ModelAttribute MemberDto memberDto) {
@@ -49,13 +49,13 @@ public class MemberController {
 		
 		@RequestMapping("/joinFinish")
 		public String joinComplete() {
-			return "/WEB-INF/views/member/joinFinish.jsp";
+			return "member/joinFinish";
 		}
 	
 		//로그인
 		@GetMapping("/login")
 		public String login() {
-			return "/WEB-INF/views/member/login.jsp";
+			return "member/login";
 		}
 		@PostMapping("/login")
 		public String login(@ModelAttribute MemberDto memberDto, 
@@ -128,11 +128,11 @@ public class MemberController {
 		
 		@RequestMapping("/block")
 		public String block() {
-			return "/WEB-INF/views/member/block.jsp";
+			return "member/block";
 		}
 		@RequestMapping("/waiting")
 		public String waiting() {
-			return "/WEB-INF/views/member/waiting.jsp";
+			return "member/waiting";
 		}
 	
 		//마이페이지(회원 전용 기능)
@@ -151,7 +151,7 @@ public class MemberController {
 									memberHistoryDao.selectList(loginId, 1, 10);
 			model.addAttribute("loginHistory",loginHistory);
 			
-			return "/WEB-INF/views/member/mypage.jsp";
+			return "member/mypage";
 		}
 		
 		@RequestMapping("/history")
@@ -171,13 +171,13 @@ public class MemberController {
 			
 			model.addAttribute("loginHistory", loginHistory);
 			
-			return "/WEB-INF/views/member/history.jsp";
+			return "member/history";
 		}
 		
 		//비밀번호 변경
 		@GetMapping("/password")
 		public String password() {
-			return "/WEB-INF/views/member/password.jsp";
+			return "member/password";
 		}
 		
 		@PostMapping("/password")
@@ -204,7 +204,7 @@ public class MemberController {
 		}
 		@RequestMapping("/passwordFinish")
 		public String passwordFinish() {
-			return "/WEB-INF/views/member/passwordFinish.jsp";
+			return "member/passwordFinish";
 		}
 		
 		//개인정보 수정 변경 (회원 전용 기능 - 무조건 session이 있어야함) // mypage와 동일한 패턴
@@ -214,7 +214,7 @@ public class MemberController {
 			//loginId는 null값일 수 가 절대 없음? why? 로그인을 한 사람만 이 창으로 들어올 수 있기 때문
 			MemberDto memberDto = memberDao.selectOne(loginId);
 			model.addAttribute("memberDto", memberDto);
-		    return "/WEB-INF/views/member/edit.jsp";
+		    return "member/edit";
 		}
 		
 		@PostMapping("/edit")
@@ -237,7 +237,7 @@ public class MemberController {
 		//회원탈퇴 매핑(회원 전용 기능)
 		@GetMapping("/goodbye")
 		public String goodbye() {
-		    return "/WEB-INF/views/member/goodbye.jsp";
+		    return "member/goodbye";
 		}
 		
 		@PostMapping("/goodbye")
@@ -267,32 +267,8 @@ public class MemberController {
 		
 		@RequestMapping("/goodbyeFinish")
 		public String goodbyeFinish() {
-			return "/WEB-INF/views/member/goodbyeFinish.jsp";
+			return "member/goodbyeFinish";
 		}
-		
-		//목록 및 검색
-		@RequestMapping("/list")
-		public String list(Model model,
-						@RequestParam(required = false) String column,
-						@RequestParam(required = false) String keyword) {
-			List<MemberDto> list = memberDao.selectList(column, keyword);
-			
-			model.addAttribute("list",list);
-			
-			return "/WEB-INF/views/member/list.jsp";
-		}
-		
-		//상세조회
-		@RequestMapping("/detail")
-		public String detail(Model model, @RequestParam String memberId) {
-			MemberDto memberDto = memberDao.selectOne(memberId);
-			if(memberDto == null) {
-				throw new TargetNotfoundException("존재하지 않는 회원");
-			}
-			model.addAttribute("memberDto", memberDto);
-			return "/WEB-INF/views/member/detail.jsp";
-		}
-		
 		
 		
 		//삭제
@@ -309,7 +285,7 @@ public class MemberController {
 		
 		@RequestMapping("/notice")
 		public String notice() {
-			return "/WEB-INF/views/member/notice.jsp";
+			return "member/notice";
 		}
 		
 		

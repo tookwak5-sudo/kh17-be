@@ -2,11 +2,13 @@ package com.kh.spring09.dao;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.mapper.MemberHistoryMapper;
 
@@ -16,6 +18,9 @@ public class MemberHistoryDao {
 	private	JdbcTemplate jdbcTemplate;
 	@Autowired
 	private MemberHistoryMapper memberHistoryMapper;
+	Set<String> allowColumns = Set.of(
+			"member_id", "member_nickname", "member_contact", "member_level");
+	
 	
 	//등록
 	public void insert(MemberHistoryDto memberHistoryDto) {
@@ -68,4 +73,27 @@ public class MemberHistoryDao {
 	    Object[] params = {memberHistoryOrigin, beginDate, endDate, beginRow, endRow};
 	    return jdbcTemplate.query(sql, memberHistoryMapper, params);
 	}
+	//아이디조회
+			public MemberHistoryDto selectOne(String memberId) {
+			    String sql = "select * from member where member_id = ?";
+			    Object[] params = {memberId};
+			    List<MemberHistoryDto> list = jdbcTemplate.query(sql, memberHistoryMapper, params);
+			    return list.isEmpty() ? null : list.get(0);
+			}
+	//조회
+		public List<MemberHistoryDto> selectList(){
+			String sql = "select * from member order by member_id asc";
+			return jdbcTemplate.query(sql, memberHistoryMapper);
+		}
+		
+		//검색
+		public List<MemberHistoryDto> selectList(String column, String keyword){
+			if(column == null || keyword == null) return selectList();
+			if(column.isBlank() || keyword.isBlank()) return selectList();
+			if(allowColumns.contains(column) == false) return List.of();
+			
+			String sql = "select * from member where instr("+ column +", ?) > 0 order by member_id asc";
+			Object[] params = { keyword };
+			return jdbcTemplate.query(sql, memberHistoryMapper, params);
+		}
 }
