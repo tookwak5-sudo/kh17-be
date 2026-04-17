@@ -25,6 +25,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		@Autowired
 		private MasterDenyInterceptor masterDenyInterceptor;
 		
+		@Autowired
+	    private BoardReadInterceptor boardReadInterceptor;
+		
+		@Autowired
+		private BoardOwnerInterceptor boardOwnerInterceptor;
+		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			//레지스트리에 testInterceptor가 모든 주소에서 일할 수 있다고 작성해주세요.
@@ -55,6 +61,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 							,"/lecture/**"
 							,"/member/**"
 							,"/admin/**" //admin 전체
+							,"/board/**"
 					)
 					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
 							"/lecture/list"
@@ -62,6 +69,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 							,"/member/join*" // joinFinish도
 							,"/member/login"
 							,"/member/goodbyeFinish"
+							,"/board/list"
+							,"/board/detail"
 					);
 			//관리자 기능에 대한 검사 인터셉터 등록
 			registry.addInterceptor(masterOnlyInterceptor)
@@ -72,6 +81,15 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 						"/admin/member/detail"
 						,"/admin/member/edit"
 						,"/admin/member/block"
+					);
+			//게시글 세부정보를 보면 조회수 증가
+			registry.addInterceptor(boardReadInterceptor).addPathPatterns(
+						"/board/detail"
+					);
+			//아이디랑 boardWriter랑 다를 때 수정,삭제를 방지를 위한 인터셉터 등록
+			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns(
+						"/board/edit"
+						,"/board/delete"
 					);
 		}
 }
