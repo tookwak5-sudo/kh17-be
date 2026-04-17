@@ -207,6 +207,14 @@ public class MemberController {
 			return "member/passwordFinish";
 		}
 		
+		// 개인정보 조회
+		@RequestMapping("/detail")
+		public String detail(@RequestParam String memberId, Model model) {
+			MemberDto memberDto = memberDao.selectOne(memberId);
+			model.addAttribute("memberDto",memberDto);
+			return "member/detail";
+		}
+		
 		//개인정보 수정 변경 (회원 전용 기능 - 무조건 session이 있어야함) // mypage와 동일한 패턴
 		@GetMapping("/edit")
 		public String edit(HttpSession session, Model model) { // 얘들은 그 어떤 어노테이션을 쓰면 안됨, 스프링에서 가져오는 데이터이 이기 때문

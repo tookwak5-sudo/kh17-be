@@ -23,15 +23,6 @@ public class BoardDto {
 	private int boardLikecount;
 	private int boardReplycount;
 	
-//	public String getBoardWtimeCase() {
-//		SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-//		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-//		
-//		String today = dayFormat.format(new Date()); // 오늘 날짜
-//	    String boardDay = dayFormat.format(this.boardWtime); // 게시글 날짜
-//	    
-//	    return today.equals(boardDay) ?  timeFormat.format(this.boardWtime) : boardDay;
-//	}
 	
 	public String getBoardWtimeNow() {
 		LocalDateTime writeTime = boardWtime.toLocalDateTime();
@@ -47,9 +38,4 @@ public class BoardDto {
 	}
 	
 	
-//	public Timestamp getBoardWtimeNow() {
-//		Timestamp now = new Timestamp(System.currentTimeMillis());
-//		
-//		return now;
-//	}
 }

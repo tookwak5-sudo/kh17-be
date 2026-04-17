@@ -43,7 +43,7 @@
 			<td>${boardDto.boardNo}</td>
 			<td>
 				<b style="color: red;">${boardDto.boardHead}</b>
-				</td>
+			</td>
 			<td>
 				<a href="./detail?boardNo=${boardDto.boardNo}">
 					${boardDto.boardTitle}
@@ -51,8 +51,8 @@
 			</td>
 				
 			<td>
-				<a href="./detail?boardNo=${boardDto.boardNo}">
-				${boardDto.boardWriter}
+				<a href="/member/detail?memberId=${boardDto.boardWriter}">
+					${boardDto.boardWriter}
 				</a>
 			</td>
 				<td><fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd"/> </td>
@@ -77,8 +77,8 @@
 			</td>
 				
 			<td>
-				<a href="./detail?boardNo=${boardDto.boardNo}">
-				${boardDto.boardWriter}
+				<a href="../member/detail?memberId=${boardDto.boardWriter}">
+					${boardDto.boardWriter}
 				</a>
 			</td>
 			<td>
