@@ -7,10 +7,16 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 	
 		<h1>
-			<c:if test="${boardDto.boardHead != null}">
-			(${boardDto.boardHead})
-			</c:if>
-			${boardDto.boardTitle}
+		<!-- 말머리 -->
+		<c:if test="${boardDto.boardHead != null}">
+		(${boardDto.boardHead})
+		</c:if>
+		<!-- 제목 -->
+		${boardDto.boardTitle}
+		<!--  수정이 되었다면 추가 표시 -->
+		<c:if test="${boardDto.boardEtime != null}">
+		(수정됨)
+		</c:if>
 		</h1>
 		${boardDto.boardWriter} <br><br>
 		<fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate> 
@@ -18,10 +24,9 @@
 		조회수 ${boardDto.boardReadcount}
 		<hr>
 		<div style="min-height: 250px">
-		<!-- 잇는 그대로의 출력을 수행하는 태그(엔터, 스페이스 등을 인정) -->
+		<!-- 있는 그대로의 출력을 수행하는 태그(엔터, 스페이스 등을 인정) -->
 		<pre>${boardDto.boardContent}</pre>
 		</div>	
-			
 		<br><br>
 		좋아요 ${boardDto.boardLikecount}
 		댓글 ${boardDto.boardReplycount}

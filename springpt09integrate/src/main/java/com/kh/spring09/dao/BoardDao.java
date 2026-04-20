@@ -112,13 +112,21 @@ public class BoardDao {
 			};
 			jdbcTemplate.update(sql, params);
 		}
-
+		
+	//삭제 //interceptor에서 범위를 제한시켜서 삭제 권한 제한
+	public boolean delete(long boardNo) {
+		String sql = "delete board where board_no=?";
+		Object[] params = {boardNo};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
+		
 	//수정
-	public boolean edit(BoardDto boardDto) {
+	public boolean update(BoardDto boardDto) {
 		String sql = "update board set "
 				+ "board_head=?, "
 				+ "board_title=?, "
-				+ "board_content=?, board_etime=systimestamp "
+				+ "board_content=?, "
+				+ "board_etime=systimestamp "
 				+ "where board_no=?";
 		Object[] params = {
 				boardDto.getBoardHead(), boardDto.getBoardTitle(), 
@@ -137,10 +145,5 @@ public class BoardDao {
 	
 	
 	
-	//삭제
-	public boolean delete(int boardNo) {
-		String sql = "delete board where board_no=?";
-		Object[] params = {boardNo};
-		return jdbcTemplate.update(sql, params) > 0;
-	}
+	
 }
