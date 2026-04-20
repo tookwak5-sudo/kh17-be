@@ -55,35 +55,35 @@ public class BoardController {
 	}
 	
 	//등록 매핑
-		@GetMapping("/writer")
-		public String writer() {
-			return "board/writer";
-		}
-		@PostMapping("/writer")
-		public String writer(HttpSession session
-							,@ModelAttribute BoardDto boardDto) {
-			//[1] 작성자 아이디 추출
-			String loginId = (String) session.getAttribute("loginId");
-			
-			//[+추가] 작성한 글이 "공지"라면 관리자, 즉 "마스터"인지를 반드시 확인
-			if(boardDto.getBoardHead() != null && boardDto.getBoardHead().equals("공지")) {
-				String loginLevel = (String)session.getAttribute("loginLevel");
-				if(!loginLevel.equals("master")) {
-					throw new GetOutException();
-				}
+	@GetMapping("/writer")
+	public String writer() {
+		return "board/writer";
+	}
+	@PostMapping("/writer")
+	public String writer(HttpSession session
+						,@ModelAttribute BoardDto boardDto) {
+		//[1] 작성자 아이디 추출
+		String loginId = (String) session.getAttribute("loginId");
+		
+		//[+추가] 작성한 글이 "공지"라면 관리자, 즉 "마스터"인지를 반드시 확인
+		if(boardDto.getBoardHead() != null && boardDto.getBoardHead().equals("공지")) {
+			String loginLevel = (String)session.getAttribute("loginLevel");
+			if(!loginLevel.equals("master")) {
+				throw new GetOutException();
 			}
-			
-			//[2] 글 번호 생성
-			long boardNo = boardDao.sequence();
-			
-			//[3] 정보 취합 후 등록 요청
-			boardDto.setBoardWriter(loginId);
-			boardDto.setBoardNo(boardNo);
-			boardDao.insert(boardDto);
-			
-			//[4] 상세페이지로 리다이렉트
-			return "redirect:./detail?boardNo=" + boardNo;
 		}
+			
+		//[2] 글 번호 생성
+		long boardNo = boardDao.sequence();
+		
+		//[3] 정보 취합 후 등록 요청
+		boardDto.setBoardWriter(loginId);
+		boardDto.setBoardNo(boardNo);
+		boardDao.insert(boardDto);
+		
+		//[4] 상세페이지로 리다이렉트
+		return "redirect:./detail?boardNo=" + boardNo;
+	}
 	//삭제
 	@RequestMapping("/delete")
 	public String delete(HttpSession session, @RequestParam long boardNo) {

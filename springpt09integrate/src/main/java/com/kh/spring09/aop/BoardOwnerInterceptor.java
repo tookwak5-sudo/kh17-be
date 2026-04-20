@@ -7,14 +7,15 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import com.kh.spring09.dao.BoardDao;
 import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.exception.GetOutException;
+import com.kh.spring09.exception.TargetNotfoundException;
 import com.kh.spring09.exception.WhoAreYouException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-//소유자의 접근만을 허용하는 인터셉터
-@Service	
+//본인 소유의 글일 경우만 통과시키기 위한 인터셉터
+@Service //DB나 여러곳에서 가져다 써야하기 때문에 service 즉 복잡하면 service로 
 public class BoardOwnerInterceptor implements HandlerInterceptor{
 	@Autowired
 	private BoardDao boardDao;
@@ -22,23 +23,41 @@ public class BoardOwnerInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// boolean값으로 와서 같으면 통과 다르면 불통
-		//[1] 세션 획득
+		//[1] 파라미터에 boardNo가 없으면 차단 // 원래 파라미너는 문자형
+		String boardNoStr = request.getParameter("boardNo");
+		
+		if(boardNoStr == null) {
+			throw new TargetNotfoundException("존재하지 않는 게시글");
+		}
+		
+		//[2] 로그인된 사용자가 없으면 차단
 		HttpSession session = request.getSession();
-		
-		//[2] 로그인 관련 정보와 boardNo를 획득
 		String loginId = (String) session.getAttribute("loginId");
-		String boardStr = request.getParameter("boardNo");
 		
-		//[3] 글 번호로 selectOne통해서 정보를 다 가져오기
-		int boardNo = Integer.parseInt(boardStr);
+		if(loginId == null) {
+			throw new WhoAreYouException(); //비회원 누구세요 나가요
+		}
+		
+		//[3] 존재하지 않는 글이면 차단
+		long boardNo = Long.parseLong(boardNoStr);
 		BoardDto boardDto = boardDao.selectOne(boardNo);
+		if(boardDto == null) {
+			throw new TargetNotfoundException("존재하지 않는 게시글");
+		}
 		
-		//[4] 비회원이거나 작성자랑 아이디랑 다르면
-		if(boardDto == null || !boardDto.getBoardWriter().equals(loginId)) {
+		//[4] 작성자가 탈퇴했다면 차단
+		if(boardDto.getBoardWriter() == null) {
+			throw new GetOutException(); // 회원이면 나가요
+		}
+		
+		//<-------------- 관리자면 통과 같이 가능 조건도 추가가능
+		
+		//[5] 소유자가 아니면 차단
+		if(!loginId.equals(boardDto.getBoardWriter())) {
 			throw new GetOutException();
 		}
 		
+		//1~5번까지를 통과했다면 본인 소유의 글을 접근하는 것으로 간주하겠다.
 		return true;
 	}
 	

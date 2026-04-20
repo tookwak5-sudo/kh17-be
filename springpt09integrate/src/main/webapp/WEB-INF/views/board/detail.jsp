@@ -41,8 +41,17 @@
 		<c:if test="${sessionScope.loginId != null}">
 		<a href="./writer">글쓰기</a>
 		</c:if>
+		
+		<!-- 
+		sessionScope.loginId 현재 사용자의 아이디(비회원은 null)
+		boardDto.boardWriter 작성자의 아이디(회원탈퇴 시 null)
+		둘 다 null이어서 같은 경우는 제거해 줘야한다. 
+		${boardDto.boardWriter != null}조건을 안걸면 비회원이 탈퇴한 글을 볼 때 본인으로 판정되는 걸 제거하기 위한 추가 검사하기 위한 코드
+		-->
+		<c:if test="${boardDto.boardWriter != null && boardDto.boardWriter == sessionScope.loginId }">
 		<a href="./edit?boardNo=${boardDto.boardNo}">수정</a>
 		<a href="./delete?boardNo=${boardDto.boardNo}">삭제</a>
+		</c:if>
 		<a href="./list">목록으로</a>
 		
 	<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

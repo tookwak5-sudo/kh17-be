@@ -61,7 +61,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 							,"/lecture/**"
 							,"/member/**"
 							,"/admin/**" //admin 전체
-							,"/board/**"
+							,"/board/write" //게시글 등록 페이지 // 수정 삭제는 따로 막을거임, 단순 로그인을 막는다고 막아지는게 아니기 때문
 					)
 					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
 							"/lecture/list"
@@ -82,14 +82,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 						,"/admin/member/edit"
 						,"/admin/member/block"
 					);
+			//본인 소유의 게시글만 수정 삭제가 가능하도록 인터셉터 등록
+			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns(
+					"/board/edit", "/board/delete");
 			//게시글 세부정보를 보면 조회수 증가
 			registry.addInterceptor(boardReadInterceptor).addPathPatterns(
 						"/board/detail"
-					);
-			//아이디랑 boardWriter랑 다를 때 수정,삭제를 방지를 위한 인터셉터 등록
-			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns(
-						"/board/edit"
-						,"/board/delete"
 					);
 		}
 }
