@@ -24,63 +24,59 @@ public class BoardController {
 	@Autowired
 	private BoardDao boardDao;
 	
-	//게시글 작성(등록)
-	@GetMapping("/writer")
-	public String writer() {
-		return "board/writer";
-	}
-	@PostMapping("/writer")
-	public String writer(HttpSession session
-							,@ModelAttribute BoardDto boardDto) {
-		String loginId = (String) session.getAttribute("loginId");
-		boardDto.setBoardWriter(loginId);
-		
-		int findNo = boardDao.sequence();
-		boardDto.setBoardNo(findNo);
-		boardDao.write(boardDto);
-		return "redirect:./detail?boardNo=" + (boardDto.getBoardNo() + 1);
-	}
 	
-	//게시글 목록
-//	@RequestMapping("/list")
-//	public String list(HttpSession session, Model model,
-//					@RequestParam(required=false) String column,
-//					@RequestParam(required=false) String keyword) {
-//		String loginId = (String) session.getAttribute("loginId");
-//		List<BoardDto> list = boardDao.selectList(column, keyword);
-//		model.addAttribute("list",list);
-//		model.addAttribute("loginId", loginId);
-//		return "board/list";
-//	}
-	
+	//목록 매핑
 	@RequestMapping("/list")
-	public String list(HttpSession session, Model model,
+	public String list(Model model,
 					@RequestParam(required=false) String column,
 					@RequestParam(required=false) String keyword) {
-		String loginId = (String) session.getAttribute("loginId");
 		List<BoardDto> list = boardDao.selectList(column, keyword);
 		
 		
 		model.addAttribute("list",list);
-		model.addAttribute("loginId", loginId);
 		return "board/list";
 	}
 	
 	//게시글 상세조회
 	@RequestMapping("/detail")
-	public String detail(Model model, HttpSession session,
-						@RequestParam int boardNo) {
-		String loginId = (String) session.getAttribute("loginId");
+	public String detail(Model model,
+						@RequestParam long boardNo) {
 		BoardDto boardDto = boardDao.selectOne(boardNo);
-		
-		if(boardDto == null) {
-	        return "redirect:list"; // 혹은 에러 페이지
-	    }
+		if(boardDto == null) throw new TargetNotfoundException();//없을 수도 있기 때문에
+	    
+		//통과 했다면
 		model.addAttribute("boardDto", boardDto);
-	    model.addAttribute("loginId", loginId);
+	    
+	    //이전글과 다음글을 조회하여 첨부
+	    model.addAttribute("prevBoardDto", boardDao.selectPreviousOne(boardNo));
+	    model.addAttribute("nextBoardDto", boardDao.selectNextOne(boardNo));
 	    
 	    return "board/detail";
 	}
+	
+	//등록 매핑
+		@GetMapping("/writer")
+		public String writer() {
+			return "board/writer";
+		}
+		@PostMapping("/writer")
+		public String writer(HttpSession session
+							,@ModelAttribute BoardDto boardDto) {
+			//[1] 작성자 아이디 추출
+			String loginId = (String) session.getAttribute("loginId");
+			
+			//[2] 글 번호 생성
+			long boardNo = boardDao.sequence();
+			
+			//[3] 정보 취합 후 등록 요청
+			boardDto.setBoardWriter(loginId);
+			boardDto.setBoardNo(boardNo);
+			boardDao.insert(boardDto);
+			
+			//[4] 상세페이지로 리다이렉트
+			return "redirect:./detail?boardNo=" + boardNo;
+		}
+		
 	
 	//게시글 수정
 	@GetMapping("/edit")
