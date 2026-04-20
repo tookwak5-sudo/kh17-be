@@ -26,6 +26,7 @@ public class BoardDao {
 	    String sql = "select board_seq.nextval from dual";
 	    return jdbcTemplate.queryForObject(sql, int.class);
 	}
+	
 	//등록
 	public void write(BoardDto boardDto) {
 		String sql = "insert into board("
