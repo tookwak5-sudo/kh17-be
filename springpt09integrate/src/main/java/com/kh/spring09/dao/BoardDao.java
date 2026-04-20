@@ -52,6 +52,13 @@ public class BoardDao {
 		Object[] params = {keyword};
 		return jdbcTemplate.query(sql, boardMapper, params);
 	}
+	//공지사항 조회
+	public List<BoardDto> selectNoticeList(){
+		String sql = "select * from board_list "
+				+ "where board_head= '공지' "
+				+ "order by board_no desc";
+		return jdbcTemplate.query(sql, boardMapper);
+	}
 	
 	//상세
 	public BoardDto selectOne(long boardNo) { //상세에서는 내용이 있어야함(board_list라 쓰면 안됨)

@@ -31,45 +31,20 @@
 	</tr>
 	</thead>
 	<tbody align="center">
-		<c:forEach var="boardDto" items="${list}">
-		<c:if test="${boardDto.boardHead == '공지'}">
-		<tr>
+		<!-- 일반 게시물 -->
+		<!--  varStatus를 쓰면 반복문의 상태를 알 수 있다(index, count, first, last) -->
+		<c:forEach var="boardDto" items="${list}" varStatus="stat">
+<%-- 		<tr bgcolor="${boardDto.boardHead == '공지' ? '#33d9b2' : ''}"> --%><!-- head가 공지인 것만 -->
+		<tr bgcolor="${stat.index < noticeCount ? '#33d9b2' : ''}">
+			<tr bgcolor="${stat.count <= noticeCount ? '#33d9b2' : ''}">
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
+<%-- 				${stat.first}처음인지 아닌지를 감지 ${stat.last}마지막인지 아닌지를 감지 --%>
+				
 				<!-- 말머리가 있으면 표시 -->
 <%-- 				<c: if test="${boardDto.boardHead != null}"> --%>
 				(${boardDto.boardHead})
 <%-- 				</c:> --%>
-				
-				<!-- 게시글 제목 -->
-				<a href="./detail?boardNo=${boardDto.boardNo}">
-				${boardDto.boardTitle}
-				</a>
-				
-				<!-- 댓글 개수도 있으면(>0) 표시 -->
-				<c:if test="${boardDto.boardReplycount >0}">
-				[${boardDto.boardReplycount}]
-				</c:if>
-			</td>
-			<td>
-				<a href="/member/detail?memberId=${boardDto.boardWriter}">
-				${boardDto.boardWriter}
-				</a>
-			</td>
-			<td>${boardDto.boardWtimeString}</td>
-			<td>${boardDto.boardReadcount}</td>
-			<td>${boardDto.boardLikecount}</td>
-		</tr>
-		</c:if>
-		</c:forEach>
-		<c:forEach var="boardDto" items="${list}">
-		
-		<tr>
-			<td>${boardDto.boardNo}</td>
-			<td align="left">
-			<!-- 말머리가 있으면 표시 -->
-				(${boardDto.boardHead})
-				
 				<!-- 게시글 제목 -->
 				<a href="./detail?boardNo=${boardDto.boardNo}">
 				${boardDto.boardTitle}

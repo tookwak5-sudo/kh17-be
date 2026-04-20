@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,22 @@ public class BoardController {
 	@RequestMapping("/list")
 	public String list(Model model,
 					@RequestParam(required=false) String column,
-					@RequestParam(required=false) String keyword) {
-		List<BoardDto> list = boardDao.selectList(column, keyword);
+					@RequestParam(required=false) String keyword
+	) {
+		//공지사항 게시글
+//		List<BoardDto> noticeList = boardDao.selectList("board_head","공지");
+		List<BoardDto> noticeList = boardDao.selectNoticeList();
+		
+		List<BoardDto> boardList = boardDao.selectList(column, keyword);
+		
+		//두 개를 합쳐서 전달
+		List<BoardDto> list = new ArrayList<>();
+		list.addAll(noticeList); //공지사항 먼저
+		list.addAll(boardList); //게시글은 나중에
 		
 		
 		model.addAttribute("list",list);
+		model.addAttribute("noticeCount", noticeList.size());//공지사항 개수를 전달
 		return "board/list";
 	}
 	

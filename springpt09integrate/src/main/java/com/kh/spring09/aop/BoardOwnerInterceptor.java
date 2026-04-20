@@ -23,7 +23,7 @@ public class BoardOwnerInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		//[1] 파라미터에 boardNo가 없으면 차단 // 원래 파라미너는 문자형
+		//[1] 파라미터에 boardNo가 없으면 차단 // 원래 파라미터는 문자형
 		String boardNoStr = request.getParameter("boardNo");
 		
 		if(boardNoStr == null) {
@@ -51,6 +51,10 @@ public class BoardOwnerInterceptor implements HandlerInterceptor{
 		}
 		
 		//<-------------- 관리자면 통과 같이 가능 조건도 추가가능
+//		String loginLevel = (String) session.getAttribute("loginLevel");
+//		if(!loginLevel.equals("master")) {
+//			throw new GetOutException();
+//		}
 		
 		//[5] 소유자가 아니면 차단
 		if(!loginId.equals(boardDto.getBoardWriter())) {

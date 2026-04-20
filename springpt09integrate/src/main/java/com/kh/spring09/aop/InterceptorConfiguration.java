@@ -83,8 +83,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 						,"/admin/member/block"
 					);
 			//본인 소유의 게시글만 수정 삭제가 가능하도록 인터셉터 등록
-			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns(
-					"/board/edit", "/board/delete");
+			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns("/board/edit", "/board/delete");
 			//게시글 세부정보를 보면 조회수 증가
 			registry.addInterceptor(boardReadInterceptor).addPathPatterns(
 						"/board/detail"
