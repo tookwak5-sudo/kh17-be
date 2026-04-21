@@ -16,7 +16,7 @@
 
 
 <!-- 게시글 목록 -->
-
+${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글
 <h2>게시글 수: ${list.size()}</h2>
 <table border=1 width=1000>
 	<thead>
@@ -42,9 +42,9 @@
 <%-- 				${stat.first}처음인지 아닌지를 감지 ${stat.last}마지막인지 아닌지를 감지 --%>
 				
 				<!-- 말머리가 있으면 표시 -->
-<%-- 				<c: if test="${boardDto.boardHead != null}"> --%>
+				<c:if test="${boardDto.boardHead != null}">
 				(${boardDto.boardHead})
-<%-- 				</c:> --%>
+				</c:if>
 				<!-- 게시글 제목 -->
 				<a href="./detail?boardNo=${boardDto.boardNo}">
 				${boardDto.boardTitle}
@@ -75,8 +75,8 @@
 	</tbody>
 </table>
 
-<!--  페이지네이션 --> <!-- html특수문자표 참조 -->
-<h2> &lt; 1 2 3 4 5 6 7 8 9 10 &gt; </h2>
+<!-- 페이지네이션 -->
+<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
 
 <!-- 검색창 -->
 <form action="./list">

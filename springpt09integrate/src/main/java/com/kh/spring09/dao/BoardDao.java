@@ -1,7 +1,5 @@
 package com.kh.spring09.dao;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.mapper.BoardMapper;
+import com.kh.spring09.vo.PageVo;
 
 @Repository
 public class BoardDao {
@@ -35,23 +34,59 @@ public class BoardDao {
 		return list.isEmpty() ? null : list.get(0);
 	}
 	
-	//목록(일반)
-	public List<BoardDto> selectList(){
-		String sql = "select * from board_list order by board_no desc"; //wtime으로 해도 되나 기본키가 가장 빠르기 때문에 기본키로 순서 지정
-		List<BoardDto> list = jdbcTemplate.query(sql, boardMapper);
-		return list;
-	}
+//	//목록(일반)
+//	public List<BoardDto> selectList(){
+//		String sql = "select * from board_list order by board_no desc"; //wtime으로 해도 되나 기본키가 가장 빠르기 때문에 기본키로 순서 지정
+//		List<BoardDto> list = jdbcTemplate.query(sql, boardMapper);
+//		return list;
+//	}
+	
+//	//검색 page없이 단순 목록
+//	public List<BoardDto> selectList(String column, String keyword){
+//		if(column == null || keyword == null) return selectList();
+//		if(column.isBlank() || keyword.isBlank()) return List.of();
+//		if(!allowColumns.contains(column)) return selectList();
+//		
+//		String sql = "select * from board_list where instr("+column+", ?) > 0 order by board_no desc";
+//		Object[] params = {keyword};
+//		return jdbcTemplate.query(sql, boardMapper, params);
+//	}
+	
+	//목록
+		public List<BoardDto> selectList(int page, int size){
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+						+ "select * from board_list order by board_no desc"
+					+ ") TMP"
+					+ ") where rn between ? and ?";
+			int beginRow = page * size - (size-1);
+			int endRow = page * size;
+			Object[] params = {beginRow, endRow};
+			return jdbcTemplate.query(sql, boardMapper, params);
+		}
 	
 	//검색
-	public List<BoardDto> selectList(String column, String keyword){
-		if(column == null || keyword == null) return selectList();
-		if(column.isBlank() || keyword.isBlank()) return List.of();
-		if(!allowColumns.contains(column)) return selectList();
-		
-		String sql = "select * from board_list where instr("+column+", ?) > 0 order by board_no desc";
-		Object[] params = {keyword};
-		return jdbcTemplate.query(sql, boardMapper, params);
-	}
+		public List<BoardDto> selectList(PageVo pageVo){
+			if(pageVo.isList()) 
+				return selectList(pageVo.getPage(),pageVo.getSize());
+			if(!allowColumns.contains(pageVo.getColumn())) 
+				return selectList(pageVo.getPage(),pageVo.getSize());
+			
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+						+ "select * from board_list "
+						+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+						+ "order by board_no desc"
+					+ ") TMP"
+					+ ") where rn between ? and ?";
+//			int beginRow = page * size - (size-1);
+//			int endRow = page * size;
+			Object[] params = {
+					pageVo.getKeyword(), 
+					pageVo.getBeginRownum(), 
+					pageVo.getEndRownum()};
+			return jdbcTemplate.query(sql, boardMapper, params);
+		}
 	//공지사항 조회
 	public List<BoardDto> selectNoticeList(){
 		String sql = "select * from board_list "
@@ -160,8 +195,17 @@ public class BoardDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 		
-	
-	
-	
-	
+	//목록과 검색의 상황별 카운트 메소드
+	// → 화면에서 마지막 페이지가 어딘지 알기 위해 필요한 데이터 
+	public int count() {
+		String sql = "select count(*) from board";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	public int count(PageVo pageVo) {
+		if(pageVo.isList()) return count();
+		
+		String sql = "select count(*) from board where instr("+pageVo.getColumn()+", ?) > 0";
+		Object[] params = {pageVo.getKeyword()};
+		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
 }

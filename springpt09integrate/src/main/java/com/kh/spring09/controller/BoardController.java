@@ -16,6 +16,7 @@ import com.kh.spring09.dao.BoardDao;
 import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.exception.GetOutException;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVo;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,26 +27,28 @@ public class BoardController {
 	private BoardDao boardDao;
 	
 	
-	//목록 매핑
+	//목록 및 검색 매핑
 	@RequestMapping("/list")
-	public String list(Model model,
-					@RequestParam(required=false) String column,
-					@RequestParam(required=false) String keyword
-	) {
+	public String list(Model model, @ModelAttribute("pageVo") PageVo pageVo) {
 		//공지사항 게시글
 //		List<BoardDto> noticeList = boardDao.selectList("board_head","공지");
 		List<BoardDto> noticeList = boardDao.selectNoticeList();
 		
-		List<BoardDto> boardList = boardDao.selectList(column, keyword);
+		//일반 게시글 (공지사항도 포함되어 있음)
+		List<BoardDto> boardList = boardDao.selectList(pageVo);
 		
 		//두 개를 합쳐서 전달
 		List<BoardDto> list = new ArrayList<>();
 		list.addAll(noticeList); //공지사항 먼저
 		list.addAll(boardList); //게시글은 나중에
 		
-		
 		model.addAttribute("list",list);
 		model.addAttribute("noticeCount", noticeList.size());//공지사항 개수를 전달
+		
+		//페이징을 위해 추가로 전달할 값이 있다면 전달해야 한다
+		int count = boardDao.count(pageVo);
+		pageVo.setCount(count);//데이터 개수 설정
+		model.addAttribute("pageVo", pageVo);
 		return "board/list";
 	}
 	
