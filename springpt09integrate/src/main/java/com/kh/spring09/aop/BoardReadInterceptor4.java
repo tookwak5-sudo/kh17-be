@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.kh.spring09.dao.BoardDao;
+import com.kh.spring09.dao.BoardReadDao;
 import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.exception.TargetNotfoundException;
 
@@ -16,17 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 //목표 :
-//- 세션(HttpSession)을 이용해서 읽은 글의 번호를 관리하겠다
-//- (1) 세션에 memory라는 이름의 저장소가 있다고 가정 (저장소는 HashSet)
-//- (2) 세션에서 memory 저장소를 꺼낸다
-//- (3) 2번에서 저장소가 없으면 신규 생성한다
-//- (4) 현재 읽으려는 글번호가 memory저장소에 존재하는 지 확인
-//- (5-1) 만약 존재한다면 조회수 증가 처리
-//- (5-2) 만약 존재하지 않는다면 저장소에 번호를 등록하고 조회수 증가 처리 후 통과
+//- 데이터베이스(DBMS)를 이용해서 조회 이력을 저장하고 중복을 차단합니다
+//- 아이디를 기반으로 하기 때문에 세션이 달라도 차단이 된다
 @Service
-public class BoardReadInterceptor3 implements HandlerInterceptor{
+public class BoardReadInterceptor4 implements HandlerInterceptor{
 	@Autowired
 	private BoardDao boardDao;
+	@Autowired
+	private BoardReadDao boardReadDao;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -47,25 +45,22 @@ public class BoardReadInterceptor3 implements HandlerInterceptor{
 			throw new TargetNotfoundException("존재하지 않는 게시글");
 		}
 		
-		//[3] 세션의 memory 항목을 조사하여 조회수 여부를 판정하겠다
+		//[3] 비회원인 경우 제거
 		HttpSession session = request.getSession();
-		Set<Long> memory = (Set<Long>) session.getAttribute("memory");
-		if(memory == null) {// 없으면 
-			memory = new HashSet<>(); // 신규생성
+		String loginId = (String) session.getAttribute("loginId");
+		if(loginId == null) {
+			return true;
 		}
 		
-		//확인용 출력
-		System.out.println("읽은 글 = " + memory);
-		
-		if(memory.contains(boardNo)) {// 이미 있는 번호라면
-			return true;//조회수 증가 없이 통과!
+		//[4] DB에 조회이력이 있으면 제거
+		int count = boardReadDao.count(loginId, boardNo);
+		if(count > 0) {//기록이 1개 이상이면
+			return true;// 지나가세요
 		}
+		//[5] DB 조회이력을 생성
+		boardReadDao.insert(loginId, boardNo);
 		
-		//세션 갱신
-		memory.add(boardNo);//번호 추가하고
-		session.setAttribute("memory", memory); //세션의 저장소를 갱신
-		
-		//[6] 조회수 증가 처리
+		//[6] 조회수 증가 처리 // 이제 중복되는 느낌이 있지만, 반정규화 느낌으로 그냥 놔둔다
         boardDao.updateBoardReadcount(boardNo);
 		
 		// 조회수가 올라가든 안올라가든 무조건 통과
