@@ -18,7 +18,18 @@
 		(수정됨)
 		</c:if>
 		</h1>
-		${boardDto.boardWriter} <br><br>
+		
+		<!-- 목록과 동일하게 사용자 아이디 출력 -->
+		<c:if test="${boardDto.boardWriter == null}">
+			(탈퇴한 사용자)
+		</c:if>
+		<c:if test="${boardDto.boardWriter != null}">
+			<!-- 작성자 누르면 해당 회원에 대한 상세페이지로 안내 -->
+			<a href="/member/detail?memberId=${boardDto.boardWriter}">
+				${boardDto.boardWriter}
+			</a>
+		</c:if>
+		<br><br>
 		<fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate> 
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		조회수 ${boardDto.boardReadcount}

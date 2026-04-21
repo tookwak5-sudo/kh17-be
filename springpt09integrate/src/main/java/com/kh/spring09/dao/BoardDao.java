@@ -142,8 +142,19 @@ public class BoardDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
-	//조회수 증가 수정
-	public boolean editReadcount(int boardNo) {
+	//작성자로 검색하는 메소드
+	public List<BoardDto> selectListByBoardWriter(String boardWriter){
+		String sql = "select * from board_list "
+				+ "where board_writer=? "
+				+ "order by board_no desc";
+		Object[] params = {boardWriter};
+		return jdbcTemplate.query(sql, boardMapper, params);
+	}
+	
+	
+	
+	//조회수 1 증가시키는 메소드
+	public boolean updateBoardReadcount(long boardNo) {
 		String sql ="update board set board_readcount= board_readcount+1 where board_no=?";
 		Object[] params = {boardNo};
 		return jdbcTemplate.update(sql, params) > 0;

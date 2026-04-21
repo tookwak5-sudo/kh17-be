@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.spring09.dao.BoardDao;
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dao.MemberExitDao;
 import com.kh.spring09.dao.MemberHistoryDao;
+import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
@@ -34,6 +36,8 @@ public class MemberController {
 	private MemberExitDao memberExitDao;
 	@Autowired
 	private MemberHistoryDao memberHistoryDao;
+	@Autowired
+	private BoardDao boardDao;
 	
 		//회원정보 등록(일반)
 		@GetMapping("/join")
@@ -207,14 +211,6 @@ public class MemberController {
 			return "member/passwordFinish";
 		}
 		
-		// 개인정보 조회
-		@RequestMapping("/detail")
-		public String detail(@RequestParam String memberId, Model model) {
-			MemberDto memberDto = memberDao.selectOne(memberId);
-			model.addAttribute("memberDto",memberDto);
-			return "member/detail";
-		}
-		
 		//개인정보 수정 변경 (회원 전용 기능 - 무조건 session이 있어야함) // mypage와 동일한 패턴
 		@GetMapping("/edit")
 		public String edit(HttpSession session, Model model) { // 얘들은 그 어떤 어노테이션을 쓰면 안됨, 스프링에서 가져오는 데이터이 이기 때문
@@ -304,4 +300,18 @@ public class MemberController {
 			memberDao.updateMemberPassword(memberDto); //그대로 업데이트(시간만 바뀜)
 			return "redirect:/"; //메인페이지로 리다이렉트
 		}
+		// 개인정보 조회
+		@RequestMapping("/detail")
+		public String detail(@RequestParam String memberId, Model model) {
+			MemberDto memberDto = memberDao.selectOne(memberId);
+			if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
+			
+			//만약 관리자는 못본다면 memberDto의 등급을 확인해서 차단 (GetOutException 처리) --> 안함
+			
+			model.addAttribute("memberDto",memberDto);
+			List<BoardDto> boardList = boardDao.selectListByBoardWriter(memberId);
+			model.addAttribute("boardList", boardList);
+			return "member/detail";
+		}
+				
 }

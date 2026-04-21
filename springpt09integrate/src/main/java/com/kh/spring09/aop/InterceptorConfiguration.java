@@ -26,10 +26,13 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		private MasterDenyInterceptor masterDenyInterceptor;
 		
 		@Autowired
-	    private BoardReadInterceptor boardReadInterceptor;
+		private BoardOwnerInterceptor boardOwnerInterceptor;
 		
 		@Autowired
-		private BoardOwnerInterceptor boardOwnerInterceptor;
+		private BoardReadInterceptor boardReadInterceptor;
+		
+		@Autowired
+		private BoardReadInterceptor2 boardReadInterceptor2;
 		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
@@ -84,8 +87,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 					);
 			//본인 소유의 게시글만 수정 삭제가 가능하도록 인터셉터 등록
 			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns("/board/edit", "/board/delete");
-			//게시글 세부정보를 보면 조회수 증가
-			registry.addInterceptor(boardReadInterceptor).addPathPatterns(
+			//조회수 증가 처리를 하는 인터셉터 설정
+			registry.addInterceptor(boardReadInterceptor2).addPathPatterns(
 						"/board/detail"
 					);
 		}

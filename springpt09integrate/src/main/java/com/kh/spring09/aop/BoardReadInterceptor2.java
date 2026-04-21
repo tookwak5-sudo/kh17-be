@@ -12,9 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-
+//목표 :
+// - 최소한의 조회수 증가 방지 처리
+// - 비회원이 글을 읽으면 조회수 증가 처리 안함
+// - 탈퇴한 사용자가 작성한 글은 조회수 증가 처리 안함
+// - 회원일 경우 본인 글은 조회수 증가 처리 안함
 @Service
-public class BoardReadInterceptor implements HandlerInterceptor{
+public class BoardReadInterceptor2 implements HandlerInterceptor{
 	@Autowired
 	private BoardDao boardDao;
 	
@@ -37,7 +41,23 @@ public class BoardReadInterceptor implements HandlerInterceptor{
 			throw new TargetNotfoundException("존재하지 않는 게시글");
 		}
 		
-		//[3] 조회수 증가 처리
+		//[3] 비회원일 경우 제거
+		HttpSession session = request.getSession();
+		String loginId = (String) session.getAttribute("loginId");
+		if(loginId == null) {
+			return true; // 그냥 가세요!
+		}
+		
+		//[4] 작성자가 탈퇴한 글은 제거
+		if(boardDto.getBoardWriter() == null) {
+			return true; // 그냥 가세요!
+		}
+		//[5] 본인 소유인 경우
+		if(loginId.equals(boardDto.getBoardWriter())) {
+			return true; // 그냥 가세요!
+		}
+		
+		//[6] 조회수 증가 처리
         boardDao.updateBoardReadcount(boardNo);
 		
 		// 조회수가 올라가든 안올라가든 무조건 통과

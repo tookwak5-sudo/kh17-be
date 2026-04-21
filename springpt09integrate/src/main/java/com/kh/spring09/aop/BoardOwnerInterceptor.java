@@ -54,7 +54,7 @@ public class BoardOwnerInterceptor implements HandlerInterceptor{
 //		String loginLevel = (String) session.getAttribute("loginLevel");
 //		if(!loginLevel.equals("master")) {
 //			throw new GetOutException();
-//		}
+//		}	
 		
 		//[5] 소유자가 아니면 차단
 		if(!loginId.equals(boardDto.getBoardWriter())) {
