@@ -25,7 +25,7 @@
 <a href="./insert">신규 등록하기</a>
 
 <!-- 결과출력 -->
-<h2>강좌 수: ${list.size()}</h2>
+<h2>결과 수 : ${pageVo.beginRownum} ~ ${pageVo.endRownum}  / 총 ${pageVo.count}개</h2>
 
 <table border=1 width=1000px> <thead>
 	<tr>
@@ -67,15 +67,6 @@
 		</tbody>
 </table>
 
-<!-- <div> -->
-<!-- 	<h3> -->
-<%-- 		[${lectureDto.lectureNo}]  --%>
-<%-- 		${lectureDto.lectureTitle} --%>
-<!-- 	</h3> -->
-<%-- 	카테고리 : ${lectureDto.lectureCategory} <br> --%>
-<%-- 	강의 시간 : ${lectureDto.lectureDuration} <br> --%>
-<%-- 	수강료 : <fmt:formatNumber value="${lectureDto.lecturePrice}" pattern="#,##0"/>원<br> --%>
-<%-- 	수업유형 : ${lectureDto.lectureType} --%>
-<!-- </div> -->
+<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

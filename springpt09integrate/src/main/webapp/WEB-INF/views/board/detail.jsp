@@ -51,6 +51,7 @@
 		<!-- 로그인 되어 있으면 -->
 		<c:if test="${sessionScope.loginId != null}">
 		<a href="./writer">글쓰기</a>
+		<a href="./writer?boardParent=${boardDto.boardNo}">답글쓰기</a>
 		</c:if>
 		
 		<!-- 

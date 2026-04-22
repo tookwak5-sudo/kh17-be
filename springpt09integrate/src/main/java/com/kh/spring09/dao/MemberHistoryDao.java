@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.mapper.MemberHistoryMapper;
+import com.kh.spring09.vo.PageVo;
 
 @Repository
 public class MemberHistoryDao {
@@ -51,10 +52,10 @@ public class MemberHistoryDao {
 	
 	// 검색(날짜 기간 + Top N + 아이디)
 	public List<MemberHistoryDto> selectList(
-	        String memberHistoryOrigin, String beginDate, String endDate, int beginRow, int endRow) {
-	    
+	        //String memberHistoryOrigin, String beginDate, String endDate, int beginRownum, int endRownum) {
+		 	String memberHistoryOrigin, PageVo pageVo) {
 		//날짜가 없다면 검색결과를 보여주지 마세요!!!!
-		if(beginDate == null || endDate == null) return List.of();
+		if(pageVo.isList()) return List.of();
 		
 	    String sql = "select * from ("
 	                    + "select rownum RN, TMP.* from ("
@@ -70,7 +71,7 @@ public class MemberHistoryDao {
 	                + ") where RN between ? and ?";
 	    
 	    // 파라미터 순서: 아이디 -> 시작일 -> 종료일 -> 시작행 -> 종료행
-	    Object[] params = {memberHistoryOrigin, beginDate, endDate, beginRow, endRow};
+	    Object[] params = {memberHistoryOrigin, pageVo.getBeginDate(), pageVo.getEndDate(), pageVo.getBeginRownum(), pageVo.getEndRownum()};
 	    return jdbcTemplate.query(sql, memberHistoryMapper, params);
 	}
 	//아이디조회
@@ -82,18 +83,47 @@ public class MemberHistoryDao {
 			}
 	//조회
 		public List<MemberHistoryDto> selectList(){
-			String sql = "select * from member order by member_id asc";
+			//String sql = "select * from member order by member_id asc";
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from member order by member_id asc"
+				+ ")TMP"
+			+ ") where rn between ? and ?";
 			return jdbcTemplate.query(sql, memberHistoryMapper);
 		}
 		
 		//검색
-		public List<MemberHistoryDto> selectList(String column, String keyword){
-			if(column == null || keyword == null) return selectList();
-			if(column.isBlank() || keyword.isBlank()) return selectList();
-			if(allowColumns.contains(column) == false) return List.of();
+		//public List<MemberHistoryDto> selectList(String column, String keyword){
+		public List<MemberHistoryDto> selectList(PageVo pageVo){
+			if(pageVo.isList()) return selectList();
+			if(allowColumns.contains(pageVo.getColumn()) == false) return List.of();
 			
-			String sql = "select * from member where instr("+ column +", ?) > 0 order by member_id asc";
-			Object[] params = { keyword };
+			//String sql = "select * from member where instr("+ column +", ?) > 0 order by member_id asc";
+			String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from member "
+					+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+					+ "order by member_id asc"
+				+ ")TMP"
+			+ ") where rn between ? and ?";
+			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };
 			return jdbcTemplate.query(sql, memberHistoryMapper, params);
+		}
+		
+		//카운트 메소드
+		public int count() {
+			String sql = "select count(*) from member";
+			return jdbcTemplate.queryForObject(sql, int.class);
+		}
+		public int count(PageVo pageVo) {
+			if(pageVo.isList()) return count();
+			
+			if(allowColumns.contains(pageVo.getColumn()) == false) 
+				return 0;//허용되는 검색항목이 아니면 결과가 없다고 반환
+			
+			String sql = "select count(*) from member "
+						+ "where instr("+pageVo.getColumn()+", ? ) > 0";
+			Object[] params = { pageVo.getKeyword() };
+			return jdbcTemplate.queryForObject(sql, int.class, params);
 		}
 }

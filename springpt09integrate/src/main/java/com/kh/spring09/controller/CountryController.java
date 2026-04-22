@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.spring09.dao.CountryDao;
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVo;
 
 @Controller
 @RequestMapping("/country")
@@ -43,13 +44,15 @@ public class CountryController {
 	
 	//목록 및 검색
 	@RequestMapping("/list")
-	public String list(Model model, 
-			@RequestParam(required = false) String column, 
-			@RequestParam(required = false) String keyword) {
+	public String list(@ModelAttribute PageVo pageVo ,Model model) {
 		//리스트에 옮겨담고
-		List<CountryDto> list = countryDao.selectList(column, keyword);
+		List<CountryDto> list = countryDao.selectList(pageVo);
 		//모델로 조회
 		model.addAttribute("list", list);
+		
+		int count = countryDao.count(pageVo);
+		pageVo.setCount(count);
+		model.addAttribute("pageVo", pageVo);
 		
 		return "country/list";
 	}

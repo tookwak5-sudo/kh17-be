@@ -13,6 +13,8 @@ public class PageVo {
 	private int page = 1; // 파라미터에 있는 페이지번호(없으면 1페이지)
 	private int size = 10; // 파라미터에 있는 페이지규격(없으면 10개)
 	private int count; //총 데이터 개수 (DB에서 조회해서 채워줘야함)
+	private String beginDate;
+	private String endDate; 
 	
 	//목록인지 검색인지 판정하는 메소드
 	//- 목록 : 컬럼과 키워드 중 하나라도 없는 경우
@@ -33,6 +35,7 @@ public class PageVo {
 	public int getEndRownum() {
 		return page * size;
 	}
+	
 	
 	//목록 및 검색 유지용 파라미터 생성
 	public String getSearchParams() {
@@ -76,10 +79,7 @@ public class PageVo {
 		return getEndBlock() + 1;
 	}
 	
-//	//맨 마지막 블록을 반환하는 메소드
-//	public int getLastBlock() {
-//		
-//	}
+	
 	
 	
 }

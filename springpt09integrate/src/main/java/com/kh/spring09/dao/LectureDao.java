@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring09.dto.LectureDto;
 import com.kh.spring09.mapper.LectureMapper;
+import com.kh.spring09.vo.PageVo;
 
 
 @Repository
@@ -57,20 +58,34 @@ public class LectureDao {
 		
 		
 		//조회
-		public List<LectureDto> selectList(){
+		public List<LectureDto> selectList(int beginRownum, int endRownum){
 			String sql = "select * from lecture order by lecture_no asc";
-			return jdbcTemplate.query(sql, lectureMapper);
+			sql = "select * from( "
+					+ "select rownum rn, TMP.* from("
+					+ "select * from lecture order by lecture_no asc"
+					+ ") TMP"
+					+ ") where rn between ? and ?";
+			Object[] params = {beginRownum, endRownum};
+			return jdbcTemplate.query(sql, lectureMapper, params);
 		}
 		
 		//검색
-		public List<LectureDto> selectList(String column, String keyword){
+		public List<LectureDto> selectList(PageVo pageVo){
 			
-			if(column == null || keyword == null) return selectList();//또는 return List.of()
+			if(pageVo.isList()) return selectList(pageVo.getBeginRownum(), pageVo.getEndRownum());//또는 return List.of()
 			Set<String> allowList = Set.of("lecture_title", "lecture_category", "lecture_type");
-			if(!allowList.contains(column)) return selectList(); //또는 return List.of()
 			
-			String sql = "select * from lecture where instr("+ column +", ?) > 0 order by lecture_no asc";
-			Object[] params = { keyword };
+			if(allowList.contains(pageVo.getColumn()) == false) 
+				return List.of();
+			
+			String sql =  "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from lecture "
+					+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+					+ "order by country asc"
+				+ ") TMP"
+				+ ") where rn between ? and ?";
+			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };
 			return jdbcTemplate.query(sql, lectureMapper, params);
 		}
 		
@@ -80,5 +95,21 @@ public class LectureDao {
 			Object[] params = {lectureNo};
 			List<LectureDto> list = jdbcTemplate.query(sql, lectureMapper, params);
 			return list.isEmpty() ? null : list.get(0);
+		}
+		
+		//카운트 메소드
+		public int count() {
+			String sql = "select count(*) from lecture";
+			return jdbcTemplate.queryForObject(sql, int.class);
+		}
+		public int count(PageVo pageVo) {
+			if(pageVo.isList()) return count();
+			Set<String> allowList = Set.of("lecture_title", "lecture_category", "lecture_type");
+			if(!allowList.contains(pageVo.getColumn()))
+				return count();
+			
+			String sql = "select count(*) from lecture where instr("+pageVo.getColumn()+", ?) > 0";
+			Object[] params = {pageVo.getKeyword()};
+			return jdbcTemplate.queryForObject(sql, int.class, params);
 		}
 }

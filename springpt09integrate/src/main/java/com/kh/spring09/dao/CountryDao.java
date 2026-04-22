@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.mapper.CountryMapper;
+import com.kh.spring09.vo.PageVo;
 
 @Repository // DB나 파일을 제어하기 위한 도구 (영속성을 가진 대상 제어 도구)
 public class CountryDao {
@@ -61,20 +62,36 @@ public class CountryDao {
 	
 	
 	//조회 메소드
-	public List<CountryDto> selectList(){
-		String sql = "select * from country order by country_no asc";
-		return jdbcTemplate.query(sql, countryMapper);
+	public List<CountryDto> selectList(int beginRownum, int endRownum){
+		String sql = "select * from("
+				+ "select rownum rn, TMP.* from("
+					+ "select * from country order by country_no asc"
+					+ ") TMP"
+					+ ") where rn between ? and ?";
+		Object[] params = { beginRownum, endRownum};
+		return jdbcTemplate.query(sql, countryMapper, params);
 	}
 	
 	//검색 메소드
-	public List<CountryDto> selectList(String column, String keyword){
-		if(column == null || keyword == null) return selectList();
+	public List<CountryDto> selectList(PageVo pageVo){
+		if(pageVo.isList())
+			return selectList(pageVo.getBeginRownum(), 
+					pageVo.getEndRownum());
 		
 		
-		if(allowList.contains(column) == false) return List.of(); 
+		if(allowList.contains(pageVo.getColumn()) == false) 
+			return List.of(); 
 		
-		String sql = "select * from country where instr("+ column +", ?) > 0 order by country_no asc";
-		Object[] params = { keyword };
+		String sql =  "select * from ("
+				+ "select rownum rn, TMP.* from ("
+				+ "select * from country "
+				+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+				+ "order by country asc"
+			+ ") TMP"
+			+ ") where rn between ? and ?";
+		Object[] params = { 
+				pageVo.getKeyword(), pageVo.getBeginRownum(), 
+				pageVo.getEndRownum() };
 		return jdbcTemplate.query(sql, countryMapper, params);
 	}
 	
@@ -84,5 +101,21 @@ public class CountryDao {
 				Object[] params = {countryNo};
 				List<CountryDto> list = jdbcTemplate.query(sql, countryMapper, params); // 일단 목록으로 조회
 				return list.isEmpty() ? null : list.get(0);
+			}
+			
+			//카운트 메소드
+			public int count() {
+				String sql = "select count(*) from country";
+				return jdbcTemplate.queryForObject(sql, int.class);
+			}
+			public int count(PageVo pageVo) {
+				if(pageVo.isList()) return count();
+				
+				if(allowList.contains(pageVo.getColumn()) == false)
+					return count();
+				
+				String sql = "select count(*) from country where instr("+pageVo.getColumn()+", ?) > 0";
+				Object[] params = {pageVo.getKeyword()};
+				return jdbcTemplate.queryForObject(sql, int.class, params);
 			}
 }

@@ -22,62 +22,13 @@
 	<button>검색</button>
 </form>
 
+<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
+
 <!-- 등록링크 -->
 <a href="./insert">신규 도서등록</a>
 
-
-<%-- <c:if test="${listByBookTitle.size() > 0}"> --%>
-<!-- 	<h2>도서 제목 검색 결과</h2> -->
-	
-<%-- 	<c:forEach var="bookDto" items="${listByBookTitle}"> --%>
-<!-- 	<div> -->
-<!-- 		<img src="https://www.dummyimage.com/100x150?text=Book"> -->
-<!-- 		<h2> -->
-<%-- 			<a href="./detail?bookId=${bookDto.bookId}"> --%>
-<%-- 				${bookDto.bookId} --%>
-<!-- 			</a>	 -->
-<!-- 		</h2> -->
-<%-- 		지은이 : ${bookDto.bookAuthor}<br> --%>
-<%-- 		출판사 : ${bookDto.bookPublisher}<br> --%>
-<%-- 		장르 : ${bookDto.bookGenre}<br> --%>
-<%-- 		출간일 : ${bookDto.bookPublicationDate}<br> --%>
-<!-- 	</div> -->
-<%-- 	</c:forEach> --%>
-<!-- 		<hr> -->
-	
-<%-- </c:if> --%>
-
-<%-- <c:if test="${listByBookAuthor.size() > 0}"> --%>
-<!-- 	<h2>도서 지은이 검색 결과</h2> -->
-<!-- 	<div> -->
-<!-- 		<img src="https://www.dummyimage.com/100x150?text=Book"> -->
-<%-- 		<h2>${bookDto.bookTitle}</h2> --%>
-<%-- 		지은이 : ${bookDto.bookAuthor}<br> --%>
-<%-- 		출판사 : ${bookDto.bookPublisher}<br> --%>
-<%-- 		장르 : ${bookDto.bookGenre}<br> --%>
-<%-- 		출간일 : ${bookDto.bookPublicationDate}<br> --%>
-<!-- 	</div> -->
-<%-- </c:if> --%>
-<!-- 		<hr> -->
-
-<%-- <c:if test="${listByBookPublicationDate.size() > 0}"> --%>
-<!-- 	<h2>도서 출간일 검색 결과</h2> -->
-<!-- 	<div> -->
-<!-- 		<img src="https://www.dummyimage.com/100x150?text=Book"> -->
-<%-- 		<h2>${bookDto.bookTitle}</h2> --%>
-<%-- 		지은이 : ${bookDto.bookAuthor}<br> --%>
-<%-- 		출판사 : ${bookDto.bookPublisher}<br> --%>
-<%-- 		장르 : ${bookDto.bookGenre}<br> --%>
-<%-- 		출간일 : ${bookDto.bookPublicationDate}<br> --%>
-<!-- 	</div> -->
-<%-- </c:if> --%>
-<!-- 		<hr> -->
-
-
-
  <!-- 결과출력 -->
-<h2>도서 수: ${list.size()}</h2>
-
+<h2>결과 수 : ${pageVo.beginRownum} ~ ${pageVo.endRownum}  / 총 ${pageVo.count}개</h2>
 <table border=1 width=1000px>
 	<thead>
 		<tr>
@@ -119,5 +70,7 @@
 		</c:forEach>
 	</tbody>
 </table>
+
+<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

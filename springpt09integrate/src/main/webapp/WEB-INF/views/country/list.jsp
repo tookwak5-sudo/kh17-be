@@ -25,7 +25,7 @@
 <a href="./insert">신규 등록하기</a>
 
 <!-- 결과 출력 -->
-<h2>결과 수 : ${list.size()}</h2>
+<h2>결과 수 : ${pageVo.beginRownum} ~ ${pageVo.endRownum}  / 총 ${pageVo.count}개</h2>
 
 <table border="1" width="500">
 		<thead>
@@ -57,22 +57,8 @@
 			</tr>
 			</c:forEach>
 		</tbody>
-
 </table>
 
-<%-- <c:forEach var="countryDto" items="${list}"> --%>
-<!-- 	<hr> -->
-<!-- 	<div> 비어있는 영역 -->
-<%-- 		<h3>[${countryDto.countryRegion}] ${countryDto.countryName}</h3> --%>
-<%-- <%-- 		원래는 --%>
-<%-- 	수도 : ${countryDto.getCountryCapital} <br> --%>
-<%-- 	근데 En에서 자동으로 필드명만 입력해도 자동으로 getter메소드를 가져옴} --%>
-<%--  --%>  --%>
-<%-- 		수도 : ${countryDto.countryCapital} <br> --%>
-<%-- 		<%--인구 : ${countryDto.countryPopulation} <br> --%> --%>
-<%-- 		인구 : <fmt:formatNumber value="${countryDto.countryPopulation}" --%>
-<%-- 								 pattern="#,##0"></fmt:formatNumber>명<br> --%>
-<!-- 	</div> -->
-<%-- </c:forEach> --%>
+<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

@@ -23,6 +23,7 @@ import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVo;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -114,7 +115,7 @@ public class MemberController {
 			LocalDateTime lastChange = last.toLocalDateTime(); // 위에서 계산한 시간과
 			LocalDateTime current = LocalDateTime.now(); // 현재 시각과의
 			Duration duration = Duration.between(lastChange, current); //차이를 구해라!
-			if(duration.toDays() >= 1) {// 비밀번호 변경한지 일정시간(ex: 1시간)
+			if(duration.toDays() >= 30) {// 비밀번호 변경한지 일정시간(ex: 1시간)
 				return "redirect:./notice"; // 비밀번호 변경 알림 페이지로 이동
 			}
 			
@@ -142,7 +143,7 @@ public class MemberController {
 		//마이페이지(회원 전용 기능)
 		//- 세션에 들어있는 아이디를 이용해서 현재 회원의 모든 정보를 화면에 전달
 		@RequestMapping("/mypage")
-		public String mypage(HttpSession session, Model model) {
+		public String mypage(HttpSession session, Model model, @ModelAttribute PageVo pageVo) {
 			//session에 존재하는 현재 사용자 영역에 저장된 loginId라는 이름의 값을 불러오세요!
 			String loginId = (String) session.getAttribute("loginId");
 			
@@ -160,18 +161,21 @@ public class MemberController {
 		
 		@RequestMapping("/history")
 		public String history(HttpSession session, Model model,
-							@RequestParam(required = false) String beginDate,
-							@RequestParam(required = false) String endDate,
-							@RequestParam(required = false, defaultValue = "1") int page,
-							@RequestParam(required = false, defaultValue = "20") int size) {
+							//@RequestParam(required = false) String beginDate,
+						//	@RequestParam(required = false) String endDate,
+						//	@RequestParam(required = false, defaultValue = "1") int page,
+						//	@RequestParam(required = false, defaultValue = "20") int size,
+							@ModelAttribute PageVo pageVo
+				) {
 			String loginId = (String) session.getAttribute("loginId");
 			
-			int endRow = page * size;
+			//int endRow = page * size;
 			//int beginRow = endRow - (size - 1);
-			int beginRow = (page - 1) * size + 1;
+			
+			//int beginRow = (page - 1) * size + 1;
 			
 			List<MemberHistoryDto> loginHistory = 
-					memberHistoryDao.selectList(loginId, beginDate, endDate, beginRow, endRow);
+					memberHistoryDao.selectList(loginId, pageVo);
 			
 			model.addAttribute("loginHistory", loginHistory);
 			

@@ -10,7 +10,7 @@
     <h1>로그인</h1>
     <p>아이디: <input type="text" name="memberId" required></p>
     <p>비밀번호: <input type="password" name="memberPassword" required></p>
-    <button>로그인</button>
+     <button>로그인</button>
 </form>
     
     <c:if test="${param.error != null}">

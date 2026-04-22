@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.spring09.dao.BookDao;
 import com.kh.spring09.dto.BookDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVo;
 
 @Controller
 @RequestMapping("/book") //무조거 RequestMapping만 가능(GET/POST 선택불가);
@@ -39,11 +40,14 @@ public class BookController {
 	}
 	
 	@RequestMapping("/list")
-	public String list(Model model, 
-						@RequestParam(required = false) String column,
-						@RequestParam(required = false) String keyword) {
-		List<BookDto> list = bookDao.selectList(column, keyword);
+	public String list(@ModelAttribute PageVo pageVo ,Model model) {
+		List<BookDto> list = bookDao.selectList(pageVo);
 		model.addAttribute("list", list);
+		
+		int count = bookDao.count(pageVo);
+		pageVo.setCount(count);
+		model.addAttribute("pageVo", pageVo);
+		
 		return "book/list";
 	}
 	

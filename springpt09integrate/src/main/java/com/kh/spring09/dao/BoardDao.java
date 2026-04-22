@@ -33,30 +33,15 @@ public class BoardDao {
 		List<BoardDto> list = jdbcTemplate.query(sql, boardMapper, params);
 		return list.isEmpty() ? null : list.get(0);
 	}
-	
-//	//목록(일반)
-//	public List<BoardDto> selectList(){
-//		String sql = "select * from board_list order by board_no desc"; //wtime으로 해도 되나 기본키가 가장 빠르기 때문에 기본키로 순서 지정
-//		List<BoardDto> list = jdbcTemplate.query(sql, boardMapper);
-//		return list;
-//	}
-	
-//	//검색 page없이 단순 목록
-//	public List<BoardDto> selectList(String column, String keyword){
-//		if(column == null || keyword == null) return selectList();
-//		if(column.isBlank() || keyword.isBlank()) return List.of();
-//		if(!allowColumns.contains(column)) return selectList();
-//		
-//		String sql = "select * from board_list where instr("+column+", ?) > 0 order by board_no desc";
-//		Object[] params = {keyword};
-//		return jdbcTemplate.query(sql, boardMapper, params);
-//	}
-	
+		
 	//목록
 		public List<BoardDto> selectList(int page, int size){
 			String sql = "select * from ("
 					+ "select rownum rn, TMP.* from ("
-						+ "select * from board_list order by board_no desc"
+						+ "select * from board_list "
+						+ "connect by prior board_no=board_parent "
+						+ "start with board_parent is null "
+						+ "order siblings by board_group desc, board_no asc"
 					+ ") TMP"
 					+ ") where rn between ? and ?";
 			int beginRow = page * size - (size-1);
@@ -76,17 +61,18 @@ public class BoardDao {
 					+ "select rownum rn, TMP.* from ("
 						+ "select * from board_list "
 						+ "where instr("+pageVo.getColumn()+", ?) > 0 "
-						+ "order by board_no desc"
+						+ "connect by prior board_no=board_parent "
+						+ "start with board_parent is null "
+						+ "order siblings by board_group desc, board_no asc"
 					+ ") TMP"
 					+ ") where rn between ? and ?";
-//			int beginRow = page * size - (size-1);
-//			int endRow = page * size;
 			Object[] params = {
 					pageVo.getKeyword(), 
 					pageVo.getBeginRownum(), 
 					pageVo.getEndRownum()};
 			return jdbcTemplate.query(sql, boardMapper, params);
 		}
+		
 	//공지사항 조회
 	public List<BoardDto> selectNoticeList(){
 		String sql = "select * from board_list "
@@ -145,12 +131,12 @@ public class BoardDao {
 				+ "board_head, "
 				+ "board_title, "
 				+ "board_content, "
-				+ "board_writer) "
-				+ "values(?, ?, ?, ?, ?)";
+				+ "board_writer, board_group, board_parent, board_depth) "
+				+ "values(?, ?, ?, ?, ?, ?, ?, ?)";
 			Object[] params = {
 				boardDto.getBoardNo(), boardDto.getBoardHead(), 
 				boardDto.getBoardTitle(), boardDto.getBoardContent(), 
-				boardDto.getBoardWriter()
+				boardDto.getBoardWriter(), boardDto.getBoardGroup(), boardDto.getBoardParent(), boardDto.getBoardDepth()
 			};
 			jdbcTemplate.update(sql, params);
 		}

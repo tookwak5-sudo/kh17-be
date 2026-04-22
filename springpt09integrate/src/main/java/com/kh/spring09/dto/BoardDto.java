@@ -22,6 +22,10 @@ public class BoardDto {
 	private Timestamp boardEtime;
 	private long boardReadcount, boardLikecount, boardReplycount;
 	
+	private long boardGroup;
+	private Long boardParent;
+	private long boardDepth;
+	
 	//(추가) 오늘 작성한 글은 시간만, 이전에 작성한 글은 날짜만 반환하도록 계산하는 가상의 getter메소드 구현
 	public String getBoardWtimeString() {
 		//작성일과 현재시각을LocalDateTime 형태로 불러온다

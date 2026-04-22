@@ -5,13 +5,21 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-
+<c:if test="${param.boardParent == null}">	
 <h1>신규 글 작성</h1>
+</c:if>
+<c:if test="${param.boardParent != null}">	
+<h1>답글 작성</h1>
+</c:if>
 타인에 대한 무분별한 비방글은 경고 없이 삭제될 수 있습니다
 
 <form action="./writer" method="post">
-작성자: ${boardDto.boardWriter}
-<input type="hidden" name="boardWriter" value="${boardDto.boardWriter}">
+
+<!--  제목창을 답글일 때와 새글일 때로 나눠서 처리  -->
+	<c:if test="${param.boardParent != null}">
+		<input type="hidden" name="boardParent" value="${param.boardParent}">
+	</c:if>
+
 	제목: <input type="text" name="boardTitle" required> <br><br>
 	구분: <select name="boardHead" required>
 			<option value="">선택 안함</option>

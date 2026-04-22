@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring09.dto.BookDto;
 import com.kh.spring09.mapper.BookMapper;
+import com.kh.spring09.vo.PageVo;
 
 @Repository
 public class BookDao {
@@ -64,19 +65,32 @@ public class BookDao {
 	}
 	
 	//조회
-	public List<BookDto> selectList(){
-		String sql = "select * from book order by book_id asc";
-		return jdbcTemplate.query(sql, bookMapper);
+	public List<BookDto> selectList(int beginRownum, int endRownum){
+		String sql = "select * from("
+					+ "select rownum rn, TMP.* from("
+						+ "select * from book order by book_id asc"
+						+ ") TMP"
+						+ ") where rn between ? and ?";
+		Object[] params = {beginRownum, endRownum};
+		return jdbcTemplate.query(sql, bookMapper, params);
 	}
 	
 	//검색
-	public List<BookDto> selectList(String column, String keyword){
-		if(column == null || keyword == null) return selectList();
-		if(column.isBlank() || keyword.isBlank()) return selectList();
-		if(!allowColumns.contains(column)) return List.of();
+	public List<BookDto> selectList(PageVo pageVo){
+		if(pageVo.isList()) return selectList(pageVo.getBeginRownum(), pageVo.getEndRownum());
+		if(!allowColumns.contains(pageVo.getColumn())) return List.of();
 		
-		String sql = "select * from book where instr("+column+", ?) > 0 order by book_id asc";
-		Object[] params = {keyword};
+		String sql = "select * from ("
+				+ "select rownum rn, TMP.* from ("
+				+ "select * from book "
+				+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+				+ "order by book_id asc"
+				+ ") TMP"
+				+ ") where rn between ? and ?";
+		Object[] params = {
+					pageVo.getKeyword(), pageVo.getBeginRownum(), 
+					pageVo.getEndRownum()
+				};
 		return jdbcTemplate.query(sql, bookMapper, params);
 	}
 	
@@ -86,5 +100,21 @@ public class BookDao {
 		Object[] params = {bookId};
 		List<BookDto> list = jdbcTemplate.query(sql, bookMapper, params);
 		return list.isEmpty() ? null : list.get(0);
+	}
+	
+	//카운트 메소드
+	public int count() {
+		String sql = "select count(*) from book";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	public int count(PageVo pageVo) {
+		if(pageVo.isList()) return count();
+		
+		if(allowColumns.contains(pageVo.getColumn()) == false)
+			return count();
+		
+		String sql = "select count(*) from book where instr("+pageVo.getColumn()+", ?) > 0";
+		Object[] params = {pageVo.getKeyword()};
+		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 }

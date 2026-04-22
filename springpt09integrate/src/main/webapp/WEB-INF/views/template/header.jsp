@@ -22,6 +22,7 @@ loginLevel : ${sessionScope.loginLevel}
 	
 	<!-- 비회원메뉴 -->
 	<a href="/">HOME</a>
+	<a href="/board/list">게시글목록</a>
 	<a href="/country/list">국가정보</a>
 	<a href="/lecture/list">강좌정보</a>
 	<a href="/member/join">회원가입</a>

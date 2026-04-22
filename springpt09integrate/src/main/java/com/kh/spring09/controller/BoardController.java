@@ -29,7 +29,7 @@ public class BoardController {
 	
 	//목록 및 검색 매핑
 	@RequestMapping("/list")
-	public String list(Model model, @ModelAttribute("pageVo") PageVo pageVo) {
+	public String list(Model model, @ModelAttribute PageVo pageVo) {
 		//공지사항 게시글
 //		List<BoardDto> noticeList = boardDao.selectList("board_head","공지");
 		List<BoardDto> noticeList = boardDao.selectNoticeList();
@@ -91,9 +91,23 @@ public class BoardController {
 		//[2] 글 번호 생성
 		long boardNo = boardDao.sequence();
 		
-		//[3] 정보 취합 후 등록 요청
+		//[3] 정보 취합 후 필요한 항목을 계산하고(새글/답글) 등록 요청
 		boardDto.setBoardWriter(loginId);
 		boardDto.setBoardNo(boardNo);
+		
+		if(boardDto.getBoardParent() == null) { //새글
+			boardDto.setBoardGroup(boardNo);//그룹번호를 글번호로 설정하세요
+			//boardDto.setBoardParent(null); //상위 글번호를 null로 설정
+			//boardDto.setBoardDepth(0L); //차수를 0으로 설정
+		}
+		else {// 답글
+			BoardDto findBoardDto = boardDao.selectOne(boardDto.getBoardParent()); //
+			boardDto.setBoardGroup(findBoardDto.getBoardGroup()); // 원본글과 동일한 그룹
+		  //boardDto.setBoardParent(findBoardDto.getBoardParent()); // 원본글의 글번호
+			boardDto.setBoardDepth(findBoardDto.getBoardDepth()+1); // 원본글의 차수 + 1
+		}
+		
+		
 		boardDao.insert(boardDto);
 		
 		//[4] 상세페이지로 리다이렉트

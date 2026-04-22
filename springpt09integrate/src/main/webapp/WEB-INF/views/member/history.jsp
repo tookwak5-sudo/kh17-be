@@ -37,3 +37,5 @@
 		</c:forEach>
 	</tbody>
 </table>
+
+<jsp:include page="/WEB-INF/views/template/pagenation2.jsp"></jsp:include>

@@ -29,7 +29,7 @@ public class BoardReadInterceptor2 implements HandlerInterceptor{
 		//파라미터에서 boardNo를 찾아서 해당글의 조회수를 증가
 		String boardNoStr = request.getParameter("boardNo");
 		
-		//[1] boradNo가 없을 경우 - 처리를 쉽게 하기 위해 String으로 booardNo를 받아오기
+		//[1] boardNo가 없을 경우 - 처리를 쉽게 하기 위해 String으로 booardNo를 받아오기
 		if(boardNoStr == null) {
 			throw new TargetNotfoundException("존재하지 않는 게시글");
 		}

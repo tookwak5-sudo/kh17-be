@@ -28,6 +28,11 @@ ${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글
 <!-- 	<th>최종수정일</th> -->
 	<th>조회수</th>
 	<th>좋아요</th>
+	<!-- 확인용 컬럼(나중에 삭제할 예정 -->
+	<th>no</th>
+	<th>group</th>
+	<th>parent</th>
+	<th>depth</th>
 	</tr>
 	</thead>
 	<tbody align="center">
@@ -40,6 +45,13 @@ ${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
 <%-- 				${stat.first}처음인지 아닌지를 감지 ${stat.last}마지막인지 아닌지를 감지 --%>
+				<!-- 답변글인 경우 차수만큼 간격을 벌리고 추가 표시 -->
+				<c:if test="${boardDto.boardDepth > 0}">
+					<c:forEach var="i" begin="1" end="${boardDto.boardDepth}" step="1">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					</c:forEach>
+					→
+				</c:if>
 				
 				<!-- 말머리가 있으면 표시 -->
 				<c:if test="${boardDto.boardHead != null}">
@@ -69,6 +81,11 @@ ${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글
 			<td>${boardDto.boardWtimeString}</td>
 			<td>${boardDto.boardReadcount}</td>
 			<td>${boardDto.boardLikecount}</td>
+			<!-- 확인용 -->
+			<td>${boardDto.boardNo}</td>
+			<td>${boardDto.boardGroup}</td>
+			<td>${boardDto.boardParent}</td>
+			<td>${boardDto.boardDepth}</td>
 		</tr>
 		
 		</c:forEach>
