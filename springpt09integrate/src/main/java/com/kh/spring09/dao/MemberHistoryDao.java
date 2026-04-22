@@ -107,6 +107,7 @@ public class MemberHistoryDao {
 				+ ")TMP"
 			+ ") where rn between ? and ?";
 			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };
+			System.out.println(pageVo.getBeginDate());
 			return jdbcTemplate.query(sql, memberHistoryMapper, params);
 		}
 		

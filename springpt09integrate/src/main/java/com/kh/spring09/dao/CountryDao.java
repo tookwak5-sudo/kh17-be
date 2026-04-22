@@ -21,15 +21,18 @@ public class CountryDao {
 	Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
 	//필요한 기능 등록
 	//등록
+	public int sequence() {
+		String sql = "select country_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
 	public void insert(CountryDto countryDto) {
 		String sql = "insert into country("
 				+ "country_no, country_region, country_name, "
 				+ "country_capital, country_population"
 				+ ") "
-				+ "values("
-				+ "country_seq.nextVal, ?, ?, ?, ?"
-				+ ")";
+				+ "values(?, ?, ?, ?, ?)";
 		Object[] params = {
+				countryDto.getCountryNo(),
 				countryDto.getCountryRegion(), countryDto.getCountryName(), 
 				countryDto.getCountryCapital(), countryDto.getCountryPopulation()
 				};
@@ -118,4 +121,11 @@ public class CountryDao {
 				Object[] params = {pageVo.getKeyword()};
 				return jdbcTemplate.queryForObject(sql, int.class, params);
 			}
+			
+	// 국기 등록
+	public void connect(int countryNo, int attachNo) {
+		String sql = "insert into country_flag(country_no, attach_no) values(?, ?)";
+		Object[] params = {countryNo, attachNo};
+		jdbcTemplate.update(sql, params);
+	}
 }

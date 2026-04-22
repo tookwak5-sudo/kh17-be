@@ -18,7 +18,7 @@ public class AttachService {
 	private AttachDao attachDao;
 	
 	//서비스는 메소드의 정해진 형태가 없다
-	public void save(MultipartFile attach) throws Exception, IOException {
+	public int save(MultipartFile attach) throws Exception, IOException {
 		//파일 업로드는 2단계로 진행된다 (DB와 실물파일 처리)
 				int attachNo = attachDao.sequence(); // 파일번호 생성
 				AttachDto attachDto = new AttachDto(); // DB에 저장하기 위한 객체 생성
@@ -34,5 +34,8 @@ public class AttachService {
 				//File target = new File(dir, attach.getOriginalFilename()); // 올린이름으로 올려서 같은 이름으로 올리면 덮어씌워짐
 				File target = new File(dir, String.valueOf(attachNo));//시퀀스 번호로 실제 저장
 				attach.transferTo(target);
+				
+				return attachNo;
 	}
+	
 }

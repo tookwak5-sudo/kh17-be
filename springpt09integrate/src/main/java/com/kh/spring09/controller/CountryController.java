@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.CountryDao;
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 import com.kh.spring09.vo.PageVo;
 
 @Controller
@@ -21,6 +24,9 @@ import com.kh.spring09.vo.PageVo;
 public class CountryController {
 	@Autowired
 	private CountryDao countryDao;
+	
+	@Autowired
+	private AttachService attachService;
 	
 	//등록(화면과 처리 코드 결합)
 	//- 예상되는 흐름 : [입력] -> [처리+출력]
@@ -31,9 +37,20 @@ public class CountryController {
 	}
 //	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@PostMapping("/insert")
-	public String insert(@ModelAttribute CountryDto countryDto) {
-		countryDao.insert(countryDto);
-//		return "redirect:/country/insert3"; //절대경로
+	public String insert(@ModelAttribute CountryDto countryDto,
+						@RequestParam MultipartFile attach) throws IOException, Exception {
+		//번호 생성 후 국가 등록하도록 처리
+		int countryNo = countryDao.sequence();
+		countryDto.setCountryNo(countryNo);		
+		countryDao.insert(countryDto); // if문 안에 있으면 국기 등록이 필수
+		
+		
+		if(!attach.isEmpty()) { // 국기가 있을 경우엔
+			int attachNo = attachService.save(attach); // 등록 정리
+			countryDao.connect(countryNo, attachNo); //국가번호와 파일번호를 연결해라
+		}
+		
+//		return "redirect:/country/insertComplete"; //절대경로
 		return "redirect:./insertComplete"; // 상대경로
 		
 	}
