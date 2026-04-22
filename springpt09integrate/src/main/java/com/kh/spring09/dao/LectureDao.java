@@ -20,12 +20,17 @@ public class LectureDao {
 	private LectureMapper lectureMapper;
 	
 	//등록
+	public int sequence() {
+		String sql = "select lecture_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
 	public void insert(LectureDto lectureDto) {
 		String sql = "insert into lecture("
 				+ "lecture_no, lecture_title, lecture_category, "
 				+ "lecture_duration, lecture_price, lecture_type) "
-				+ "values(lecture_seq.nextval, ?, ?, ?, ?, ?)";
+				+ "values(?, ?, ?, ?, ?, ?)";
 		Object[] params = {
+				lectureDto.getLectureNo(),
 				lectureDto.getLectureTitle(), lectureDto.getLectureCategory(), lectureDto.getLectureDuration(),
 				lectureDto.getLecturePrice(), lectureDto.getLectureType()
 		};
@@ -111,5 +116,12 @@ public class LectureDao {
 			String sql = "select count(*) from lecture where instr("+pageVo.getColumn()+", ?) > 0";
 			Object[] params = {pageVo.getKeyword()};
 			return jdbcTemplate.queryForObject(sql, int.class, params);
+		}
+		
+		//연결
+		public void connect(int lectureNo, int attachNo) {
+			String sql = "insert into lecture_image(lecture_no, attach_no) values(?, ?)";
+			Object[] params = {lectureNo, attachNo};
+			jdbcTemplate.update(sql, params);
 		}
 }
