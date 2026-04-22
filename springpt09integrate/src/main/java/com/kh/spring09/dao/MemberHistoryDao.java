@@ -12,6 +12,7 @@ import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.mapper.MemberHistoryMapper;
 import com.kh.spring09.vo.PageVo;
+import com.kh.spring09.vo.PageVo2;
 
 @Repository
 public class MemberHistoryDao {
@@ -53,9 +54,9 @@ public class MemberHistoryDao {
 	// 검색(날짜 기간 + Top N + 아이디)
 	public List<MemberHistoryDto> selectList(
 	        //String memberHistoryOrigin, String beginDate, String endDate, int beginRownum, int endRownum) {
-		 	String memberHistoryOrigin, PageVo pageVo) {
+		 	String memberHistoryOrigin, PageVo2 pageVo) {
 		//날짜가 없다면 검색결과를 보여주지 마세요!!!!
-		if(pageVo.isList()) return List.of();
+		if(pageVo.getBeginDate() == null || pageVo.getEndDate() == null) return List.of();
 		
 	    String sql = "select * from ("
 	                    + "select rownum RN, TMP.* from ("
@@ -94,8 +95,8 @@ public class MemberHistoryDao {
 		
 		//검색
 		//public List<MemberHistoryDto> selectList(String column, String keyword){
-		public List<MemberHistoryDto> selectList(PageVo pageVo){
-			if(pageVo.isList()) return selectList();
+		public List<MemberHistoryDto> selectList(PageVo2 pageVo){
+			if(pageVo.getBeginDate() == null || pageVo.getEndDate() == null) return selectList();
 			if(allowColumns.contains(pageVo.getColumn()) == false) return List.of();
 			
 			//String sql = "select * from member where instr("+ column +", ?) > 0 order by member_id asc";
@@ -106,25 +107,37 @@ public class MemberHistoryDao {
 					+ "order by member_id asc"
 				+ ")TMP"
 			+ ") where rn between ? and ?";
-			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };
-			System.out.println(pageVo.getBeginDate());
+			Object[] params = { 
+						pageVo.getKeyword(), 
+						pageVo.getBeginRownum(), 
+						pageVo.getEndRownum() 
+					};
 			return jdbcTemplate.query(sql, memberHistoryMapper, params);
 		}
 		
 		//카운트 메소드
 		public int count() {
-			String sql = "select count(*) from member";
+			String sql = "select count(*) from member_history";
 			return jdbcTemplate.queryForObject(sql, int.class);
 		}
-		public int count(PageVo pageVo) {
-			if(pageVo.isList()) return count();
-			
-			if(allowColumns.contains(pageVo.getColumn()) == false) 
-				return 0;//허용되는 검색항목이 아니면 결과가 없다고 반환
-			
-			String sql = "select count(*) from member "
-						+ "where instr("+pageVo.getColumn()+", ? ) > 0";
-			Object[] params = { pageVo.getKeyword() };
-			return jdbcTemplate.queryForObject(sql, int.class, params);
+		public int count(String loginId, PageVo2 pageVo) {
+			// 날짜가 없으면 0개 반환 (컨트롤러에서 날짜 필수 처리와 연동)
+		    if(pageVo.getBeginDate() == null || pageVo.getEndDate() == null) return 0;
+		    
+		    // member_history 테이블에서 '내 아이디'와 '선택한 날짜' 범위로 개수를 세야 함
+		    String sql = "select count(*) from member_history "
+		                + "where member_history_origin = ? "
+		                + "AND member_history_time between "
+		                + "to_timestamp(? || ' 00:00:00.000', 'YYYY-MM-DD HH24:MI:SS.FF3') "
+		                + "and "
+		                + "to_timestamp(? || ' 23:59:59.999', 'YYYY-MM-DD HH24:MI:SS.FF3')"; // 시각 끝부분 보정
+		                
+		    Object[] params = { 
+		        loginId, 
+		        pageVo.getBeginDate(), 
+		        pageVo.getEndDate() 
+		    };
+		    
+		    return jdbcTemplate.queryForObject(sql, Integer.class, params);
 		}
 }

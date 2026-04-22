@@ -7,12 +7,14 @@ import lombok.Data;
 //- 자바에서 배웠던 클래스와 가장 유사한 형태
 
 @Data
-public class PageVo {
+public class PageVo2 {
 	private String column; // 파라미터에 있는 검색항목
 	private String keyword; // 파라미터에 있는 검색키워드
 	private int page = 1; // 파라미터에 있는 페이지번호(없으면 1페이지)
 	private int size = 10; // 파라미터에 있는 페이지규격(없으면 10개)
 	private int count; //총 데이터 개수 (DB에서 조회해서 채워줘야함)
+	private String beginDate;
+	private String endDate; 
 	
 	//목록인지 검색인지 판정하는 메소드
 	//- 목록 : 컬럼과 키워드 중 하나라도 없는 경우
@@ -25,7 +27,13 @@ public class PageVo {
 		return !isList();
 	}
 	
-	
+	//날짜가 빈 경우
+	public boolean isNoDate() {
+		return beginDate == null || endDate == null;
+	}
+	public boolean isDate() {
+		return !isNoDate();
+	}
 	
 	//시작 Rownum 과 종료 Rownum을 계산
 	public int getBeginRownum() {
@@ -39,12 +47,35 @@ public class PageVo {
 	
 	//목록 및 검색 유지용 파라미터 생성
 	public String getSearchParams() {
-		if(isList())
-			return "size="+size;
-		else
-			return "size="+size+"&column="+column+"&keyword="+keyword;
+//		if(isList())
+//			return "size="+size;
+//		else
+//			return "size="+size+"&column="+column+"&keyword="+keyword;
+		
+		// 1. 기본적으로 size는 항상 포함
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("size=").append(size);
+
+	    // 2. 검색어(column, keyword)가 있는 경우 추가
+	    if (column != null && keyword != null) {
+	        sb.append("&column=").append(column);
+	        sb.append("&keyword=").append(keyword);
+	    }
+
+	    // 3. ★ 핵심: 날짜 정보가 있다면 파라미터에 추가
+	    // 이 부분이 있어야 페이지 번호를 눌러도 날짜가 유지됩니다.
+	    if (beginDate != null && !beginDate.isEmpty()) {
+	        sb.append("&beginDate=").append(beginDate);
+	    }
+	    if (endDate != null && !endDate.isEmpty()) {
+	        sb.append("&endDate=").append(endDate);
+	    }
+
+	    return sb.toString();
 	}
-	
+
+	//history?beginDate=2026-04-14&endDate=2026-04-23
+	//현재 페이지에 맞는 첫 블록 번호를 반환하는 메소드
 	public int getBeginBlock() {
 		return (page-1) / 10 * 10 + 1;
 	}

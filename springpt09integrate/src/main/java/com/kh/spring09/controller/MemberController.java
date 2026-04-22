@@ -26,7 +26,7 @@ import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
 import com.kh.spring09.service.AttachService;
-import com.kh.spring09.vo.PageVo;
+import com.kh.spring09.vo.PageVo2;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -159,7 +159,7 @@ public class MemberController {
 		//마이페이지(회원 전용 기능)
 		//- 세션에 들어있는 아이디를 이용해서 현재 회원의 모든 정보를 화면에 전달
 		@RequestMapping("/mypage")
-		public String mypage(HttpSession session, Model model, @ModelAttribute PageVo pageVo) {
+		public String mypage(HttpSession session, Model model, @ModelAttribute PageVo2 pageVo) {
 			//session에 존재하는 현재 사용자 영역에 저장된 loginId라는 이름의 값을 불러오세요!
 			String loginId = (String) session.getAttribute("loginId");
 			
@@ -181,7 +181,7 @@ public class MemberController {
 						//	@RequestParam(required = false) String endDate,
 						//	@RequestParam(required = false, defaultValue = "1") int page,
 						//	@RequestParam(required = false, defaultValue = "20") int size,
-							@ModelAttribute PageVo pageVo
+							@ModelAttribute PageVo2 pageVo
 				) {
 			String loginId = (String) session.getAttribute("loginId");
 			
@@ -189,12 +189,14 @@ public class MemberController {
 			//int beginRow = endRow - (size - 1);
 			
 			//int beginRow = (page - 1) * size + 1;
+			int count = memberHistoryDao.count(loginId, pageVo);
+			pageVo.setCount(count); // 데이터 개수 결정
 			
 			List<MemberHistoryDto> loginHistory = 
 					memberHistoryDao.selectList(loginId, pageVo);
 			
 			model.addAttribute("loginHistory", loginHistory);
-			
+			model.addAttribute("pageVo",pageVo);
 			return "member/history";
 		}
 		

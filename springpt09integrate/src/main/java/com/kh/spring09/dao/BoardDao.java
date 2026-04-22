@@ -67,9 +67,10 @@ public class BoardDao {
 					+ ") TMP"
 					+ ") where rn between ? and ?";
 			Object[] params = {
-					pageVo.getKeyword(), 
-					pageVo.getBeginRownum(), 
-					pageVo.getEndRownum()};
+						pageVo.getKeyword(), 
+						pageVo.getBeginRownum(), 
+						pageVo.getEndRownum()
+					};
 			return jdbcTemplate.query(sql, boardMapper, params);
 		}
 		
