@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.BookDao;
 import com.kh.spring09.dto.BookDto;
+import com.kh.spring09.exception.GetOutException;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 import com.kh.spring09.vo.PageVo;
 
 @Controller
@@ -22,14 +26,30 @@ public class BookController {
 	@Autowired // 의존성 주입 Dependency injection
 	private BookDao bookDao;
 	
+	@Autowired
+	private AttachService attachService;
+	
 	@GetMapping("/insert")
 	public String insert() {
 		return "book/insert";
 	}
 	
 	@PostMapping("/insert")
-	public String insert(@ModelAttribute BookDto bookDto) {
-		bookDao.insert(bookDto);
+	public String insert(@ModelAttribute BookDto bookDto,
+						@RequestParam MultipartFile attach) throws IOException, Exception {
+		
+		//if(attach.isEmpty()) throw new GetOutException();
+		
+		//번호 생성 후 도서 등록하도록 처리
+		int bookId = bookDao.sequence();
+		bookDto.setBookId(bookId);
+		bookDao.insert(bookDto); // 도서저장
+		
+		if(!attach.isEmpty()) { //책표지가 있을 경우엔
+			int attachNo = attachService.save(attach); //파일저장
+			bookDao.connect(bookId, attachNo); //연결
+		}
+		
 		return "redirect:/book/insertComplete";
 //		return "redirect:./insertComplete";
 	}
