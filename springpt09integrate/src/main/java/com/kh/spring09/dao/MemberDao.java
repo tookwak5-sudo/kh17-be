@@ -20,6 +20,11 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 			"member_id", "member_email", "member_nickname", "member_contact");
 	
 	//등록
+	//attach를 위한 sequence얻기
+	public int sequence() {
+		String sql = "select member_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
 	public void insert(MemberDto memberDto) {
 		String sql = "insert into member("
 				+ "member_id, member_email, member_password, "
@@ -129,5 +134,12 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 					+ "order by "+column+" asc, member_id asc";
 		Object[] params = { keyword };
 		return jdbcTemplate.query(sql, memberMapper, params);
+	}
+	
+	//연결
+	public void connect(String memberId, int attachNo) {
+		String sql = "insert into member_profile(member_id, attach_no) values(?, ?)";
+		Object[] params = {memberId, attachNo};
+		jdbcTemplate.update(sql, params);
 	}
 }

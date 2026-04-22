@@ -5,7 +5,7 @@
 
 <h1>회원정보 등록</h1>
 
-<form action="./join" method="post">
+<form action="./join" method="post" enctype="multipart/form-data">
 	아이디* <input type="text" name="memberId" required> <br><br>
 	이메일* <input type="text" inputmode="email" name="memberEmail" required> <br><br>
 	비밀번호* <input type="password" name="memberPassword" required> <br><br>
@@ -18,6 +18,7 @@
 	상태메세지  
 <!-- 	<input type="text" name="memberMessage"> <br><br> -->
 	<textarea name="memberMesssage"></textarea> <br><br>
+	프로필 <input type="file" name="attach" accept=".png, .jpg">
 	<button>회원가입</button>
 </form>
 
