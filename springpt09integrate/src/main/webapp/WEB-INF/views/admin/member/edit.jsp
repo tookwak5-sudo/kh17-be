@@ -6,7 +6,7 @@
  <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
  
  <h1> 회원 정보 변경</h1>
-<form action="./edit" method="post">  
+<form action="./edit" method="post" enctype="multipart/form-data">  
 아이디: ${memberDto.memberId} <br>
 <!-- 반드시 hidden이 필요하다 why? 전달을 안하면 수정이 불가능하기 때문에, 내정보가 아니라 남의 정보를 가져와야 하기 때문에 -->
 <input type="hidden" name="memberId" value="${memberDto.memberId}"> 
@@ -25,6 +25,13 @@
  		</select>
  		<br><br>
 	포인트  <input type="text" inputmode="text" name="memberPoint" value="${memberDto.memberPoint}" required> <br><br>
+	
+	<!-- 파일 선택창에는 value를 줄 수 없다(보안상의 이유로) -->
+	표지 <input type="file" name="attach" accept=".png, .jpg"><br><br>
+	(기존 이미지) <br>
+	<img src="/admin/profile?memberId=${memberDto.memberId}" width="100"> <br><br>
+ 	<br><br>
+ 	
 	<button>정보 변경하기</button>
  </form>
  

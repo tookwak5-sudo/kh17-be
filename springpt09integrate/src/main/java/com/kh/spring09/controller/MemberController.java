@@ -242,7 +242,9 @@ public class MemberController {
 		}
 		
 		@PostMapping("/edit")
-		public String edit(HttpSession session, @ModelAttribute MemberDto memberDto) {
+		public String edit(HttpSession session 
+				,@RequestParam MultipartFile attach
+				,@ModelAttribute MemberDto memberDto) throws IOException, Exception {
 		    String loginId = (String) session.getAttribute("loginId");
 		    
 		    //비밀번호 검사 후 차단 코드
@@ -255,6 +257,21 @@ public class MemberController {
 		    //개인정보 변경 처리
 		    memberDto.setMemberId(loginId);
 		    memberDao.update(memberDto);  // 로그인된 사용자이기 때문에 수정이 안된다는 경우는 없다 // 시스템을 믿는다
+		    
+			//프로필 교체 작업
+			if(!attach.isEmpty()) {
+				//삭제
+				try {
+					int attachNo = memberDao.searchProfile(memberDto.getMemberId()); // 원래 깃발번호
+					attachService.delete(attachNo); //지워
+				}catch(Exception e){/*없어으면 기존 깃발이 없다*/}
+				
+				int attachNo = attachService.save(attach);// 새로 지정해
+//				memberDao.connect(memberDto.getMemberId(), attachNo);
+				memberDao.connect(loginId, attachNo); //로그인 아이디 써도 무방
+			}
+		    
+		    
 		    return "redirect:./mypage"; // 메인으로 이동
 		}
 		

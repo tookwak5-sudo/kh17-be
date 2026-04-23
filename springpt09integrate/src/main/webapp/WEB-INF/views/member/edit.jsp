@@ -7,7 +7,7 @@
  
  <h1>내 정보 변경</h1>
  	변경을 확인하기 위해 비밀번호를 입력해주세요
- <form action="./edit" method="post">
+ <form action="./edit" method="post" enctype="multipart/form-data">
  	<h2>변경할 정보 입력</h2>
 	이메일 <input type="text" inputmode="email" name="memberEmail" value="${memberDto.memberEmail}" required> <br><br>
 	<!-- 굳이 써야한다면 text지만 안쓸 수 있는 정보는 안쓰도록 -->
@@ -24,14 +24,21 @@
 	상태메세지 <br>
 	<input type = "text" name="mebmerMessage" value="${memberDto.memberMessage}" size = "80">
 <%-- 	<textarea rows="5" cols="80" name="memberMessage">${memberDto.memberMessage}</textarea>  --%>
-	
+	<br><br>
+	<!-- 파일 선택창에는 value를 줄 수 없다(보안상의 이유로) -->
+	표지 <input type="file" name="attach" accept=".png, .jpg"><br><br>
+	(기존 프로필) <br>
+	<img src="./profile?memberId=${memberDto.memberId}" width="100"> <br><br>
+ 	<br><br>
+ 	
 	<h2>비밀번호 확인</h2> 
 	<!-- 비밀번호는 넘겨주면 큰일난다.... 절대 정보 넘겨주지 말기 -->
  	비밀번호 <input type="text" name="memberPassword" required> <br><br>
 	<c:if test="${param.error != null}">
  	<p style="color:red;">비밀번호가 일치하지 않습니다</p> 
  	</c:if>
- 
+ 	
+ 	
 	<button>정보 변경하기</button>
  </form>
  

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.kh.spring09.aop.MasterDenyInterceptor;
 import com.kh.spring09.dao.BookDao;
 import com.kh.spring09.dto.BookDto;
 import com.kh.spring09.exception.GetOutException;
@@ -23,11 +23,17 @@ import com.kh.spring09.vo.PageVo;
 @Controller
 @RequestMapping("/book") //무조거 RequestMapping만 가능(GET/POST 선택불가);
 public class BookController {
+
+    private final MasterDenyInterceptor masterDenyInterceptor;
 	@Autowired // 의존성 주입 Dependency injection
 	private BookDao bookDao;
 	
 	@Autowired
 	private AttachService attachService;
+
+    BookController(MasterDenyInterceptor masterDenyInterceptor) {
+        this.masterDenyInterceptor = masterDenyInterceptor;
+    }
 	
 	@GetMapping("/insert")
 	public String insert() {
@@ -120,8 +126,23 @@ public class BookController {
 		return "book/edit";
 	}
 	@PostMapping("/edit")
-	public String edit(@ModelAttribute BookDto bookDto) {
+	public String edit(@ModelAttribute BookDto bookDto,
+			@RequestParam MultipartFile attach) throws IOException, Exception {
 		bookDao.update(bookDto);
+		
+		
+		//첨부파일이 있다면 기존 거 제거 후 신규 등록
+		if(!attach.isEmpty()) {
+			try {
+				int attachNo = bookDao.searchCover(bookDto.getBookId()); // 원래 깃발번호
+				attachService.delete(attachNo); //지워
+			}catch(Exception e){/*없어으면 기존 깃발이 없다*/}
+			
+			//등록
+			int attachNo = attachService.save(attach);// 새로 지정해
+			bookDao.connect(bookDto.getBookId(), attachNo);
+		}
+
 		return "redirect:./detail?bookId=" + bookDto.getBookId();
 	}
 	

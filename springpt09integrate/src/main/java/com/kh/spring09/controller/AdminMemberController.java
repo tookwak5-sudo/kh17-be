@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dao.MemberExitDao;
@@ -19,6 +21,7 @@ import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.exception.GetOutException;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 
 
 @Controller
@@ -30,6 +33,8 @@ public class AdminMemberController {
 	private MemberExitDao memberExitDao;
 	@Autowired
 	private MemberHistoryDao memberHistoryDao;
+	@Autowired
+	private AttachService attachService;
 	
 			//검색
 			@RequestMapping("/list")
@@ -82,16 +87,29 @@ public class AdminMemberController {
 				MemberDto memberDto = memberDao.selectOne(memberId); // 정보를 조회해서
 //				if(memberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
 				model.addAttribute("memberDto", memberDto);  // 여기선 memberExitDto를 쓸 필요가 없는게, 관리자가 지운다기 보다는 접근을 못하게 가능 
-			    return "admin/member/edit";
+				return "admin/member/edit";
 			}
 			
 			@PostMapping("/edit")
-			public String edit(@ModelAttribute MemberDto memberDto) {
+			public String edit(@ModelAttribute MemberDto memberDto,@RequestParam MultipartFile attach) throws IOException, Exception {
 //				MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
 //			    if(findMemberDto == null) throw new TargetNotfoundException("존재하지 않는 회원");
 //				memberDao.update(memberDto); //쓰면 안됨(등급과 포인트가 수정되지 않음) -> 기존걸 고치거나 신규기능을 만들기 -> 기존걸 고치는건 지양, 새로운걸 만들기!
 			    
 			    memberDao.updateByMaster(memberDto);
+			    
+			  //첨부파일이 있다면 기존 거 제거 후 신규 등록
+				if(!attach.isEmpty()) {
+					try {
+						int attachNo = memberDao.searchProfile(memberDto.getMemberId()); // 원래 깃발번호
+						attachService.delete(attachNo); //지워
+					}catch(Exception e){/*없어으면 기존 깃발이 없다*/}
+					
+					int attachNo = attachService.save(attach);// 새로 지정해
+					memberDao.connect(memberDto.getMemberId(), attachNo);
+				}
+			    
+			    
 			    return "redirect:./detail?memberId=" + memberDto.getMemberId(); // 메인으로 이동
 			}
 	

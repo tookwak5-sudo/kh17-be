@@ -5,7 +5,7 @@
     
 <h1>도서 정보 수정</h1>
 
-<form action="./edit" method="post">
+<form action="./edit" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="bookId" value="${bookDto.bookId}">
 	도서이름 <input type = "text" name="bookTitle" 
 				value="${bookDto.bookTitle}" placeholder="나의 라임 오렌지나무" required> <br><br>
@@ -31,6 +31,11 @@
 		<option>수험서</option>
 	</select>
 	<br><br>
+	
+	<!-- 파일 선택창에는 value를 줄 수 없다(보안상의 이유로) -->
+	표지 <input type="file" name="attach" accept=".png, .jpg"><br><br>
+	(기존 이미지) <br>
+	<img src="./cover?bookId=${bookDto.bookId}" width="100"> <br><br>
 	<button>도서정보 등록</button>
 </form>
 
