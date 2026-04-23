@@ -128,4 +128,11 @@ public class BookDao {
 		Object[] params = {bookId, attachNo};
 		jdbcTemplate.update(sql, params);
 	}
+	
+	//도서 번호 찾기
+	public int searchCover(int bookId) {
+		String sql = "select attach_no from book_cover where book_id= ?";
+		Object[] params = {bookId};
+		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
 }

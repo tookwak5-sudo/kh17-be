@@ -117,4 +117,16 @@ public class BookController {
 		return "redirect:./detail?bookId=" + bookDto.getBookId();
 	}
 	
+	//도서 표지를 반환하는 매핑
+	@RequestMapping("/cover")
+	public String cover(@RequestParam int bookId) {
+		try {
+			int attachNo = bookDao.searchCover(bookId);
+			return "redirect:/download/legacy?attachNo="+attachNo;
+		}
+		catch(Exception e) {
+			return "redirect:/images/no_image.png";
+		}
+	}
+	
 }
