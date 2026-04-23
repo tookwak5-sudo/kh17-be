@@ -38,7 +38,7 @@ public class CountryController {
 //	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	@PostMapping("/insert")
 	public String insert(@ModelAttribute CountryDto countryDto,
-						@RequestParam MultipartFile attach) throws IOException, Exception {
+						 @RequestParam MultipartFile attach) throws IOException, Exception {
 		//번호 생성 후 국가 등록하도록 처리
 		int countryNo = countryDao.sequence();
 		countryDto.setCountryNo(countryNo);		
@@ -76,12 +76,19 @@ public class CountryController {
 	
 	//상세조회 매핑
 	@RequestMapping("/detail")
-	public String detail(Model model, @RequestParam int countryNo) {
+	public String detail(Model model, @RequestParam int countryNo, @ModelAttribute PageVo pageVo) {
 		CountryDto countryDto = countryDao.selectOne(countryNo);
 		//잘못된 번호인 경우(countryDto==null) 이를 오류(500)로 처리하고 싶습니다.
 		if(countryDto == null) {
 			throw new TargetNotfoundException("존재하지 않는 국가");
 		}
+		
+		//페이징 고정을 위한 pageVo작업
+		int count = countryDao.count(pageVo);
+		pageVo.setCount(count);
+		model.addAttribute("pageVo", pageVo);
+		
+		
 		model.addAttribute("countryDto", countryDto);
 		
 			return "country/detail";

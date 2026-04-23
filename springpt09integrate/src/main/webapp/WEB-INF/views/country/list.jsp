@@ -44,7 +44,7 @@
 				<td>${countryDto.countryNo}</td>
 				<td>${countryDto.countryRegion}</td>
 				<td>
-					<a href="./detail?countryNo=${countryDto.countryNo}">
+					<a href="./detail?countryNo=${countryDto.countryNo}&page=${pageVo.page}&${pageVo.getSearchParams()}">
 						${countryDto.countryName}
 					</a>
 					<img src="./flag?countryNo=${countryDto.countryNo}" width="20">

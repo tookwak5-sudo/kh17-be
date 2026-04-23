@@ -28,6 +28,6 @@
 <a href="./list?page=${pageVo.getNextBlock()}&${pageVo.getSearchParams()}" >&gt;</a> 
 </c:if>
 
-<!-- 맨 끝 페이지 -->
+ <!-- 맨 끝 페이지 -->
 <a href="./list?page=${pageVo.getPageCount()}&${pageVo.getSearchParams()}">▶</a>
 </h2>

@@ -22,8 +22,6 @@
 	<button>검색</button>
 </form>
 
-<jsp:include page="/WEB-INF/views/template/pagenation.jsp"></jsp:include>
-
 <!-- 등록링크 -->
 <a href="./insert">신규 도서등록</a>
 

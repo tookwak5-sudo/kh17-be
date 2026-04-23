@@ -8,7 +8,7 @@
 <h2>
  <!-- 맨 첫 페이지 -->
 <%-- <a href="./history?page=1&${pageVo.getSearchParams()}">◀</a> --%>
-
+<a href="./history?page=1&${pageVo.getParameter()}">◀</a>
 <!-- 이전 -->
 <c:if test="${pageVo.hasPrevious()}">
 <%-- <a href="./list?page=${beginBlock-1}&size=${size}${searchParams}" >&lt;</a> --%>
@@ -30,4 +30,5 @@
 
 <!-- 맨 끝 페이지 -->
 <%-- <a href="./history?page=${pageVo.getPageCount()}&${pageVo.getSearchParams()}">▶</a> --%>
+<a href="./history?page=${pageVo.getPageCount()}&${pageVo.getParameter()}">▶</a>
 </h2>

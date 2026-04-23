@@ -1,5 +1,9 @@
 package com.kh.spring09.vo;
 
+import java.util.Optional;
+
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Data;
 
 //VO(Value Object) :
@@ -44,6 +48,17 @@ public class PageVo2 {
 		return page * size;
 	}
 	
+	public String getParameter() {
+		String path = UriComponentsBuilder.fromPath("")
+				.queryParam("size", size)
+				.queryParamIfPresent("column", Optional.ofNullable(column))
+				.queryParamIfPresent("keyword", Optional.ofNullable(keyword))
+				.queryParamIfPresent("beginDate", Optional.ofNullable(beginDate))
+				.queryParamIfPresent("endDate", Optional.ofNullable(endDate))
+				.encode()
+				.toUriString();
+		return path;
+	}
 	
 	//목록 및 검색 유지용 파라미터 생성
 	public String getSearchParams() {
