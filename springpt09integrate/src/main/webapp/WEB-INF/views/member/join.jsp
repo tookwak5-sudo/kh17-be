@@ -18,7 +18,7 @@
 	상태메세지  
 <!-- 	<input type="text" name="memberMessage"> <br><br> -->
 	<textarea name="memberMesssage"></textarea> <br><br>
-	프로필 <input type="file" name="attach" accept=".png, .jpg">
+	프로필이미지 <input type="file" name="attach" accept=".png, .jpg">
 	<button>회원가입</button>
 </form>
 

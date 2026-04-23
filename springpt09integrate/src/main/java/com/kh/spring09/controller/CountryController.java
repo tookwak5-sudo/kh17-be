@@ -83,8 +83,16 @@ public class CountryController {
 			throw new TargetNotfoundException("존재하지 않는 국가");
 		}
 		model.addAttribute("countryDto", countryDto);
-		return "country/detail";
+		
+		//국기에 대한 파일번호를 찾아서 첨부한다면..?
+		try {
+			int attachNo = countryDao.searchFlag(countryNo);
+			model.addAttribute("attachNo", attachNo);
+		}
+		catch(Exception e) {e.printStackTrace();}
+			return "country/detail";
 	}
+	
 	
 	//삭제 매핑
 	@RequestMapping("/delete")

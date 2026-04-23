@@ -51,17 +51,16 @@ public class MemberController {
 		}
 		@PostMapping("/join")
 		public String join(@ModelAttribute MemberDto memberDto,
-							@RequestParam MultipartFile attach) throws IOException, Exception {
+							@RequestParam(value = "attach") MultipartFile attach) throws IOException, Exception {
 			
-			//시퀀스 번호를 위한 memberNo
-			int memberNo= memberDao.sequence();
-			String memberId = memberDto.getMemberId() + memberNo;
-			memberDto.setMemberId(memberId);
+			//가입은 프로필과 관계없이 일단 진행하고
 			memberDao.insert(memberDto);
+			//int memberNo= memberDao.sequence();
 			
+			//프로필이 있으면 추가 등록 및 연결
 			if(!attach.isEmpty()) {
 				int attachNo = attachService.save(attach);
-				memberDao.connect(memberId, attachNo);
+				memberDao.connect(memberDto.getMemberId(), attachNo);
 			}
 			
 			return "redirect:./joinFinish";
