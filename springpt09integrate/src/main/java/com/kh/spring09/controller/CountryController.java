@@ -115,14 +115,27 @@ public class CountryController {
 	public String edit(@RequestParam int countryNo, Model model) {
 		CountryDto countryDto = countryDao.selectOne(countryNo);
 		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
-		
 		model.addAttribute("countryDto", countryDto);
 		return "country/edit";
 	}
 	
 	@PostMapping("/edit")
-	public String edit(@ModelAttribute CountryDto countryDto) {
+	public String edit(@ModelAttribute CountryDto countryDto,
+						@RequestParam MultipartFile attach) throws IOException, Exception {
+		
 		countryDao.update(countryDto); //오류 검사는 get에서 이미 진행했기 때문에 굳이 중복해서 하지 않음
+		
+		//첨부파일이 있다면 기존 거 제거 후 신규 등록
+		if(!attach.isEmpty()) {
+			try {
+				int attachNo = countryDao.searchFlag(countryDto.getCountryNo()); // 원래 깃발번호
+				attachService.delete(attachNo); //지워
+			}catch(Exception e){/*없어으면 기존 깃발이 없다*/}
+			
+			int attachNo = attachService.save(attach);// 새로 지정해
+			countryDao.connect(countryDto.getCountryNo(), attachNo);
+		}
+		
 		return "redirect:./detail?countryNo=" + countryDto.getCountryNo();
 	}
 	

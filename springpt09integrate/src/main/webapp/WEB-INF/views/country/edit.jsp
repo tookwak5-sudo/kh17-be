@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>국가 정보 수정</h1>
 
-<form action="./edit" method="post">
+<form action="./edit" method="post" enctype="multipart/form-data">
 	<!-- 기본키(번호, countryNo)를 숨김 첨부 -->
 	<input type="hidden" name="countryNo" value="${countryDto.countryNo}">
 	
@@ -13,6 +15,12 @@
 	이름 <input type="text" name="countryName" value="${countryDto.countryName}"> <br><br>
 	수도 <input type="text" name="countryCapital" value="${countryDto.countryCapital}"> <br><br>
 	인구 <input type="text" name="countryPopulation" value="${countryDto.countryPopulation}"> <br><br>
+	
+	<!-- 파일 선택창에는 value를 줄 수 없다(보안상의 이유로) -->
+	국기 <input type="file" name="attach" accept=".png, .jpg"><br><br>
+	
+	(기존 이미지) <br>
+	<img src="./flag?countryNo=${countryDto.countryNo}" width="80"> <br><br>
 	<button><em>수정하기</em></button>
 </form>
 
