@@ -94,10 +94,18 @@ public class BookController {
 		return "book/detail";
 	}
 	
+	//삭제 매핑
 	@RequestMapping("/delete")
 	public String delete(@RequestParam int bookId) {
 		BookDto bookDto = bookDao.selectOne(bookId);
 		if(bookDto == null) throw new TargetNotfoundException("존재하지 않는 도서입니다");
+		try {
+			int attachNo = bookDao.searchCover(bookId);
+			attachService.delete(attachNo);
+		}
+		catch(Exception e){}
+		
+		
 		bookDao.delete(bookId);
 		return "redirect:./list";
 //		return "redirect:book/list";

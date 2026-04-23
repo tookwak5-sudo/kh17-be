@@ -302,6 +302,7 @@ public class MemberController {
 			if(memberDto == null) {
 				throw new TargetNotfoundException("존재하지 않는 회원");
 			}
+			
 			memberDao.delete(memberId);
 			return "redirect:./list";
 		}
