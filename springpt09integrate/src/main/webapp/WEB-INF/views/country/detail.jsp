@@ -6,7 +6,7 @@
 <h1>국가 상세정보</h1>
 
 <!-- 이곳에 국기를 출력하고 싶다 (이것도 다운로드) -->
-<img src="http://localhost:8080/download/legacy?attachNo=${attachNo}" width="200">
+<img src="./flag?countryNo=${countryDto.countryNo}" width="200">
 
 <!-- 
 	리스트 태그(ul, ol)

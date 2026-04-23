@@ -55,7 +55,6 @@ public class MemberController {
 			
 			//가입은 프로필과 관계없이 일단 진행하고
 			memberDao.insert(memberDto);
-			//int memberNo= memberDao.sequence();
 			
 			//프로필이 있으면 추가 등록 및 연결
 			if(!attach.isEmpty()) {
@@ -333,6 +332,18 @@ public class MemberController {
 			List<BoardDto> boardList = boardDao.selectListByBoardWriter(memberId);
 			model.addAttribute("boardList", boardList);
 			return "member/detail";
+		}
+		
+		//프로필이미지를 반환하는 매핑
+		@RequestMapping("/profile")
+		public String profile(@RequestParam String memberId) {
+			try {
+				int attachNo = memberDao.searchProfile(memberId);
+				return "redirect:/download/legacy?attachNo="+attachNo;
+			}
+			catch(Exception e) {
+				return "redirect:/images/no_image.png";
+			}
 		}
 				
 }

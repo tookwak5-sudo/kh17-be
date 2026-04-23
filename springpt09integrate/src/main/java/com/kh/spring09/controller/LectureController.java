@@ -1,6 +1,7 @@
 package com.kh.spring09.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,12 @@ public class LectureController {
 		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
 		if(lectureDto == null) throw new TargetNotfoundException("존재하지 않는 강좌 정보");
 		model.addAttribute("lectureDto", lectureDto);
+		
+		//다른 시스템과 다르게 이미지가 여러개이므로 이곳에서 이미지 번호르 ㄹ모두 찾아서 화면에 전달
+		//→ 화면에서는 반복문으로 이미지 생성
+		List<Integer> images = lectureDao.searchImage(lectureNo);
+		model.addAttribute("images",images);
+		
 		return "lecture/detail";
 	}
 	@RequestMapping("/delete")
@@ -100,5 +107,18 @@ public class LectureController {
 	public String edit(@ModelAttribute LectureDto lectureDto) {
 		lectureDao.update(lectureDto);
 		return "redirect:./detail?lectureNo=" + lectureDto.getLectureNo();
+	}
+	// 강좌 미리보기(대표 1개만)
+	@RequestMapping("/image")
+	public String image(@RequestParam int lectureNo) {
+			List<Integer> images = lectureDao.searchImage(lectureNo);
+			
+			if(images.isEmpty()) {
+				System.out.println("이미지 없음! no_image로 리다이렉트 시도");
+				return "redirect:/images/no_image.png";
+				
+			}
+			
+			return "redirect:/download/legacy?attachNo="+images.get(0);
 	}
 }

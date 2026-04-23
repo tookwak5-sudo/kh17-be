@@ -124,4 +124,11 @@ public class LectureDao {
 			Object[] params = {lectureNo, attachNo};
 			jdbcTemplate.update(sql, params);
 		}
+		
+		//강좌이미지 찾기
+		public List<Integer> searchImage(int lectureNo){
+			String sql = "select attach_no from lecture_image where lecture_no = ?";
+			Object[] params = {lectureNo};
+			return jdbcTemplate.queryForList(sql, int.class, params);
+		}
 }

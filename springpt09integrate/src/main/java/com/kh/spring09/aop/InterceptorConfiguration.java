@@ -77,9 +77,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
 							"/lecture/list"
 							,"/lecture/detail"
+							,"/lecture/image"
 							,"/member/join*" // joinFinish도
 							,"/member/login"
 							,"/member/goodbyeFinish"
+							,"/member/detail"
+							,"/member/profile"
 							,"/board/list"
 							,"/board/detail"
 					);

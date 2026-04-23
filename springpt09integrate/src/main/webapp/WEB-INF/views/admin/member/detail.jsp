@@ -7,7 +7,7 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>[${memberDto.memberId}] 회원님의 상세내용</h1>
-
+<img src="/member/profile?memberId=${memberDto.memberId}" width="200">
 <ul>
 	<li>아이디: ${memberDto.memberId}</li>
 	<li>이메일: ${memberDto.memberEmail}</li>

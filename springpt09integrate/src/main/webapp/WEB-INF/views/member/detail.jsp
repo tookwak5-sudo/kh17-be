@@ -7,6 +7,8 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
  <h1>상세정보</h1>
+<img src="./profile?memberId=${memberDto.memberId}" width="200"
+		style="border-radius:50%; box">
 <%--  <fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate>  --%>
  <ul>
  	<li>아이디: ${memberDto.memberId}</li>

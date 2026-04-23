@@ -2,10 +2,11 @@
     pageEncoding="UTF-8"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>강좌 상세조회</h1>
+
+
 
 <ul>
 	<li>강의번호 ${lectureDto.lectureNo}</li>
@@ -16,6 +17,15 @@
 	<li>강의유형 ${lectureDto.lectureType}</li>
 </ul>
 
+<h2>이미지 미리보기</h2>
+
+<%-- <img src="./image?lectureNo=${lectureDto.lectureNo}" width="100"> --%>
+<c:if test="${images.isEmpty()}">
+	<img src="./image?lectureNo=${lectureDto.lectureNo}" width="100">
+</c:if>
+<c:forEach var="attachNo" items="${images}">
+	<img src="/download/legacy?attachNo=${attachNo}" width="100" height="100">
+</c:forEach>
 
 <!-- 이동 창 -->
 <ul style="color: red">

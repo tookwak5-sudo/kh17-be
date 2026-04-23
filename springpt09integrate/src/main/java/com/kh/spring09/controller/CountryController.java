@@ -84,12 +84,6 @@ public class CountryController {
 		}
 		model.addAttribute("countryDto", countryDto);
 		
-		//국기에 대한 파일번호를 찾아서 첨부한다면..?
-		try {
-			int attachNo = countryDao.searchFlag(countryNo);
-			model.addAttribute("attachNo", attachNo);
-		}
-		catch(Exception e) {e.printStackTrace();}
 			return "country/detail";
 	}
 	
@@ -119,5 +113,17 @@ public class CountryController {
 	public String edit(@ModelAttribute CountryDto countryDto) {
 		countryDao.update(countryDto); //오류 검사는 get에서 이미 진행했기 때문에 굳이 중복해서 하지 않음
 		return "redirect:./detail?countryNo=" + countryDto.getCountryNo();
+	}
+	
+	//국기를 반환하는 매핑
+	@RequestMapping("/flag")
+	public String flag(@RequestParam int countryNo) {
+		try {//Plan A: 이미지가 존재하는경우
+			int attachNo = countryDao.searchFlag(countryNo);
+			return "redirect:/download/legacy?attachNo="+attachNo;
+		}
+		catch(Exception e) {//Plan B: 이미지가 존재하는경우
+			return "redirect:/images/no_image.png";
+		}
 	}
 }

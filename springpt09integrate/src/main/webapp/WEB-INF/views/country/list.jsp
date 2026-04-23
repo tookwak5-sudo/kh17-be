@@ -47,6 +47,7 @@
 					<a href="./detail?countryNo=${countryDto.countryNo}">
 						${countryDto.countryName}
 					</a>
+					<img src="./flag?countryNo=${countryDto.countryNo}" width="20">
 				</td>
 				<td>${countryDto.countryCapital}</td>
 				<td align="right">
