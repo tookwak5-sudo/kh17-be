@@ -120,7 +120,7 @@ public class CountryController {
 	public String flag(@RequestParam int countryNo) {
 		try {//Plan A: 이미지가 존재하는경우
 			int attachNo = countryDao.searchFlag(countryNo);
-			return "redirect:/download/legacy?attachNo="+attachNo;
+			return "redirect:/download/modern?attachNo="+attachNo;
 		}
 		catch(Exception e) {//Plan B: 이미지가 존재하는경우
 			return "redirect:/images/no_image.png";

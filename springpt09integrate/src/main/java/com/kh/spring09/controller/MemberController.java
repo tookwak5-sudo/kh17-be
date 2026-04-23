@@ -339,7 +339,7 @@ public class MemberController {
 		public String profile(@RequestParam String memberId) {
 			try {
 				int attachNo = memberDao.searchProfile(memberId);
-				return "redirect:/download/legacy?attachNo="+attachNo;
+				return "redirect:/download/modern?attachNo="+attachNo;
 			}
 			catch(Exception e) {
 				return "redirect:/images/no_image.png";

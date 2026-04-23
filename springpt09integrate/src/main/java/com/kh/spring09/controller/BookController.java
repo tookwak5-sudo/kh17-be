@@ -122,7 +122,7 @@ public class BookController {
 	public String cover(@RequestParam int bookId) {
 		try {
 			int attachNo = bookDao.searchCover(bookId);
-			return "redirect:/download/legacy?attachNo="+attachNo;
+			return "redirect:/download/modern?attachNo="+attachNo;
 		}
 		catch(Exception e) {
 			return "redirect:/images/no_image.png";

@@ -119,6 +119,6 @@ public class LectureController {
 				
 			}
 			
-			return "redirect:/download/legacy?attachNo="+images.get(0);
+			return "redirect:/download/modern?attachNo="+images.get(0);
 	}
 }
