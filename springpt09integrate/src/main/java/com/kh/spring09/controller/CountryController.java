@@ -94,7 +94,18 @@ public class CountryController {
 		CountryDto countryDto = countryDao.selectOne(countryNo);
 		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
 		
-		countryDao.delete(countryNo);
+		//국가정보가 지워지면 국기 데이터도 지워지는데 DB만 지워지고 파일은 그대로 남아있다는 문제 발생
+		//파일(attach) 정보와 실물 파일을 지울 수 있도록 국가 정보 삭제 전에 파일 번호를 알아내야 한다
+		//→ 만약 파일이 없어서 예외가 발생한다면? 그냥 국가 정보만 삭제
+		try {
+			int attachNo = countryDao.searchFlag(countryNo); // 국기 찾으세요
+			//찾았다면 attach와 실물파일을 삭제
+			attachService.delete(attachNo); //Attach 테이블 데이터 삭제, 파일삭제
+		}
+		catch(Exception e){}
+		
+		
+		countryDao.delete(countryNo); 
 		return "redirect:./list";//상대경로
 //		return "redirect:country/list"; //절대경로
 	}

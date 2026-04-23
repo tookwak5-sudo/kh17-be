@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.AttachDao;
 import com.kh.spring09.dto.AttachDto;
+import com.kh.spring09.exception.TargetNotfoundException;
 
 
 //서비스 : 하나의 단위작업을 구현하기 위한 도구
@@ -36,6 +37,19 @@ public class AttachService {
 				attach.transferTo(target);
 				
 				return attachNo;
+	}
+	
+	//번호에 해당하는 파일을 지우고 DB정보도 삭제하도록 처리
+	public void delete(int attachNo) {
+		//정보가 있는지 먼저 확인
+		AttachDto attachDto = attachDao.selectOne(attachNo);
+		if(attachDto == null) throw new TargetNotfoundException("존재하지 않는 파일");
+		
+		attachDao.delete(attachNo); //DB 데이터 삭제
+		
+		File dir = new File("D:/upload");
+		File target =  new File(dir, String.valueOf(attachNo));//지워야할 파일 객체 생성
+		target.delete(); // 파일 삭제
 	}
 	
 }

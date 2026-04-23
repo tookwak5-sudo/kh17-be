@@ -42,4 +42,11 @@ public class AttachDao {
 		List<AttachDto> list =jdbcTemplate.query(sql, attachMapper, params);
 		return list.isEmpty() ? null : list.get(0);
 	}
+	
+	//삭제
+	public boolean delete(int attachNo) {
+		String sql = "delete attach where attach_no = ?";
+		Object[] params = {attachNo};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
 }
