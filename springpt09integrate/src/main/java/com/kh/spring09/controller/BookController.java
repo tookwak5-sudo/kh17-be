@@ -38,6 +38,7 @@ public class BookController {
 	@GetMapping("/insert")
 	public String insert() {
 		return "book/insert";
+		
 	}
 	
 	@PostMapping("/insert")

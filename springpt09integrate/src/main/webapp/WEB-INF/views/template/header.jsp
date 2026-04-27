@@ -3,6 +3,9 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!-- 디자인을 불러오는 코드 -->
+<link rel="stylesheet" type="text/css" href="/css/commons.css">
+ 
 <!--  여러 가지 정보들을 출력 -->
 세션ID : ${pageContext.session.id}
 loginId : ${sessionScope.loginId}

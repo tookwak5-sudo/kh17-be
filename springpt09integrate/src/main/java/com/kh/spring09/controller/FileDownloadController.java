@@ -102,7 +102,7 @@ public class FileDownloadController {
 				//.contentType(MediaType.APPLICATION_OCTET_STREAM)	
 				.header(HttpHeaders.CONTENT_ENCODING, "UTF-8")
 				.header(HttpHeaders.CONTENT_DISPOSITION, 
-					ContentDisposition
+					ContentDisposition //브라우저가 파일을 화면에 보여주지 않고 **파일 다운로드 대화상자** 를 띄우도록 강제
 						.attachment()
 						.filename(attachDto.getAttachName(), StandardCharsets.UTF_8)
 						.build().toString()
