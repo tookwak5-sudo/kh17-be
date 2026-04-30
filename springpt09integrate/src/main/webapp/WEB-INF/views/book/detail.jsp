@@ -5,55 +5,52 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<h1>도서 상세정보</h1>
+<style>
+	.book-info {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.book-info li {
+		border-bottom: 1px solid #bdc3c7;
+		padding: 10px 5px;
+		line-height: 1.5;
+		color: #16a085;
+		font-size: 1.1em;
+	}
+	
+</style>
 
-<!-- 이곳에 표지를 출력하고 싶다 -->
-<img src="./cover?bookId=${bookDto.bookId}" height="250">
-
-<!-- <ul> -->
-<%-- 	<li>도서번호: ${bookDto.bookId}</li> --%>
-<%-- 	<li>도서명: [${bookDto.bookTitle}]</li> --%>
-<%-- 	<li>작가: ${bookDto.bookAuthor}</li> --%>
-<%-- 	<li>출간일: ${bookDto.bookPublicationDate}</li> --%>
-<%-- 	<li>가격: ${bookDto.bookPrice}원</li> --%>
-<%-- 	<li>출판사: ${bookDto.bookPublisher}</li> --%>
-<%-- 	<li>페이지: ${bookDto.bookPageCount}P</li> --%>
-<%-- 	<li>장르: ${bookDto.bookGenre}</li> --%>
-<!-- </ul> -->
-
-<table border=1 width=1000>
-	<thead>
-	<tr>
-		<th>도서번호</th>
-		<th>도서명</th>
-		<th>작가</th>
-		<th>출간일</th>
-		<th>가격</th>
-		<th>출판사</th>
-		<th>페이지</th>
-		<th>장르</th>
-	</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td align="right">${bookDto.bookId}</td>
-			<td>${bookDto.bookTitle}</td>
-			<td>${bookDto.bookAuthor}</td>
-			<td>${bookDto.bookPublicationDate}</td>
-			<td>${bookDto.bookPrice}</td>
-			<td>${bookDto.bookPublisher}</td>
-			<td>${bookDto.bookPageCount}</td>
-			<td>${bookDto.bookGenre}</td>
-		</tr>
-	</tbody>
-</table>
-
-<!-- 이동 창 -->
-<ul style="color: purple">
-	<li ><a href="./list">목록으로 이동</a></li>
-	<li><a href="./insert">신규등록</a></li>
-	<li><a href="./edit?bookId=${bookDto.bookId}">수정</a></li>
-	<li><a href="./delete?bookId=${bookDto.bookId}">삭제</a></li>
-</ul>
-
+<div class="container w-800 mt-50 mb-50">
+	<div class="flex-area">
+			<div>
+				<div class="w-120 cell center mt-50" >
+					<h1>${bookDto.bookTitle}</h1>
+				</div>
+				<div class="flex-fill flex-area flex-center">
+					<img src="./cover?bookId=${bookDto.bookId}" height="400">
+				</div>
+			</div>
+		<div class="flex-fill mt-50 green" style="padding:2em;">
+			<ul class="book-info">
+				<li class="field field-underline">No: ${bookDto.bookId}</li>
+				<li class="field field-underline">도서명: [${bookDto.bookTitle}]</li>
+				<li class="field field-underline">작가: ${bookDto.bookAuthor}</li>
+				<li class="field field-underline">출간일: ${bookDto.bookPublicationDate}</li>
+				<li class="field field-underline">가격: ${bookDto.bookPrice}원</li>
+				<li class="field field-underline">출판사: ${bookDto.bookPublisher}</li>
+				<li class="field field-underline">페이지: ${bookDto.bookPageCount}P</li>
+				<li class="field field-underline">장르: ${bookDto.bookGenre}</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="cell right">
+		<!-- 이동 창 -->
+			<a class="btn btn-positive" href="./insert">신규등록</a>
+			<a class="btn btn-netural" href="./list">목록으로 이동</a>
+			<a class="btn btn-netural"  href="./edit?bookId=${bookDto.bookId}">수정</a>
+			<a class="btn btn-negative"  href="./delete?bookId=${bookDto.bookId}">삭제</a>
+	</div>
+</div>
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

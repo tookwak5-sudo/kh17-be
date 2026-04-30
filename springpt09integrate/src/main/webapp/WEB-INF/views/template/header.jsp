@@ -83,7 +83,8 @@
                     <!-- 회원 상태 -->
 					<c:if test="${sessionScope.loginId != null || sessionScope.loginLevel != null}">
                         <div class="cell center">
-                            <h3>OOO님 (${sessionScope.loginLevel})</h3>
+                            <h3>${sessionScope.loginId}님 <br>
+                             (등급: ${sessionScope.loginLevel})</h3>
                         </div>
                         
                     <!-- 마스터 상태 -->
