@@ -28,7 +28,7 @@
             <div class="flex-area">
                 <div class="w-25 flex-area flex-center">
                     <!-- <img src="https://www.dummyimage.com/200x50"> -->
-                    <img src="/images/Spring.png" class="w-60">
+                    <a href="/" class="ms-50"><img src="/images/Spring.png" class="w-60"></a>
                 </div>
                 <div class="w-50 flex-area flex-center">
                     <h1>KH정보교육원 스프링개발자 수업자료</h1>
@@ -83,7 +83,7 @@
                     <!-- 회원 상태 -->
 					<c:if test="${sessionScope.loginId != null || sessionScope.loginLevel != null}">
                         <div class="cell center">
-                            <h3>OOO님 (브론즈)</h3>
+                            <h3>OOO님 (${sessionScope.loginLevel})</h3>
                         </div>
                         
                     <!-- 마스터 상태 -->

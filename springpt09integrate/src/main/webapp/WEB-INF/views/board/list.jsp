@@ -20,8 +20,7 @@
 	   </div>
 	   <div class="cell right">
 	      <!-- 게시글 목록 -->
-			${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글
-		<h2>게시글 수: ${list.size()}</h2>
+			<span>${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글</span>
 	   </div>
 	   <div class="cell">
 	       <table class="table">

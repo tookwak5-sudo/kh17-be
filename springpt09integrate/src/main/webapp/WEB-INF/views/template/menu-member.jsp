@@ -16,7 +16,7 @@
 
 <ul class="menu">
     <li>
-        <a href="#">
+        <a href="/">
             <i class="fa-solid fa-house"></i>
             <span>홈</span>
         </a>
@@ -50,7 +50,7 @@
         </a>
     </li>
     <li>
-        <a href="#">
+        <a href="/board/list">
             <i class="fa-solid fa-comments"></i>
             <span>게시판</span>
         </a>
@@ -59,16 +59,16 @@
     <li class="divider"></li>
 
     <li>
-        <a href="#">
+        <a href="/member/logout">
             <i class="fa-solid fa-right-to-bracket"></i>
-            <span>로그인</span>
+            <span>로그아웃</span>
         </a>
         <!-- 하위메뉴 -->
         <ul>
             <li>
-                <a href="#">
+                <a href="/member/mypage">
                     <i class="fa-solid fa-user-plus"></i>
-                    <span>회원가입</span>
+                    <span>내정보</span>
                 </a>
             </li>
         </ul>
