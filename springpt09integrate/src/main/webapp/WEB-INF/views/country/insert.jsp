@@ -6,7 +6,7 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 
-  <form action="./insert" method="post" enctype="multipart/form-data" autocomplete="off">
+ <form action="./insert" method="post" enctype="multipart/form-data" autocomplete="off">
         <div class="container w-400 mt-50">
             <div class="cell center">
                 <h1>국가 정보 등록</h1>
@@ -59,13 +59,7 @@
                     등록하기
                 </button>
             </div>
-           
         </div>
     </form>
-
-
-  국기 <input type="file" name="attach" accept=".png , .jpg"> <br><br> 
-  <button>등록하기</button>
-  </form> 
   
   <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
