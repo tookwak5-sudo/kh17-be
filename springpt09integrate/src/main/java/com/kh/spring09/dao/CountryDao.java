@@ -89,7 +89,7 @@ public class CountryDao {
 				+ "select rownum rn, TMP.* from ("
 				+ "select * from country "
 				+ "where instr("+pageVo.getColumn()+", ?) > 0 "
-				+ "order by country asc"
+				+ "order by country_no asc"
 			+ ") TMP"
 			+ ") where rn between ? and ?";
 		Object[] params = { 
