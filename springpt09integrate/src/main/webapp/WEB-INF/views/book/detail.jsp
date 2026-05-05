@@ -17,6 +17,7 @@
 		line-height: 1.5;
 		color: #16a085;
 		font-size: 1.1em;
+		text-align: left;
 	}
 	
 </style>
@@ -28,10 +29,10 @@
 					<h1>${bookDto.bookTitle}</h1>
 				</div>
 				<div class="flex-fill flex-area flex-center">
-					<img src="./cover?bookId=${bookDto.bookId}" height="400">
+					<img src="./cover?bookId=${bookDto.bookId}" height="280">
 				</div>
 			</div>
-		<div class="flex-fill mt-50 green" style="padding:2em;">
+		<div class="flex-fill flex-center mt-50 green" style="padding:2em;">
 			<ul class="book-info">
 				<li class="field field-underline">No: ${bookDto.bookId}</li>
 				<li class="field field-underline">도서명: [${bookDto.bookTitle}]</li>

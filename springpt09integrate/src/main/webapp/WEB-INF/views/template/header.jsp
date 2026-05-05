@@ -95,7 +95,7 @@
                                     style="width: 150px; margin: 0 auto;">
                                 <img src="https://picsum.photos/200">
                                 <div class="content">
-                                    <a href="#" class="white">
+                                    <a href="/member/mypage" class="white">
                                         <i class="fa-solid fa-user"></i>
                                         <span>내 정보 보기</span>
                                     </a>
