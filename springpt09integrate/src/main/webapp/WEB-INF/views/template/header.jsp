@@ -24,7 +24,7 @@
     <script src="/js/checkbox.js"></script>
     
     <link rel="stylesheet" type="text/css" href="/lib/multipage/multipage.css">
-    <script src="/lib/multipage.js"></script>
+    <script src="/lib/multipage/multipage.js"></script>
 </head>
 <body>
 	<!-- 메인 컨테이너1 + 내부영역4 -->
