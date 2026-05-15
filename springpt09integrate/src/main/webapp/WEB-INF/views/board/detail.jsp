@@ -5,7 +5,33 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 	
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
-	
+
+<!-- 좋아요 처리 관련 자바스크립트 -->
+<script type="text/javascript">
+	//header.jsp에 jQuery CDN이 있기 때문에 그냥 사용 가능
+	$(function(){
+		//시작하자마자 서버에 물어봐서 좋아요 상태와 좋아요 개수를 알아낸다
+		
+		//주소창에 있는 파라미터 중 boardNo를 꺼내는 코드
+		var params = new URLSearchParams(window.location.search);
+		var boardNo = params.get("boardNo");
+		
+		$.ajax({
+			url: "/rest/board/like-check",
+			method: "post",
+			data: { boardNo : boardNo },
+			success : function(response){ 
+				//response에 action과 count가 있을것으로 생각
+				//- action은 좋아요 여부, count는 좋아요 개수
+				$(".fa-heart").removeClass("fa-regular fa-solid")
+								.addClass(response.action ? "fa-solid" : "fa-regular");
+				$(".fa-heart").next(".heart-count").text(response.count);
+			}
+		});
+	});
+</script>
+
+
 		<h1>
 		<!-- 말머리 -->
 		<c:if test="${boardDto.boardHead != null}">
@@ -39,9 +65,23 @@
 		<pre>${boardDto.boardContent}</pre>
 		</div>	
 		<br><br>
-		좋아요 ${boardDto.boardLikecount}
+		<!--
+			좋아요 처리 시나리오
+			1. 이 페이지가 최초로 로딩되었을 때, 현재 사용자가 이 글에 좋아요를 누른적이 있는지 + 현재 좋아요 개수를 불러옴
+			 → 하트를 채울지 비울지 결정, 하트 옆에 적어야될 숫자를 표시
+			 → 비회원도 가능한 기능
+			2. 하트를 클릭하면 글번호를 알려주면서 좋아요 / 해제 처리를 요청
+			 → 서버에서 결과적으로 좋아요/해제 중 어떤 것이 처리되었는지와 현재 좋아요 개수를 알려줌 
+			 → 회원만 가능한 기능 
+		-->
+		<div>
+			<span>좋아요</span>
+			<i class="fa-solid fa-heart red"></i> 
+			<span class="heart-count">?</span>
+		</div>
+		<div>
 		댓글 ${boardDto.boardReplycount}
-	
+		</div>
 		<hr>
 		<!-- 이전글 / 다음글 -->
 		이전글 : <a href="./detail?boardNo=${prevBoardDto.boardNo}">${prevBoardDto.boardTitle}</a>
