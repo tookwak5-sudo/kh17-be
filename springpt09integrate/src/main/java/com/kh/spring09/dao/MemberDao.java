@@ -37,12 +37,28 @@ public class MemberDao { //Dao는 메소드를 자유롭게 가능 // mapper는 
 		jdbcTemplate.update(sql, params);
 	}
 	
-	//아이디조회
+		//아이디조회
 		public MemberDto selectOne(String memberId) {
 		    String sql = "select * from member where member_id = ?";
 		    Object[] params = {memberId};
 		    List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
 		    return list.isEmpty() ? null : list.get(0);
+		}
+		
+		//닉네임 중복검사 조회
+		public MemberDto selectOneByMemberNickname(String memberNickname) {
+			String sql = "select * from member where member_nickname = ?";
+			Object[] params = {memberNickname};
+			List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+			return list.isEmpty() ? null : list.get(0);
+		}
+				
+		//이메일 중복검사 조회
+		public MemberDto selectOneByMemberEmail(String memberEmail) {
+			String sql = "select * from member where member_email = ?";
+			Object[] params = {memberEmail};
+			List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+			return list.isEmpty() ? null : list.get(0);
 		}
 	
 	//수정 메소드
