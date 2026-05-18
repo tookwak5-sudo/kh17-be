@@ -103,7 +103,6 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns("/board/edit", "/board/delete");
 			//조회수 증가 처리를 하는 인터셉터 설정
 			registry.addInterceptor(boardReadInterceptor4).addPathPatterns(
-						"/board/detail"
-					);
+						"/board/detail");
 		}
 }

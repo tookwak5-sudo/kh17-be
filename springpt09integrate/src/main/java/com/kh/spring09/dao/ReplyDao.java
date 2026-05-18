@@ -37,4 +37,11 @@ import com.kh.spring09.mapper.ReplyMapper;
 			Object[] params = { replyOrigin };
 			return jdbcTemplate.query(sql, replyMapper, params);
 		}	
+		
+		//삭제 
+		public boolean delete(long replyNo) {
+			String sql = "delete reply where reply_no=?";
+			Object[] params = { replyNo };
+			return jdbcTemplate.update(sql, params) > 0;
+		}
 	}
