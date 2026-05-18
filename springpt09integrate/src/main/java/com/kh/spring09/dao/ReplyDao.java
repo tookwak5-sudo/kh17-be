@@ -32,15 +32,9 @@ import com.kh.spring09.mapper.ReplyMapper;
 		}
 		
 		//목록 - 전체 목록이 없고 replyOrigin별 목록이 존재
-		public List<ReplyDto> selectList(long beginRownum, long endRownum){
-			String sql = "select * from("
-					+ "select rownum rn, TMP.* from("
-						+ "select * from reply order by reply_no asc"
-						+ ") TMP"
-						+ ") where rn between ? and ?";
-			Object[] params = { beginRownum, endRownum};
+		public List<ReplyDto> selectList(long replyOrigin){
+			String sql = "select * from reply where reply_origin=? order by reply_no asc";
+			Object[] params = { replyOrigin };
 			return jdbcTemplate.query(sql, replyMapper, params);
-		}
-		
-		
+		}	
 	}

@@ -1,9 +1,12 @@
 package com.kh.spring09.restcontroller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring09.dao.ReplyDao;
@@ -31,10 +34,10 @@ public class ReplyRestController {
 		replyDao.insert(replyDto);
 	}
 	
-	//목록
-//	@PostMapping("/list")
-//	public boolean list(@RequestParam long replyOrigin) {
-////		List<ReplyDto> list = replyDao.selectList(replyOrigin);
-//	}
-//	
+	// 댓글 목록
+	@PostMapping("/list")
+	public List<ReplyDto> list(@RequestParam long replyOrigin) {
+		return replyDao.selectList(replyOrigin);
+	}
+	
 }

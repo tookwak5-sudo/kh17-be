@@ -5,6 +5,23 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
+<style>
+	.reply-wrapper {
+		display:flex;
+		padding:15px;
+		box-shadow: 0 0 0 1px gray;
+	}
+	.reply-wrapper > .profile-wrapper {
+		width: 100px;
+	}
+	.reply-wrapper > .profile-wrapper > img {
+		width: 100%;
+		aspect-ratio: 1/1;
+	}
+	.reply-wrapper > .content-wrapper {
+		flex-grow: 1; 
+	}
+</style>
 
 <!-- 좋아요 처리 관련 자바스크립트 (비회원도 가능) -->
 <script type="text/javascript">
@@ -62,7 +79,46 @@
 	$(function(){
         var params = new URLSearchParams(window.location.search);
         var boardNo = params.get("boardNo");
-
+        loadList();
+        //목록을 부르는 함수를 만들어두고 시작하자마자 한 번 부르기
+        function loadList(){
+			//목록을 불러올 때 최초 1회 목록 영역을 지워주는 코드가 필요
+			$(".reply-area").empty();
+			
+        	$.ajax({
+	            url: "/rest/reply/list",
+	            method: "post",
+	            data: {
+	                replyOrigin : boardNo
+	            },
+	            success: function(response) {
+	                //console.log(response);
+	                //response는 백엔드에서의 List<ReplyDto>이다
+	                //반복을 통해 template을 배치하고 정보를 갈아끼운다
+	                for(var i = 0; i < response.length; i++){
+	                	var template = $("#reply-template").text(); //템플릿(id주었음)을 불러와서
+	                	var html = $.parseHTML(template); //HTML로 변환하고
+	                	
+	                	
+	                	//html에서 필요한 정보를 찾아서 변경해줘야 한다
+	                	$(html).find(".image-profile")
+	                			.attr("src", "/member/profile?memberId="+response[i].replyWriter);
+	                	$(html).find(".reply-writer").text(response[i].replyWriter);
+	                	$(html).find(".reply-content").text(response[i].replyContent);
+	                	
+	                	//$(html).find(".reply-wtime").text(response[i].replyWtime);
+	                	//var wtime = moment(response[i].replyWtime).format("YYYY-MM-DD HH:mm");
+	                	var wtime = moment(response[i].replyWtime).fromNow();
+	                	$(html).find(".reply-wtime").text(wtime);
+	                	
+	                	$(".reply-area").append(html); //화면에 추가
+	                	
+	                }
+	            }
+	        });
+        }
+               
+        //등록 버튼을 누르면 발생할 등록 작업
 		$(".btn-reply").on("click", function(){
             var replyContent = $(".field-reply").val();
             if(replyContent.length == 0) return; //입력값이 없으면 차단처리
@@ -77,10 +133,28 @@
                 success: function(){
                     console.log("등록완료");
                     $(".field-reply").val(""); //입력값 삭제
+                    loadList();
                 }
 			});
 		});
 	});
+</script>
+
+<script type="text/template" id="reply-template">
+	<div class="cell">
+	 <div class="reply-wrapper">
+	 	<div class="profile-wrapper">
+	 		<img src="https://picsum.photos/500" class="image-circle image-profile">
+	 	</div>
+	 	<div class="content-wrapper ms-20">
+	 		<h3 class="mt-0 mb-0 reply-writer">작성자</h3>
+	 		<pre class="mt-10 mb-0 reply-content">내용 샘플</pre>
+	 		<div class="mt-20">
+	 			<span class="gray reply-wtime">yyyy-MM-dd HH:mm</span>
+	 		</div>
+	 	</div>
+	 </div>
+	</div>
 </script>
 
 <div class="container w-950 mt-50 mb-50">
@@ -148,7 +222,20 @@
 	<hr>
 	
 	<!-- 댓글관련 정보가 표시될 자리 -->
-	<div class="cell">댓글 목록이 표시될 자리</div>
+	<div class="cell reply-area">
+	 <!-- <div class="reply-wrapper">
+	 	<div class="profile-wrapper">
+	 		<img src="https://picsum.photos/500" class="image-circle">
+	 	</div>
+	 	<div class="content-wrapper ms-20">
+	 		<h3 class="mt-0 mb-0">작성자</h3>
+	 		<pre class="mt-10 mb-0">내용 샘플</pre>
+	 		<div class="mt-20">
+	 			<span class="gray">yyyy-MM-dd HH:mm</span>
+	 		</div>
+	 	</div>
+	 </div> -->
+	</div>
 	
 	<c:if test="${sessionScope.loginId != null}">
 	<div class="cell">
@@ -163,50 +250,6 @@
 		<h3>댓글 작성을 원하시면 <a href="/member/login">로그인</a>하세요</h3>
 	</div>
 	</c:if>
-	
-	<!-- form은 전송태그인데 딱히 보낼 정보가 없기 때문에 form 작성할 필요? 없다 -->
-	<%-- <form action="/rest/reply/write" method="post" autocomplete="off" class="form-check"> 
-		<input type="hidden" name="replyOrigin" value="${boardDto.boardNo}">
-		
-		<div class="cell center">
-			<textarea name="replyContent" rows="5" style="width: 100%; font-size: 16px"></textarea>
-		</div>
-		<button type="submit" class="btn btn-positive w-10 left">등록하기</button>
-	</form> --%>
-	
-	<!-- 목록 -->
-		<div class="container w-600 mt-50 mb-50">
-		<c:forEach var="replyDto" items="${list}">
-			<div class="cell">
-				<div class="flex-area flex-vertical">
-					<div class="outer">
-						<div class="inner">
-							<div class="flex-area">
-								<div class="image-area flex-area flex-center">
-									<div class="center">
-										<img src="http://dummyimage.com/80" width="100%" height="100%" class="image-circle">
-									</div>
-								</div>
-		
-		                        <div class="content -area flex-fill">
-		                            <div class="writer">
-		                                작성자누구누구
-		                            </div>
-		                            <div class="detail mt-20">
-		                                <span>댓글내용</span>
-		                            </div>
-		
-		                            <div class="mt-10">
-		                                <span>작성일/수정일</span>
-		                            </div>
-		                        </div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</c:forEach>
-		</div>
 	<hr>
 
 	<!-- 이전글/다음글 출력 -->
