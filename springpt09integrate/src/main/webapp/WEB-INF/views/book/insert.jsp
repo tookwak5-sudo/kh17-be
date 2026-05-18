@@ -3,67 +3,84 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-
-
-
+<script src="/js/book/insert.js"></script>
 
 <!-- 
 <form href="/book/insert">
-action없으면 지금 현재주소라 actiond을 빼도 무방 
+action없으면 지금 현재주소라 action을 빼도 무방 
 -->
-<form action="./insert" method= "post" enctype="multipart/form-data">
-	<div class="container w-400 mt-50">
-		<div class="cell center">	
-			<h1>도서정보 등록</h1>
-		</div>	
-			<!-- <form action="./insert" method= "post"> -->
-			<div class="cell">
-				<label>도서명</label> 
-				<input type = "text" name="bookTitle" class="field w-100" placeholder="나의 라임 오렌지나무" required>
-			</div>	
-			<div class="cell">
-				<label>출판사</label> 
-				<input type = "text" name="bookPublisher" class="field w-100" placeholder="출판사이름 : ex. 한빛출판사">
-			</div>
-			<div class="cell">
-			<label>저자</label> 
-			<input type = "text" name="bookAuthor" class="field w-100" placeholder="조지">
-			</div>
-			<div class="cell">
-			<label>출간일</label> 
-			<input type = "date" name="bookPublicationDate" class="field w-100">
-			</div>
-			<div class="cell">
-			<label>가격</label> 
-			<input type = "number" name="bookPrice"  class="field w-100" step="1000" required>
-			</div>
-			<div class="cell">
-			<label>페이지 수</label>
-			<input type = "text" name="bookPageCount"  class="field w-100" placeholder="페이지 수 : ex.300" class="field" required class="field">
-			</div>
-			
-		<div class="cell">
-			<label>장르</label> 
-			<select class="field w-100" name="bookGenre" required>
-				<option value="">선택하세요</option>
-				<option ${bookDto.bookGenre == '판타지' ? 'selected' : ''}>판타지</option>
-				<option ${bookDto.bookGenre == '교양' ? 'selected' : ''}>교양</option>
-				<option ${bookDto.bookGenre == '소설' ? 'selected' : ''}>소설</option>
-				<option ${bookDto.bookGenre == '역사' ? 'selected' : ''}>역사</option>
-				<option ${bookDto.bookGenre == '과학' ? 'selected' : ''}>과학</option>
-				<option ${bookDto.bookGenre == '추리소설' ? 'selected' : ''}>추리소설</option>
-				<option ${bookDto.bookGenre == '자기계발' ? 'selected' : ''}>자기계발</option>
-				<option ${bookDto.bookGenre == '수험서' ? 'selected' : ''}>수험서</option>
-			</select>
-		</div>	
-		<div class="cell">
-		<label>표지</label>
-		<input type="file" name="attach" class="field w-100" accept=".png, .jpg"> <br><br>
-		</div>
-		<div class="cell mt-10 right">
-		<button class="btn btn-positive w-100">도서정보 등록</button>
-		</div>
-	</div>	
-</form>
+ <form action="./insert" autocomplete="off" method="post" enctype="multipart/form-data" class="form-check">      
+      <div class="container w-500 mt-50 mb-50">
+          <div class="cell center">
+              <h1>신규 도서 등록</h1>
+          </div>
+
+          <!-- onblur -->
+          <div class="cell"> 
+              <label>도서명 <i class="fa-solid fa-asterisk red"></i></label>
+              <input type="text" name="bookTitle" class="field w-100">
+              <div class="success-feedback">도서명 설정이 완료되었습니다</div>
+              <div class="fail-feedback">필수 입력 항목입니다</div>
+          </div>
+
+          <div class="cell">
+              <label>지은이</label>
+              <input type="text" name="bookAuthor" class="field w-100">
+              <div class="fail-feedback">특수문자는 사용하실 수 없습니다</div>
+          </div>
+
+          <div class="cell">
+              <label>출판사</label>
+              <input type="text" name="bookPublisher" class="field w-100">
+          </div>
+
+          <div class="cell">
+              <label>출간일</label>
+              <input type="date" name="bookPublicationDate" class="field w-100">
+              <div class="fail-feedback">유효한 날짜 형식이 아닙니다</div>
+          </div>
+
+          <div class="cell">
+              <label>판매가 <i class="fa-solid fa-asterisk red"></i></label>
+              <input type="text" inputmode="numeric" name="bookPrice" class="field w-100">
+              <div class="success-feedback">판매가 설정이 완료되었습니다</div>
+              <div class="fail-feedback">0원 이상 10억원 이하로만 설정 가능합니다</div>
+          </div>
+
+          <div class="cell">
+              <label>페이지 <i class="fa-solid fa-asterisk red"></i></label>
+              <input type="text" inputmode="numeric" name="bookPageCount" class="field w-100">
+              <div class="success-feedback">페이지수 설정이 완료되었습니다</div>
+              <div class="fail-feedback">페이지수는 0보다 커야합니다</div>
+          </div>
+
+          <div class="cell">
+              <label>장르 <i class="fa-solid fa-asterisk red"></i></label>
+              <select name="bookGenre" class="field w-100">
+                  <option value="">선택</option>
+                  <option>판타지</option>
+                  <option>교양</option>
+                  <option>소설</option>
+                  <option>역사</option>
+                  <option>과학</option>
+                  <option>추리소설</option>
+                  <option>자기계발</option>
+                  <option>수험서</option>
+              </select>
+              <div class="fail-feedback">필수 항목입니다</div>
+          </div>
+
+          <div class="cell">
+              <label>표지</label>
+              <input type="file" name="attach" class="field w-100">
+          </div>
+
+          <div class="cell mt-40">
+              <button class="btn btn-positive w-100">
+                  등록
+              </button>
+          </div>
+      </div>
+    </form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
