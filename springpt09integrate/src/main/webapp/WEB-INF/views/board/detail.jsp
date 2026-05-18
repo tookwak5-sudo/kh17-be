@@ -5,6 +5,7 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
+
 <!-- 좋아요 처리 관련 자바스크립트 (비회원도 가능) -->
 <script type="text/javascript">
 	//header.jsp에 jQuery CDN이 있기 때문에 그냥 사용 가능
@@ -55,6 +56,32 @@
 	});
 </script>
 </c:if>
+
+<!-- 댓글 시스템 작성을 위한 자바스크립트 -->
+ <script type="text/javascript">
+	$(function(){
+        var params = new URLSearchParams(window.location.search);
+        var boardNo = params.get("boardNo");
+
+		$(".btn-reply").on("click", function(){
+            var replyContent = $(".field-reply").val();
+            if(replyContent.length == 0) return; //입력값이 없으면 차단처리
+
+			$.ajax({
+				url: "/rest/reply/write",		
+				method: "post",
+				data: {
+					replyContent : replyContent,
+                    replyOrigin : boardNo
+				},
+                success: function(){
+                    console.log("등록완료");
+                    $(".field-reply").val(""); //입력값 삭제
+                }
+			});
+		});
+	});
+</script>
 
 <div class="container w-950 mt-50 mb-50">
 	<div class="cell">
@@ -117,6 +144,69 @@
 		</div>
 		<div class="ms-20">댓글 ${boardDto.boardReplycount}</div>
 	</div>
+	
+	<hr>
+	
+	<!-- 댓글관련 정보가 표시될 자리 -->
+	<div class="cell">댓글 목록이 표시될 자리</div>
+	
+	<c:if test="${sessionScope.loginId != null}">
+	<div class="cell">
+		<textarea class="field w-100 field-reply" placeholder="댓글 내용 작성"></textarea>
+		<button type="button" class="btn btn-positive w-100 mt-10 btn-reply">
+			<i class="fa-solid fa-pen"></i>
+		</button>
+	</div>
+	</c:if>
+	<c:if test="${sessionScope.loginId == null}">
+	<div class="cell">
+		<h3>댓글 작성을 원하시면 <a href="/member/login">로그인</a>하세요</h3>
+	</div>
+	</c:if>
+	
+	<!-- form은 전송태그인데 딱히 보낼 정보가 없기 때문에 form 작성할 필요? 없다 -->
+	<%-- <form action="/rest/reply/write" method="post" autocomplete="off" class="form-check"> 
+		<input type="hidden" name="replyOrigin" value="${boardDto.boardNo}">
+		
+		<div class="cell center">
+			<textarea name="replyContent" rows="5" style="width: 100%; font-size: 16px"></textarea>
+		</div>
+		<button type="submit" class="btn btn-positive w-10 left">등록하기</button>
+	</form> --%>
+	
+	<!-- 목록 -->
+		<div class="container w-600 mt-50 mb-50">
+		<c:forEach var="replyDto" items="${list}">
+			<div class="cell">
+				<div class="flex-area flex-vertical">
+					<div class="outer">
+						<div class="inner">
+							<div class="flex-area">
+								<div class="image-area flex-area flex-center">
+									<div class="center">
+										<img src="http://dummyimage.com/80" width="100%" height="100%" class="image-circle">
+									</div>
+								</div>
+		
+		                        <div class="content -area flex-fill">
+		                            <div class="writer">
+		                                작성자누구누구
+		                            </div>
+		                            <div class="detail mt-20">
+		                                <span>댓글내용</span>
+		                            </div>
+		
+		                            <div class="mt-10">
+		                                <span>작성일/수정일</span>
+		                            </div>
+		                        </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+		</div>
 	<hr>
 
 	<!-- 이전글/다음글 출력 -->

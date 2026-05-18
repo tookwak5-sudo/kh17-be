@@ -11,8 +11,8 @@ import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.mapper.BoardMapper;
 import com.kh.spring09.vo.PageVo;
 
-@Repository
-public class BoardDao {
+	@Repository
+	public class BoardDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
@@ -35,44 +35,44 @@ public class BoardDao {
 	}
 		
 	//목록
-		public List<BoardDto> selectList(int page, int size){
-			String sql = "select * from ("
-					+ "select rownum rn, TMP.* from ("
-						+ "select * from board_list "
-						+ "connect by prior board_no=board_parent "
-						+ "start with board_parent is null "
-						+ "order siblings by board_group desc, board_no asc"
-					+ ") TMP"
-					+ ") where rn between ? and ?";
-			int beginRow = page * size - (size-1);
-			int endRow = page * size;
-			Object[] params = {beginRow, endRow};
-			return jdbcTemplate.query(sql, boardMapper, params);
-		}
+	public List<BoardDto> selectList(int page, int size){
+		String sql = "select * from ("
+				+ "select rownum rn, TMP.* from ("
+					+ "select * from board_list "
+					+ "connect by prior board_no=board_parent "
+					+ "start with board_parent is null "
+					+ "order siblings by board_group desc, board_no asc"
+				+ ") TMP"
+				+ ") where rn between ? and ?";
+		int beginRow = page * size - (size-1);
+		int endRow = page * size;
+		Object[] params = {beginRow, endRow};
+		return jdbcTemplate.query(sql, boardMapper, params);
+	}
 	
 	//검색
-		public List<BoardDto> selectList(PageVo pageVo){
-			if(pageVo.isList()) 
-				return selectList(pageVo.getPage(),pageVo.getSize());
-			if(!allowColumns.contains(pageVo.getColumn())) 
-				return selectList(pageVo.getPage(),pageVo.getSize());
-			
-			String sql = "select * from ("
-					+ "select rownum rn, TMP.* from ("
-						+ "select * from board_list "
-						+ "where instr("+pageVo.getColumn()+", ?) > 0 "
-						+ "connect by prior board_no=board_parent "
-						+ "start with board_parent is null "
-						+ "order siblings by board_group desc, board_no asc"
-					+ ") TMP"
-					+ ") where rn between ? and ?";
-			Object[] params = {
-						pageVo.getKeyword(), 
-						pageVo.getBeginRownum(), 
-						pageVo.getEndRownum()
-					};
-			return jdbcTemplate.query(sql, boardMapper, params);
-		}
+	public List<BoardDto> selectList(PageVo pageVo){
+		if(pageVo.isList()) 
+			return selectList(pageVo.getPage(),pageVo.getSize());
+		if(!allowColumns.contains(pageVo.getColumn())) 
+			return selectList(pageVo.getPage(),pageVo.getSize());
+		
+		String sql = "select * from ("
+				+ "select rownum rn, TMP.* from ("
+					+ "select * from board_list "
+					+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+					+ "connect by prior board_no=board_parent "
+					+ "start with board_parent is null "
+					+ "order siblings by board_group desc, board_no asc"
+				+ ") TMP"
+				+ ") where rn between ? and ?";
+		Object[] params = {
+					pageVo.getKeyword(), 
+					pageVo.getBeginRownum(), 
+					pageVo.getEndRownum()
+				};
+		return jdbcTemplate.query(sql, boardMapper, params);
+	}
 		
 	//공지사항 조회
 	public List<BoardDto> selectNoticeList(){
