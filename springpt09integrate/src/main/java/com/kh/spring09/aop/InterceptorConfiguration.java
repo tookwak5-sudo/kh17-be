@@ -73,6 +73,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 							,"/member/**"
 							,"/admin/**" //admin 전체
 							,"/board/write" //게시글 등록 페이지 // 수정 삭제는 따로 막을거임, 단순 로그인을 막는다고 막아지는게 아니기 때문
+							,"/rest/board/like-action" //게시글 좋아요 처리 매핑
+							,"/rest/**/like-action" //모든 좋아요 처리 매핑
 					)
 					.excludePathPatterns( //허용할 것만 적는 방식이기 때문에 앞으로 추가될 미지의 방식은 자동으로 잠김으로 이 방식을 더 선호
 							"/lecture/list"
