@@ -29,7 +29,7 @@
             <!-- 하위 메뉴 -->
             <ul>
                 <li>
-                    <a href="/board/list">
+                    <a href="/country/list">
                         <i class="fa-solid fa-flag"></i>
                         <span>국가정보</span>
                     </a>

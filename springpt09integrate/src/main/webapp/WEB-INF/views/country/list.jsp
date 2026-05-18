@@ -6,6 +6,8 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
+
+
 <div class="container w-900">
 	<!-- 제목 -->
 	<div class="cell center">
