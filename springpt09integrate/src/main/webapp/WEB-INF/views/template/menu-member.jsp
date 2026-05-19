@@ -68,7 +68,7 @@
             <li>
                 <a href="/member/mypage">
                     <i class="fa-solid fa-user-plus"></i>
-                    <span>내정보</span>
+                    <span>마이페이지</span>
                 </a>
             </li>
         </ul>

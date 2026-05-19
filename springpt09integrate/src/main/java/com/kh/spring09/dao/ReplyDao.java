@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.dto.ReplyDto;
 import com.kh.spring09.mapper.ReplyMapper;
 
@@ -38,10 +40,30 @@ import com.kh.spring09.mapper.ReplyMapper;
 			return jdbcTemplate.query(sql, replyMapper, params);
 		}	
 		
+		//상세
+		public ReplyDto selectOne(long replyNo) { //상세에서는 내용이 있어야함(board_list라 쓰면 안됨)
+			String sql = "select * from reply where reply_no=?";
+			Object[] params = {replyNo};
+			List<ReplyDto> list = jdbcTemplate.query(sql, replyMapper, params);
+			return list.isEmpty() ? null : list.get(0); 
+			//list.getFirst() // list.get(0)은 범용적, list.getFirst()는 신버전
+		}
+		
 		//삭제 
 		public boolean delete(long replyNo) {
 			String sql = "delete reply where reply_no=?";
 			Object[] params = { replyNo };
 			return jdbcTemplate.update(sql, params) > 0;
 		}
+		
+		//수정
+		public boolean update(@ModelAttribute ReplyDto replyDto) {
+			String sql = "update reply set reply_content= ?, reply_etime=systimestamp where reply_no= ?";
+			Object[] params = { replyDto.getReplyContent(), replyDto.getReplyNo() };
+			return jdbcTemplate.update(sql, params) > 0;
+		}
+		
+		
+		
+		//답변에 좋아요기능 추가 db에 reply-like만들어보기!!
 	}

@@ -41,6 +41,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		@Autowired
 		private BoardReadInterceptor4 boardReadInterceptor4; // DB사용
 		
+		@Autowired
+		private ReplyOwnerInterceptor replyOwnerInterceptor; //댓글 소유자 검사용
 		
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
@@ -102,7 +104,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 			//본인 소유의 게시글만 수정 삭제가 가능하도록 인터셉터 등록
 			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns("/board/edit", "/board/delete");
 			//조회수 증가 처리를 하는 인터셉터 설정
-			registry.addInterceptor(boardReadInterceptor4).addPathPatterns(
-						"/board/detail");
+			registry.addInterceptor(boardReadInterceptor4)
+						.addPathPatterns("/board/detail");
+			//댓글 소유자만 수정 삭제가 가능하도록 설정
+			registry.addInterceptor(replyOwnerInterceptor)
+						.addPathPatterns("/rest/reply/edit", "/rest/reply/delete");
 		}
 }

@@ -13,12 +13,12 @@
 	        타인에 대한 무분별한 비방은 예고 없이 삭제될 수 있습니다
 	    </div>
 	    <hr>
-	    <div class="cell left">
+	    <div class="cell left mb-0">
 	        <c:if test="${sessionScope.loginId != null}">
-			<a href="./writer" class="btn btn-netural">글쓰기</a>
+			<a href="./writer" class="btn btn-positive">글쓰기</a>
 			</c:if>
 	   </div>
-	   <div class="cell right">
+	   <div class="cell right mt-0">
 	      <!-- 게시글 목록 -->
 			<span>${pageVo.beginRownum}-${pageVo.endRownum} / 총 ${pageVo.count}개의 글</span>
 	   </div>

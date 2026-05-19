@@ -87,7 +87,7 @@ public class LectureDao {
 					+ "select rownum rn, TMP.* from ("
 					+ "select * from lecture "
 					+ "where instr("+pageVo.getColumn()+", ?) > 0 "
-					+ "order by country asc"
+					+ "order by lecture_no asc"
 				+ ") TMP"
 				+ ") where rn between ? and ?";
 			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };

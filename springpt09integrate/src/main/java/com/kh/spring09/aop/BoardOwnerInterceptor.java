@@ -30,7 +30,7 @@ public class BoardOwnerInterceptor implements HandlerInterceptor{
 			throw new TargetNotfoundException("존재하지 않는 게시글");
 		}
 		
-		//[2] 로그인된 사용자가 없으면 차단
+		//[2] 비회원일 경우 차단
 		HttpSession session = request.getSession();
 		String loginId = (String) session.getAttribute("loginId");
 		
