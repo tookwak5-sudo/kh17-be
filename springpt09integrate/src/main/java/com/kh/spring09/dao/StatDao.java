@@ -22,4 +22,11 @@ public class StatDao {
 				+ "order by country_region asc";
 		return jdbcTemplate.query(sql, statMapper);
 	}
+	
+	public List<StatVO> bookByGenre() {
+		String sql = "select book_genre title, count(*) value "
+				+ "from book group by book_genre "
+				+ "order by book_genre asc";
+		return jdbcTemplate.query(sql, statMapper);
+	}
 }
