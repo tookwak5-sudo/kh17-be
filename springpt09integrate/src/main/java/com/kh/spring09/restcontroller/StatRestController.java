@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring09.dao.StatDao;
+import com.kh.spring09.vo.ChartDataVO;
 import com.kh.spring09.vo.StatVO;
 
 @CrossOrigin
@@ -21,7 +22,7 @@ public class StatRestController {
 	private StatDao statDao;
 	
 	@PostMapping("/country-region")
-	public Map<String, Object> countryByRegion(){
+	public ChartDataVO countryByRegion(){
 		List<StatVO> list = statDao.countryByRegion();
 		//return list; //FE에서 쓰기 어려운 형태
 		
@@ -33,7 +34,42 @@ public class StatRestController {
 			values.add(statVO.getValue());
 		}
 		
-		return Map.of("titles", titles, "values", values);
+		//return Map.of("titles", titles, "values", values);
+		return ChartDataVO.builder()
+						.type("bar")
+						.titles(titles)
+						.values(values).build();
+	}
+	
+	@PostMapping("/lecture-category")
+	public ChartDataVO lectureByCategory() {
+		List<StatVO> list = statDao.lectureByCategory();
+		
+		List<String> titles = new ArrayList<>();
+		List<Double> values = new ArrayList<>();
+		
+		for(StatVO statVO : list) {
+			titles.add(statVO.getTitle());
+			values.add(statVO.getValue());
+		}
+		return ChartDataVO.builder()
+				.type("doughnut")
+				.titles(titles)
+				.values(values).build();
+	}
+	@PostMapping("/lecture-type")
+	public ChartDataVO lectureByType() {
+		List<StatVO> list = statDao.lectureByType();
+		
+		List<String> titles = new ArrayList<>();
+		List<Double> values = new ArrayList<>();
+		
+		for(StatVO statVO : list) {
+			titles.add(statVO.getTitle());
+			values.add(statVO.getValue());
+		}
+		
+		return ChartDataVO.builder().type("doughnut").titles(titles).values(values).build();
 	}
 	
 	@PostMapping("/book-genre")

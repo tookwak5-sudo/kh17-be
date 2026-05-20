@@ -19,7 +19,21 @@ public class StatDao {
 	public List<StatVO> countryByRegion() {
 		String sql = "select country_region title, count(*) value "
 				+ "from country group by country_region "
-				+ "order by country_region asc";
+				+ "order by value desc, title asc";
+		return jdbcTemplate.query(sql, statMapper);
+	}
+	
+	public List<StatVO> lectureByCategory() {
+		String sql = "select lecture_category title, count(*) value "
+				+ "from lecture group by lecture_category "
+				+ "order by value desc, title asc";
+		return jdbcTemplate.query(sql, statMapper);
+	}
+	
+	public List<StatVO> lectureByType() {
+		String sql = "select lecture_type title, count(*) value "
+				+ "from lecture group by lecture_type "
+				+ "order by value desc, title asc";
 		return jdbcTemplate.query(sql, statMapper);
 	}
 	
