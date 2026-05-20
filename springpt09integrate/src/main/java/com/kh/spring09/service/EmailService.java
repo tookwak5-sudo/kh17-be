@@ -11,7 +11,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender sender;
 	
-	//이 메소드는 이제부터 
+	//이 메소드는 이제부터 비동기(백그라운드,멀티스레드)로 실행된다고 선언!
 	@Async
 	public void sendWelcomeMail(String memberEmail) {
 		SimpleMailMessage message = new SimpleMailMessage();
