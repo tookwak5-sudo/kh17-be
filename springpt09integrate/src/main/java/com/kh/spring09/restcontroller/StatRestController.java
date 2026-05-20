@@ -21,6 +21,7 @@ public class StatRestController {
 	@Autowired
 	private StatDao statDao;
 	
+//	대륙별국가
 	@PostMapping("/country-region")
 	public ChartDataVO countryByRegion(){
 		List<StatVO> list = statDao.countryByRegion();
@@ -41,6 +42,7 @@ public class StatRestController {
 						.values(values).build();
 	}
 	
+//	카테고리별강좌
 	@PostMapping("/lecture-category")
 	public ChartDataVO lectureByCategory() {
 		List<StatVO> list = statDao.lectureByCategory();
@@ -57,6 +59,8 @@ public class StatRestController {
 				.titles(titles)
 				.values(values).build();
 	}
+	
+//	유형별강좌
 	@PostMapping("/lecture-type")
 	public ChartDataVO lectureByType() {
 		List<StatVO> list = statDao.lectureByType();
@@ -72,8 +76,9 @@ public class StatRestController {
 		return ChartDataVO.builder().type("doughnut").titles(titles).values(values).build();
 	}
 	
+//	장르별도서
 	@PostMapping("/book-genre")
-	public Map<String, Object> bookByGenre() {
+	public ChartDataVO bookByGenre() {
 		List<StatVO> list = statDao.bookByGenre();
 		
 		List<String> titles = new ArrayList<>();
@@ -84,6 +89,38 @@ public class StatRestController {
 			values.add(statVO.getValue());
 		}
 		
-		return Map.of("titles", titles, "values", values);
+		return ChartDataVO.builder().type("doughnut").titles(titles).values(values).build();
 	}
+	
+//	멤버별등급
+	@PostMapping("/member-level")
+	public ChartDataVO memberByLevel() {
+		List<StatVO> list = statDao.bookByGenre();
+		
+		List<String> titles = new ArrayList<>();
+		List<Double> values = new ArrayList<>();
+		
+		for(StatVO statVO : list) {
+			titles.add(statVO.getTitle());
+			values.add(statVO.getValue());
+		}
+		
+		return ChartDataVO.builder().type("line").titles(titles).values(values).build();
+	}	
+	
+//	주제별 게시글
+	@PostMapping("/board-head")
+	public ChartDataVO boardByHead() {
+		List<StatVO> list = statDao.bookByGenre();
+		
+		List<String> titles = new ArrayList<>();
+		List<Double> values = new ArrayList<>();
+		
+		for(StatVO statVO : list) {
+			titles.add(statVO.getTitle());
+			values.add(statVO.getValue());
+		}
+		
+		return ChartDataVO.builder().type("doughnut").titles(titles).values(values).build();
+	}	
 }

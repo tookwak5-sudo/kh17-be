@@ -40,7 +40,21 @@ public class StatDao {
 	public List<StatVO> bookByGenre() {
 		String sql = "select book_genre title, count(*) value "
 				+ "from book group by book_genre "
-				+ "order by book_genre asc";
+				+ "order by value desc, title asc";
+		return jdbcTemplate.query(sql, statMapper);
+	}
+	
+	public List<StatVO> memberByLevel() {
+		String sql = "select member_level title, count(*) value "
+				+ "from member group by member_level "
+				+ "order by value desc, title asc";
+		return jdbcTemplate.query(sql, statMapper);
+	}
+	
+	public List<StatVO> boardByHead() {
+		String sql = "select nvl(board_head, '없음') title, count(*) value "
+				+ "from member group by board_head "
+				+ "order by value desc, title asc";
 		return jdbcTemplate.query(sql, statMapper);
 	}
 }

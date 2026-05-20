@@ -424,7 +424,7 @@ border-radius: 20px;
 
 /* (4) 모든 메뉴에 폭을 지정 */
 .menu li {
-    width: 120px;
+    width: 140px;
     font-size: 20px;
     font-weight: bold;
     padding: 0.24em;
@@ -443,7 +443,7 @@ border-radius: 20px;
 .menu ul {
     position: absolute;
     left: 0;
-    width: 120px;
+    width: 140px;
     top: 100%;
 }
 /* (7) 좌우 분리를 위한 .divider 생성 */
