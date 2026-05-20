@@ -39,7 +39,7 @@
             <!-- 헤더 영역 -->
             <div class="flex-area">
                 <div class="w-25 flex-area flex-center">
-                    <!-- <img src="https://www.dummyimage.com/200x50"> -->
+<!--                     <img src="https://www.dummyimage.com/300x100"> -->
                     <a href="/" class="ms-50"><img src="/images/Spring.png" class="w-60"></a>
                 </div>
                 <div class="w-50 flex-area flex-center">
