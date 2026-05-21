@@ -4,26 +4,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리창</title>
-    <link rel="stylesheet" href="../css/commons.css" type="text/css">
 
-    <!-- 아이콘-->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    
-    
-    <!-- jQuery CDN -->
-    <script src ="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-	
-    <!-- 디자인을 작성하기 위한 영역-->
-    <style>
-    </style>
-    
-	<script type="text/javascript">
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
+
+<script type="text/javascript">
 	$(function(){
 // 		  //상태 객체
 //           var state = {
@@ -72,8 +56,8 @@
 //           });
 
 	  });
-	</script>
-</head>
+</script>
+
 	<form action="./create" autocomplete="off" method="post" class="form-check">
 	 <div class="container w-600 mt-50 mb-50"> 
 	 	<div class="cell center">
@@ -113,7 +97,7 @@
 	 		</select>
 	 	</div>
 	 	<div class="cell">
-	 		<label>고용일자</label>
+	 		<label>입사일</label>
 	 		<input type="date" name="empHireDate">
 	 	</div>
 		<div class="cell">
@@ -126,3 +110,6 @@
 	 	</div>
  	</div>
 </form>
+
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
