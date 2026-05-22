@@ -44,7 +44,6 @@ public class CertDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
-	
 	public boolean update(String certEmail) {
 		String sql = "update cert set cert_yn = 'Y' where cert_email=?"; //인증완료 
 		Object[] params = {certEmail};
