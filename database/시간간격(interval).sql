@@ -2,13 +2,13 @@
 --[1] 방식
 delete cert where 
 	(cert_yn= 'N' and systimestamp - interval '10' minute > cert_time)
-	and
+	or
 	(cert_yn= 'Y' and systimestamp - interval '30' minute > cert_time);
 
 --[2] 방식
 delete cert where 
 	(cert_yn= 'N' and systimestamp - cert_time > interval '10' minute) 
-	and
+	or
 	(cert_yn= 'Y' and systimestamp - cert_time > interval '30' minute);
 
 select * from cert;
