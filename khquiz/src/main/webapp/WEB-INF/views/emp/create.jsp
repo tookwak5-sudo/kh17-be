@@ -57,6 +57,20 @@
 
 	  });
 </script>
+<script type="text/javascript">
+// 	$(function(){
+// 		$.ajax(){
+			
+// 			method: "post",
+// 			success:function(response){
+// 				for(var i=0; i <response.length; i++){
+// 					$("[name=deptName]").append("<option>...");
+// 				}
+// 			}
+// 		}
+		
+// 	});
+</script>
 
 	<form action="./create" autocomplete="off" method="post" class="form-check">
 	 <div class="container w-600 mt-50 mb-50"> 
@@ -68,7 +82,7 @@
 	 		<select class="field w-100" name="empDept">
 	 				<option value="">선택하세요</option>
 	 			<c:forEach var="deptDto" items="${deptNameList}" >
-	 				<option value="${deptDto.deptName}">${deptDto.deptName}</option>
+	 				<option value="${deptDto.deptId}">${deptDto.deptName}</option>
 	 			</c:forEach>
 	 		</select> 
 	 		 <div class="fail-feedback">필수 항목입니다</div>

@@ -25,7 +25,7 @@ public class EmpController {
 	private DeptDao deptDao;
 	
 	
-	//사원 정보 등록
+	//사원 정보 등록 활성화된 부서명단이 넘어가야함
 	@GetMapping("/create")
 	public String add(@ModelAttribute DeptDto deptDto, Model model) {
 		// 부서테이블에서 부서명을 조회한 후 그 값을 emp jsp로 넘기는 작업
