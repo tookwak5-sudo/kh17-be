@@ -25,7 +25,7 @@ public class CertDao {
 	
 	public boolean update(CertDto certDto) {
 		String sql = "update cert "
-				+ "set cert_number = ?, cert_time = systimestamp "
+				+ "set cert_number = ?, cert_time = systimestamp, cert_yn='N' "
 				+ "where cert_email=?";
 		Object[] params = { certDto.getCertNumber(), certDto.getCertEmail() };
 		return jdbcTemplate.update(sql, params) > 0;
