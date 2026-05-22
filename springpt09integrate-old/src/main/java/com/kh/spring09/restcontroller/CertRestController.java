@@ -1,5 +1,6 @@
 package com.kh.spring09.restcontroller;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -15,6 +16,8 @@ import com.kh.spring09.dao.CertDao;
 import com.kh.spring09.dto.CertDto;
 import com.kh.spring09.service.EmailService;
 
+import jakarta.mail.MessagingException;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/rest/cert")
@@ -25,8 +28,9 @@ public class CertRestController {
 	private CertDao certDao;
 	
 	@PostMapping("/send")
-	public void send(@RequestParam String certEmail) {
-		emailService.sendCertNumber(certEmail); //이메일 발송작업 완료
+	public void send(@RequestParam String certEmail) throws MessagingException, IOException {
+		//emailService.sendCertNumber(certEmail); //이메일 발송작업 완료
+		emailService.sendCertNumber2(certEmail); //이메일 발송작업 완료
 	}
 	
 	@PostMapping("/check")
