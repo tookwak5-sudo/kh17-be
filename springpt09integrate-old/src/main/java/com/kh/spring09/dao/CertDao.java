@@ -43,4 +43,21 @@ public class CertDao {
 		Object[] params = { certEmail };
 		return jdbcTemplate.update(sql, params) > 0;
 	}
+	
+	public boolean update(String certEmail) {
+		String sql = "update cert set cert_yn = 'Y' where cert_email=?"; //인증완료 
+		Object[] params = {certEmail};
+		return jdbcTemplate.update(sql, params) > 0;
+	}
+	
+	//청소 메소드 -nTime(N의 소멸시간), yTime(Y의 소멸시간)
+	public boolean clear(int nTime, int yTime) {
+		String sql = "delete cert where "
+				+ "(cert_yn= 'N' and systimestamp - cert_time > numtodsinterval(?, 'MINUTE')) "
+				+ "or "
+				+ "(cert_yn= 'Y' and systimestamp - cert_time > numtodsinterval(?, 'MINUTE')";
+		
+		Object[] params = {nTime, yTime}; //따옴표 생기도록 변환
+		return jdbcTemplate.update(sql, params) > 0;
+	}
 }
