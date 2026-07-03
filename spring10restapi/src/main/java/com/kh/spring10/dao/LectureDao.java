@@ -131,4 +131,24 @@ public class LectureDao {
 			Object[] params = {lectureNo};
 			return jdbcTemplate.queryForList(sql, int.class, params);
 		}
+		
+		//Rest API 용 페이징 메소드
+		//- 동일 데이터가 두 번 나오지 않도록 번호를 필터링 하여 10개를 추출
+		public List<LectureDto> selectListForReact(int lastLectureNo, int size){
+			String sql = "select * from ( "
+					+ "select rownum rn, TMP.* from ("
+						+ "select * from lecture "
+						+ "where lecture_no > ? "
+						+ "order by lecture_no asc"
+					+ ")TMP"
+					+ ") where rn between 1 and ?";
+			Object[] params = { lastLectureNo, size };
+			return jdbcTemplate.query(sql, lectureMapper, params);
+		}
+		
+		public int countForReact(int lastLectureNo) {
+			String sql = "select count(*) from lecture where lecture_no > ?";
+			Object[] params = { lastLectureNo };
+			return jdbcTemplate.queryForObject(sql, int.class, params);
+		}
 }
