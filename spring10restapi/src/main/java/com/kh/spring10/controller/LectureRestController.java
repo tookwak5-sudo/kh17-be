@@ -1,7 +1,10 @@
 package com.kh.spring10.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +39,11 @@ public class LectureRestController {
 		int lectureNo = lectureDao.sequence();
 		lectureDto.setLectureNo(lectureNo);
 		lectureDao.insert(lectureDto);
+	}
+	
+	//crud중 r은 단순 조회인 안전한 작업이기 때문에 get방식 고수
+	@GetMapping("/list")
+	public List<LectureDto> list(){
+		return lectureDao.selectList(1, 10000);
 	}
 }

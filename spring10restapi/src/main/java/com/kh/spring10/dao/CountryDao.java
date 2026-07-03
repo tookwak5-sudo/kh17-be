@@ -135,4 +135,24 @@ public class CountryDao {
 		Object[] params = {countryNo};
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
+	
+	//REST API 용 페이징 메소드
+	//- 동일 데이터가 두번 나오지 않도록 번호로 필터링 하여 10개를 추출
+	public List<CountryDto> selectListForReact(int lastCountryNo, int size){
+		String sql = "select * from ("
+				+ "select rownum rn, TMP.* from ("
+						+ "select * from country "
+						+ "where country_no > ? "
+						+ "order by country_no asc"
+					+ ")TMP"
+				+ ") where rn between 1 and ?";
+		Object[] params = { lastCountryNo, size };
+		return jdbcTemplate.query(sql, countryMapper, params);
+	}
+	
+	public int countForReact(int lastCountryNo){
+		String sql = "select count(*) from country where country_no > ?";
+		Object[] params = { lastCountryNo };
+		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
 }
