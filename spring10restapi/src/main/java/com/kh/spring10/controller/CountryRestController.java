@@ -49,4 +49,8 @@ public class CountryRestController {
 					.build();
 	}
 	
+	@GetMapping("/detail")
+	public CountryDto detail(@RequestParam int countryNo) {
+		return countryDao.selectOne(countryNo);
+	}
 }
