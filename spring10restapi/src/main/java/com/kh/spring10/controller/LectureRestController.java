@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,7 +83,7 @@ public class LectureRestController {
 	}
 	
 	@GetMapping("/detail/{lectureNo}")
-	public LectureDto detail2(@RequestParam int lectureNo) {
+	public LectureDto detail2(@PathVariable int lectureNo) {
 		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
 		if(lectureDto == null) throw new TargetNotfoundException();
 		return lectureDto;
@@ -90,6 +91,13 @@ public class LectureRestController {
 	
 	@GetMapping("/delete")
 	public void delete(@RequestParam int lectureNo) {
+		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
+		if(lectureDto == null) throw new TargetNotfoundException();
+		lectureDao.delete(lectureNo);
+	}
+	
+	@GetMapping("/delete/{lectureNo}")
+	public void delete2(@PathVariable int lectureNo) {
 		LectureDto lectureDto = lectureDao.selectOne(lectureNo);
 		if(lectureDto == null) throw new TargetNotfoundException();
 		lectureDao.delete(lectureNo);
