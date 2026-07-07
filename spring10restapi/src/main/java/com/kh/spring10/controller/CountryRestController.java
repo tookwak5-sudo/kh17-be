@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring10.dao.CountryDao;
 import com.kh.spring10.dto.CountryDto;
+import com.kh.spring10.error.TargetNotfoundException;
 import com.kh.spring10.vo.ListVO;
 
 @CrossOrigin
@@ -51,6 +52,15 @@ public class CountryRestController {
 	
 	@GetMapping("/detail")
 	public CountryDto detail(@RequestParam int countryNo) {
-		return countryDao.selectOne(countryNo);
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException();
+		return countryDto;
+	}
+	
+	@GetMapping("/delete")
+	public void delete(@RequestParam int countryNo) {
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException();
+		countryDao.delete(countryNo);
 	}
 }
