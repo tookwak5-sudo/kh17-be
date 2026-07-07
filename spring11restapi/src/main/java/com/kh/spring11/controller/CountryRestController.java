@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.spring11.dao.CountryDao;
 import com.kh.spring11.dto.CountryDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.ListRequestVO;
+import com.kh.spring11.vo.ListVO;
 
 @CrossOrigin
 @RestController
@@ -40,6 +42,37 @@ public class CountryRestController {
 	public List<CountryDto> list(){
 		return countryDao.selectList(1, Integer.MAX_VALUE);
 	}
+	
+	//리액트를 위한 더보기 방식의 조회
+	// - 조회는 GetMapping으로 구현 (정보가 너무 많으면 Post로도 가능)
+	// - 정보가 많다의 기준은 2개
+//	@GetMapping("/lastCountryNo/{lastCountryNo}/size/{size}")
+//	public ListVO listForReact(
+//			@PathVariable int lastCountryNo, //PathVariable은 기본값을 줄 수 없음
+//			@PathVariable int size
+//	) {
+//		List list = countryDao.selectListForReact(lastCountryNo, size);
+//		int count = countryDao.countForReact(lastCountryNo);
+//		
+//		return ListVO.builder()
+//						.list(list)
+//						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
+//					.build();
+//	}
+	
+	//데이터가 많을 경우 조회에도 post를 사용
+	@PostMapping("/list-more")
+	public ListVO listForReact(@RequestBody ListRequestVO vo) {
+		List list = countryDao.selectListForReact(vo.getLastNo(), vo.getSize());
+		int count = countryDao.countForReact(vo.getLastNo());
+		
+		return ListVO.builder()
+			.list(list)
+			.last(count <= vo.getSize()) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
+		.build();
+	}
+	
+	
 	
 	//상세 : PK를 경로 변수로 받음
 	@GetMapping("/{countryNo}")
