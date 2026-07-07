@@ -135,4 +135,23 @@ public class BookDao {
 		Object[] params = {bookId};
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
+	
+	//Rest API용 페이징 메소드
+	public List<BookDto> selectListForReact(int lastBookId, int size){
+		String sql = "select * from ("
+					+ "select rownum rn, TMP.* from ("
+						+ "select * from book "
+						+ "where book_id < ? "
+						+ "order by book_id desc"
+					+ ")TMP"
+				+ ") where rn between 1 and ?";
+		Object[] params = { lastBookId, size };
+		return jdbcTemplate.query(sql, bookMapper, params);
+	}
+	
+	public int countForReact(int lastBookId) {
+		String sql = "select count(*) from book where book_id < ?";
+		Object[] params = { lastBookId };
+		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
 }
