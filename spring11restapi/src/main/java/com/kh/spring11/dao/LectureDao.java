@@ -1,0 +1,154 @@
+package com.kh.spring11.dao;
+
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.kh.spring11.dto.LectureDto;
+import com.kh.spring11.mapper.LectureMapper;
+import com.kh.spring11.vo.PageVo;
+
+
+@Repository
+public class LectureDao {
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private LectureMapper lectureMapper;
+	
+	//등록
+	public int sequence() {
+		String sql = "select lecture_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	public void insert(LectureDto lectureDto) {
+		String sql = "insert into lecture("
+				+ "lecture_no, lecture_title, lecture_category, "
+				+ "lecture_duration, lecture_price, lecture_type) "
+				+ "values(?, ?, ?, ?, ?, ?)";
+		Object[] params = {
+				lectureDto.getLectureNo(),
+				lectureDto.getLectureTitle(), lectureDto.getLectureCategory(), lectureDto.getLectureDuration(),
+				lectureDto.getLecturePrice(), lectureDto.getLectureType()
+		};
+		jdbcTemplate.update(sql, params);
+	}
+	
+	//수정
+		public boolean update(LectureDto lectureDto) {
+			String sql = "update lecture set "
+					+ "lecture_title =?, "
+					+ "lecture_category =?, "
+					+ "lecture_duration =?, "
+					+ "lecture_price =?, "
+					+ "lecture_type =? "
+					+ "where lecture_no =?";
+			Object[] params = {
+					lectureDto.getLectureTitle(), lectureDto.getLectureCategory(),
+					lectureDto.getLectureDuration(), lectureDto.getLecturePrice(),
+					lectureDto.getLectureType(), lectureDto.getLectureNo()
+			};
+			return jdbcTemplate.update(sql, params) > 0; 
+		}
+	
+		//삭제
+		public boolean delete(int lecture_no) {
+			String sql = "delete lecture where lecture_no = ?";
+			Object[] params = { lecture_no };
+			return jdbcTemplate.update(sql, params) > 0;
+		}
+		
+		
+		//조회
+		public List<LectureDto> selectList(int beginRownum, int endRownum){
+			String sql = "select * from lecture order by lecture_no asc";
+			sql = "select * from( "
+					+ "select rownum rn, TMP.* from("
+					+ "select * from lecture order by lecture_no asc"
+					+ ") TMP"
+					+ ") where rn between ? and ?";
+			Object[] params = {beginRownum, endRownum};
+			return jdbcTemplate.query(sql, lectureMapper, params);
+		}
+		
+		//검색
+		public List<LectureDto> selectList(PageVo pageVo){
+			
+			if(pageVo.isList()) return selectList(pageVo.getBeginRownum(), pageVo.getEndRownum());//또는 return List.of()
+			Set<String> allowList = Set.of("lecture_title", "lecture_category", "lecture_type");
+			
+			if(allowList.contains(pageVo.getColumn()) == false) 
+				return List.of();
+			
+			String sql =  "select * from ("
+					+ "select rownum rn, TMP.* from ("
+					+ "select * from lecture "
+					+ "where instr("+pageVo.getColumn()+", ?) > 0 "
+					+ "order by lecture_no asc"
+				+ ") TMP"
+				+ ") where rn between ? and ?";
+			Object[] params = { pageVo.getKeyword(), pageVo.getBeginRownum(), pageVo.getEndRownum() };
+			return jdbcTemplate.query(sql, lectureMapper, params);
+		}
+		
+		//상세검색
+		public LectureDto selectOne(int lectureNo) {
+			String sql = "select * from lecture where lecture_no =?";
+			Object[] params = {lectureNo};
+			List<LectureDto> list = jdbcTemplate.query(sql, lectureMapper, params);
+			return list.isEmpty() ? null : list.get(0);
+		}
+		
+		//카운트 메소드
+		public int count() {
+			String sql = "select count(*) from lecture";
+			return jdbcTemplate.queryForObject(sql, int.class);
+		}
+		public int count(PageVo pageVo) {
+			if(pageVo.isList()) return count();
+			Set<String> allowList = Set.of("lecture_title", "lecture_category", "lecture_type");
+			if(!allowList.contains(pageVo.getColumn()))
+				return count();
+			
+			String sql = "select count(*) from lecture where instr("+pageVo.getColumn()+", ?) > 0";
+			Object[] params = {pageVo.getKeyword()};
+			return jdbcTemplate.queryForObject(sql, int.class, params);
+		}
+		
+		//연결
+		public void connect(int lectureNo, int attachNo) {
+			String sql = "insert into lecture_image(lecture_no, attach_no) values(?, ?)";
+			Object[] params = {lectureNo, attachNo};
+			jdbcTemplate.update(sql, params);
+		}
+		
+		//강좌이미지 찾기
+		public List<Integer> searchImage(int lectureNo){
+			String sql = "select attach_no from lecture_image where lecture_no = ?";
+			Object[] params = {lectureNo};
+			return jdbcTemplate.queryForList(sql, int.class, params);
+		}
+		
+		//Rest API 용 페이징 메소드
+		//- 동일 데이터가 두 번 나오지 않도록 번호를 필터링 하여 10개를 추출
+		public List<LectureDto> selectListForReact(int lastLectureNo, int size){
+			String sql = "select * from ( "
+					+ "select rownum rn, TMP.* from ("
+						+ "select * from lecture "
+						+ "where lecture_no < ? "
+						+ "order by lecture_no desc"
+					+ ")TMP"
+					+ ") where rn between 1 and ?";
+			Object[] params = { lastLectureNo, size };
+			return jdbcTemplate.query(sql, lectureMapper, params);
+		}
+		
+		public int countForReact(int lastLectureNo) {
+			String sql = "select count(*) from lecture where lecture_no < ?";
+			Object[] params = { lastLectureNo };
+			return jdbcTemplate.queryForObject(sql, int.class, params);
+		}
+}
