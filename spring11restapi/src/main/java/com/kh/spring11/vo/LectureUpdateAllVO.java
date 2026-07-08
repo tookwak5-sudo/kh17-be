@@ -3,8 +3,8 @@ package com.kh.spring11.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-@Data
 @Schema(description = "강좌 전체 수정 정보")
+@Data
 public class LectureUpdateAllVO {
 	@Schema(description = "강좌 제목", example = "정보처리기사 필기")
 	private String lectureTitle;

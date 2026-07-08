@@ -59,7 +59,7 @@ public class CountryRestController {
 //						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
 //					.build();
 //	}
-	
+//	
 	//데이터가 많을 경우 조회에도 post를 사용
 	@PostMapping("/list-more")
 	public ListVO listForReact(@RequestBody ListRequestVO vo) {

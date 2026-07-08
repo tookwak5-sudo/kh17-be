@@ -36,7 +36,7 @@ public class BookRestController {
 		return bookDao.selectList(1, 10000);
 	}
 	
-	@GetMapping("/listForReact")
+	@PostMapping("/listForReact")
 	public ListVO listForReact(
 		@RequestParam(required = false, defaultValue = "0") int lastBookId,
 		@RequestParam(required = false, defaultValue = "10") int size

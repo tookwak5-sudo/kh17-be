@@ -21,6 +21,7 @@ import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.LectureInsertVO;
 import com.kh.spring11.vo.LectureUpdateAllVO;
 import com.kh.spring11.vo.LectureUpdateUnitVO;
+import com.kh.spring11.vo.ListVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,7 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/lecture")
-@CommonsApiResponse
+@CommonsApiResponse  //커스텀 annotation
 public class LectureRestController {
 	@Autowired
 	private LectureDao lectureDao;
@@ -93,10 +94,26 @@ public class LectureRestController {
 			} 
 	)
 	
-	//전체조회
+	//조회
 	@GetMapping("/")
-	public List<LectureDto> list() {
+	public List<LectureDto> list(){
 		return lectureDao.selectList(1, Integer.MAX_VALUE);
+	}
+	
+	//리액트를 위한 더보기 방식의 조회
+	// - 조회는 GetMapping으로 구현 (정보가 너무 많으면 Post로도 가능)
+	// - 정보가 많다의 기준은 2개
+	@GetMapping("/lastLectureNo/{lastLectureNo}/size/{size}")
+	public ListVO listForReact(
+			@PathVariable int lastLectureNo, //PathVariable은 기본값을 줄 수 없음
+			@PathVariable int size
+	) {
+		List list = lectureDao.selectListForReact(lastLectureNo, size);
+		int count = lectureDao.countForReact(lastLectureNo);
+		return ListVO.builder()
+						.list(list)
+						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
+					.build();
 	}
 	
 	@Operation(
