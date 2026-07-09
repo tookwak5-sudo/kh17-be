@@ -24,4 +24,8 @@
 	<select id="list" resultType="CountryDto">
 		select * from country order by country_no asc
 	</select>
+	
+	<select id="find" resultType="CountryDto">
+		select * from country where country_no = #{countryNo}
+	</select>
 </mapper>
