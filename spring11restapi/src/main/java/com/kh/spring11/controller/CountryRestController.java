@@ -14,11 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.CountryDao;
 import com.kh.spring11.dto.CountryDto;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "국가 등록 시스템", description = "국가 정보에 대해 DB처리를 수행하는 컨트롤러 입니다")
+@CommonsApiResponse
 
 @CrossOrigin
 @RestController
@@ -27,8 +35,9 @@ public class CountryRestController {
 	@Autowired
 	private CountryDao countryDao;
 	
-	//등록
-	@PostMapping("/")
+	@ApiResponse(responseCode = "200", description = "등록 성공")
+//	@PostMapping("/")
+	@PostMapping(value = "/", produces = "application/json")
 	public CountryDto insert(@RequestBody CountryDto countryDto) {
 		int countryNo = countryDao.sequence();
 		countryDto.setCountryNo(countryNo);

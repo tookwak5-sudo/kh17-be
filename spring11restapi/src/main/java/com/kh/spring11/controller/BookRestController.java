@@ -32,15 +32,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "도서API", description = "도서 CRUD를 위한 API 입니다")
-
-@CrossOrigin
-@RestController
-@RequestMapping("/api/book")
+@Tag(name = "도서 처리 시스템", description = "도서 정보에 대해 DB처리를 수행하는 컨트롤러 입니다")
 @CommonsApiResponse
+
+@CrossOrigin // CORS 교차출처 허용(지금은 전체지만, 향후 특정대상만 허용하는 옵션 추가 필요)
+@RestController // @Controller는 화면(View)을 반환하는 컨트롤러 //@RestController는 데이터(JSON, XML 등)를 반환하는 컨트롤러							
+@RequestMapping("/api/book")
 public class BookRestController {
 	@Autowired
 	private BookDao bookDao;
+	
+	//CRUD 처리 매핑(통상적인 방법론)
+	//1. 기본적으로 자원관련된 CRUD는 주소를 최소화하고 전송방식으로 구분
+	//2. 쿼리스트림은 선택적 데이터에 사용 (옵션)
+	//3. 경로변수는 반드시 필요한 데이터에 사용 (필수)
+	//4. 전송 데이터가 많으면 조회라도 POST 등을 사용할 수 있다
 	
 	@Operation(
 			summary = "신규 도서 등록",
@@ -100,25 +106,25 @@ public class BookRestController {
 	//리액트를 위한 더보기 방식의 조회
 	// - 조회는 GetMapping으로 구현 (정보가 너무 많으면 Post로도 가능)
 	// - 정보가 많다의 기준은 2개
-//	@GetMapping("/lastLectureNo/{lastLectureNo}/size/{size}")
-//	public ListVO listForReact(
-//			@PathVariable int lastLectureNo, //PathVariable은 기본값을 줄 수 없음
-//			@PathVariable int size
-//	) {
-//		List list = lectureDao.selectListForReact(lastLectureNo, size);
-//		int count = lectureDao.countForReact(lastLectureNo);
-//		return ListVO.builder()
-//						.list(list)
-//						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
-//					.build();
-//	}
+	// - 주소를 분리가능하지만 분리할 경우 "/" 경로가 겹치는 문제가 발생
+	@GetMapping("/lastBookId/{lastbookId}/size/{size}")
+	public ListVO listForReact1(
+			@PathVariable int lastBookId, //PathVariable은 기본값을 줄 수 없음
+			@PathVariable int size
+	) {
+		List list = bookDao.selectListForReact(lastBookId, size);
+		int count = bookDao.countForReact(lastBookId);
+		return ListVO.builder()
+						.list(list)
+						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
+					.build();
+	}
 	
 	//전체 조회
 	@PostMapping("/list-more")
-	public ListVO list(@RequestBody ListRequestVO vo) {
+	public ListVO listForReact2(@RequestBody ListRequestVO vo) {
 			List list = bookDao.selectListForReact(vo.getLastNo(), vo.getSize());
 			int count = bookDao.countForReact(vo.getLastNo());
-			System.out.println(vo);
 			return ListVO.builder()
 					.list(list)
 					.last(count <= vo.getSize())

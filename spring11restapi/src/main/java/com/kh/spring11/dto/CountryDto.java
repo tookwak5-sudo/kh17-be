@@ -1,5 +1,7 @@
 package com.kh.spring11.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import lombok.ToString;
 //- @ToString : toString() 메소드 생성
 //@Setter @Getter @NoArgsConstructor @ToString
 //- @Data : 세터 + 게터 + toString()
-@Data
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CountryDto {
 	private int countryNo;
 	private String countryRegion;

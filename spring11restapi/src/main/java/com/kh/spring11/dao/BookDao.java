@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.BookDto;
 import com.kh.spring11.mapper.BookMapper;
+import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.PageVo;
 
 @Repository
@@ -136,8 +137,11 @@ public class BookDao {
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 	
-	//Rest API용 페이징 메소드
+	//더보기 형식의 목록
 	public List<BookDto> selectListForReact(int lastBookId, int size){
+		if(lastBookId ==0 ) {
+			lastBookId = Integer.MAX_VALUE;
+		}
 		String sql = "select * from ("
 					+ "select rownum rn, TMP.* from ("
 						+ "select * from book "
@@ -148,10 +152,19 @@ public class BookDao {
 		Object[] params = { lastBookId, size };
 		return jdbcTemplate.query(sql, bookMapper, params);
 	}
+	public List<BookDto> selectListForReact(ListRequestVO vo){
+		return selectListForReact(vo.getLastNo(), vo.getSize());
+	}
 	
 	public int countForReact(int lastBookId) {
+		if(lastBookId ==0 ) {
+			lastBookId = Integer.MAX_VALUE;
+		}
 		String sql = "select count(*) from book where book_id < ?";
 		Object[] params = { lastBookId };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
+	public int countForReact(ListRequestVO vo) {
+		return countForReact(vo.getLastNo());
 	}
 }
