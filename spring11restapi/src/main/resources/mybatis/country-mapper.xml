@@ -5,6 +5,11 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="mapper.country">
+
+	<select id="sequence" resultType="int">
+		select country_seq.nextval from dual
+	</select>
+	
 	<insert id="add">
 		insert into country(
 			country_no, country_name, country_region,
@@ -77,5 +82,21 @@
 	<delete id="delete">
 		delete country where country_no = #{countryNo}
 	</delete>
+	
+	<!-- 더보기 방식의 조회와 개수세기 -->
+	<select id="listMore" resultType="CountryDto">
+		select * from (
+			select rownum rn, TMP.* from (
+				select * from country 
+				<if test="lastCountryNo != null || lastCountryNo > 0">
+				where country_no > #{lastCountryNo}
+				</if> 
+				order by country_no asc
+			)TMP
+		) where rn between 1 and #{size}
+	</select>
+	<select id="countMore" resultType="int">
+		select count(*) from country where country_no > #{countryNo}
+	</select>
 	
 </mapper>

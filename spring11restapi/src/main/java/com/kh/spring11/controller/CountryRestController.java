@@ -21,7 +21,6 @@ import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -32,6 +31,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/country")
 public class CountryRestController {
+	
+	// 인터페이스를 Autowired하면 상속받은 클래스 중 등록된 크래스의 객체가 주입된다.
+	//(주의) 등록은 반드시 하나만 되어 있어야 한다 (여러개를 두고 선택하려면 추가 작업이 필요)
 	@Autowired
 	private CountryDao countryDao;
 	
@@ -72,8 +74,8 @@ public class CountryRestController {
 	//데이터가 많을 경우 조회에도 post를 사용
 	@PostMapping("/list-more")
 	public ListVO listForReact(@RequestBody ListRequestVO vo) {
-		List list = countryDao.selectListForReact(vo.getLastNo(), vo.getSize());
-		int count = countryDao.countForReact(vo.getLastNo());
+		List list = countryDao.selectList(vo.getLastNo(), vo.getSize());
+		int count = countryDao.count(vo.getLastNo());
 		
 		return ListVO.builder()
 			.list(list)
