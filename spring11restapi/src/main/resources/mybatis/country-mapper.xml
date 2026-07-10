@@ -11,7 +11,7 @@
 			country_capital, country_population
 		)
 		values(
-			<!-- 마이바티스는 ?가 아니라 네이밍 홀더를 사용한다 -->
+			<!-- 마이바티스는 위치 홀더(?)가 아니라 네이밍 홀더를 사용한다 -->
 			#{countryNo}, #{countryName}, #{countryRegion}, 
 			#{countryCapital}, #{countryPopulation}
 		)
@@ -28,4 +28,54 @@
 	<select id="find" resultType="CountryDto">
 		select * from country where country_no = #{countryNo}
 	</select>
+	
+	<!-- 
+		수정
+		1. 전체수정 (PUT매핑 대응)
+		2. 부분수정 (PATCH매핑 대응)
+	-->
+	<update id="updateAll">
+		update country 
+		set country_name = #{countryName},
+			 country_region = #{countryRegion},
+			country_capital = #{countryCapital}, 
+			country_population = #{countryPopulation}
+		where country_no = #{countryNo}
+	</update>
+	<update id="updateUnit">
+		update country 
+		<!-- 
+			mybatis에서 제공하는 선택적 수정 기능 
+			<set> 내부에 <if>로 각 데이터가 수정되야 하는 상황을 명시
+			단, 자바코드와 유사하지만 다음 기호는 쓸 수 없다.
+			1. && 대신 and 사용
+			2. || 대신 or 사용
+			
+			메소드 등도 호출 가능 (권장하진 않음)
+			
+			JSTL의 c태그 기능 대부분이 존재
+			<if>, <choose>+<when>+<otherwise>, <forEach>
+		-->
+		<set>
+			<if test="countryName != null">
+			country_name = #{countryName},
+			</if>
+			<if test="countryRegion != null">
+			country_region = #{countryRegion},
+			</if>
+			<if test="countryCapital != null">
+			country_capital = #{countryCapital},
+			</if>
+			<if test="countryPopulation > 0"> 
+			country_population = #{countryPopulation},
+			</if>
+		</set>
+		where country_no = #{countryNo}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete">
+		delete country where country_no = #{countryNo}
+	</delete>
+	
 </mapper>
