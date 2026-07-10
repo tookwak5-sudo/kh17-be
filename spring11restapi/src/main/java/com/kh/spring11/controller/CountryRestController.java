@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
@@ -23,6 +24,7 @@ import com.kh.spring11.vo.ListVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 @Tag(name = "국가 등록 시스템", description = "국가 정보에 대해 DB처리를 수행하는 컨트롤러 입니다")
 @CommonsApiResponse
@@ -142,4 +144,11 @@ public class CountryRestController {
 		
 		return findCountryDto;
 	}
+	
+//	@PostMapping("/searchBykeyword")
+	@GetMapping("/countryName/{keyword}")
+	public List<CountryDto> searchByKeyword(@PathVariable String keyword) {
+		return countryDao.searchByCountryName(keyword);
+	}
+	
 }

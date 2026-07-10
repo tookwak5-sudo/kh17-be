@@ -17,8 +17,8 @@ public class LectureMapper implements RowMapper<LectureDto>{
 		lectureDto.setLectureNo(rs.getInt("lecture_no"));
 		lectureDto.setLectureTitle(rs.getString("lecture_title"));
 		lectureDto.setLectureCategory(rs.getString("lecture_category"));
-		lectureDto.setLectureDuration(rs.getInt("lecture_duration"));
-		lectureDto.setLecturePrice(rs.getLong("lecture_price"));
+		lectureDto.setLectureDuration(rs.getObject("lecture_duration", Integer.class));
+		lectureDto.setLecturePrice(rs.getObject("lecture_price", Integer.class));
 		lectureDto.setLectureType(rs.getString("lecture_type"));
 		return lectureDto;
 	}

@@ -1,16 +1,19 @@
 package com.kh.spring11.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
+@Data  @Builder @NoArgsConstructor @AllArgsConstructor
 public class BookDto {
 	private int bookId;
 	private String bookTitle;
 	private String bookAuthor;
 	private String bookPublicationDate;
-	private long bookPrice;
+	private Integer bookPrice;
 	private String bookPublisher;
-	private int bookPageCount;
+	private Integer bookPageCount;
 	private String bookGenre;
 	
 	@Override

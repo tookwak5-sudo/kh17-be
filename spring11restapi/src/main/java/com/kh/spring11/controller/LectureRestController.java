@@ -21,6 +21,7 @@ import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.LectureInsertVO;
 import com.kh.spring11.vo.LectureUpdateAllVO;
 import com.kh.spring11.vo.LectureUpdateUnitVO;
+import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -97,7 +98,7 @@ public class LectureRestController {
 	//조회
 	@GetMapping("/")
 	public List<LectureDto> list(){
-		return lectureDao.selectList(1, Integer.MAX_VALUE);
+		return lectureDao.selectList(null, 10);
 	}
 	
 	//리액트를 위한 더보기 방식의 조회
@@ -108,12 +109,22 @@ public class LectureRestController {
 			@PathVariable int lastLectureNo, //PathVariable은 기본값을 줄 수 없음
 			@PathVariable int size
 	) {
-		List list = lectureDao.selectListForReact(lastLectureNo, size);
-		int count = lectureDao.countForReact(lastLectureNo);
+		List list = lectureDao.selectList(lastLectureNo, size);
+		int count = lectureDao.count(lastLectureNo);
 		return ListVO.builder()
 						.list(list)
 						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
 					.build();
+	}
+	
+	@PostMapping("/list-more")
+	public ListVO listMore(@RequestBody ListRequestVO vo) {
+		List list = lectureDao.selectList(vo.getLastNo(), vo.getSize());
+		int count =lectureDao.count(vo.getLastNo());
+		return ListVO.builder()
+				.list(list)
+				.last(count <= vo.getSize()) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
+			.build();
 	}
 	
 	@Operation(

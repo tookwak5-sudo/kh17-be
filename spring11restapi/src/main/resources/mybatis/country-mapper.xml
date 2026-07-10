@@ -99,4 +99,12 @@
 		select count(*) from country where country_no > #{countryNo}
 	</select>
 	
+	<!-- 	시작검색 (검색창 연관검색어에 활용) -->
+	<select id="searchByKeyword" resultType="CountryDto">
+		select * from country
+<!-- 		where instr(country_name, #{keyword}) = 1 -->
+		where country_name like #{keyword} || '%'
+		order by country_name asc, country_no asc
+	</select>
+	
 </mapper>

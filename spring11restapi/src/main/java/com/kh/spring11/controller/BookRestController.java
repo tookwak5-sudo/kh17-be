@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
-import com.kh.spring11.dao.BookDao;
+import com.kh.spring11.dao.BookDaoSpringJDBC;
 import com.kh.spring11.dto.BookDto;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.BookInsertVO;
@@ -40,7 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/book")
 public class BookRestController {
 	@Autowired
-	private BookDao bookDao;
+	private BookDaoSpringJDBC bookDao;
 	
 	//CRUD 처리 매핑(통상적인 방법론)
 	//1. 기본적으로 자원관련된 CRUD는 주소를 최소화하고 전송방식으로 구분
@@ -112,8 +112,8 @@ public class BookRestController {
 			@PathVariable int lastBookId, //PathVariable은 기본값을 줄 수 없음
 			@PathVariable int size
 	) {
-		List list = bookDao.selectListForReact(lastBookId, size);
-		int count = bookDao.countForReact(lastBookId);
+		List list = bookDao.selectList(lastBookId, size);
+		int count = bookDao.count(lastBookId);
 		return ListVO.builder()
 						.list(list)
 						.last(count <= size) //보기로 한 개수보다 데이터가 같거나 적으면 마지막
@@ -123,8 +123,8 @@ public class BookRestController {
 	//전체 조회
 	@PostMapping("/list-more")
 	public ListVO listForReact2(@RequestBody ListRequestVO vo) {
-			List list = bookDao.selectListForReact(vo.getLastNo(), vo.getSize());
-			int count = bookDao.countForReact(vo.getLastNo());
+			List list = bookDao.selectList(vo.getLastNo(), vo.getSize());
+			int count = bookDao.count(vo.getLastNo());
 			return ListVO.builder()
 					.list(list)
 					.last(count <= vo.getSize())

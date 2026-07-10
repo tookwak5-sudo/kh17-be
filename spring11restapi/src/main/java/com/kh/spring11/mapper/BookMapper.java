@@ -18,9 +18,9 @@ public class BookMapper implements RowMapper<BookDto>{
 		bookDto.setBookTitle(rs.getString("book_title"));
 		bookDto.setBookAuthor(rs.getString("book_author"));
 		bookDto.setBookPublicationDate(rs.getString("book_publication_date"));
-		bookDto.setBookPrice(rs.getLong("book_price"));
+		bookDto.setBookPrice(rs.getObject("book_price", Integer.class));
 		bookDto.setBookPublisher(rs.getString("book_publisher"));
-		bookDto.setBookPageCount(rs.getInt("book_page_count"));
+		bookDto.setBookPageCount(rs.getObject("book_page_count", Integer.class));
 		bookDto.setBookGenre(rs.getString("book_genre"));
 		return bookDto;
 	}

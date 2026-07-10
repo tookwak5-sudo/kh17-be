@@ -12,4 +12,5 @@ public interface CountryDao {
 	CountryDto selectOne(int countryNo); //상세
 	List<CountryDto> selectList(int lastCouuntryNo, int size); //목록
 	int count(int lastCountryNo); //개수
+	List<CountryDto> searchByCountryName(String keyword);
 }

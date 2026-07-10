@@ -48,12 +48,18 @@ public class CountryDaoMybatis implements CountryDao {
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("lastCountryNo", lastCountryNo);
+		params.put("size", size);
 		return sqlSession.selectList("mapper.country.listMore", params);
 	}
 
 	@Override
 	public int count(int lastCountryNo) {
 		return sqlSession.selectOne("mapper.country.countMore", lastCountryNo);
+	}
+
+	@Override
+	public List<CountryDto> searchByCountryName(String keyword) {
+		return sqlSession.selectList("mapper.country.searchByKeyword", keyword);
 	}
 	
 	

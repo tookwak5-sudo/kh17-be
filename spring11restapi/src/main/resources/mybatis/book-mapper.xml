@@ -5,5 +5,85 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="mapper.book">
+
+	<!-- 등록 -->
+	<select id="sequence" resultType="int">
+		select book_seq.nextval from dual
+	</select>
 	
+	<insert id="add">
+		insert into book(
+			book_id, book_title, book_author, 
+			book_publication_date, book_price, book_publisher, 
+			book_page_count, book_genre
+		)
+		values(
+			#{bookId}, #{bookTitle}, #{bookAuthor}, 
+			#{bookPublicationDate}, #{bookPrice}, #{bookPublisher},
+			#{bookPageCount}, #{bookGenre}
+		)
+	</insert>
+	
+	<!-- 	조회(전체, 상세) -->
+	<select id="list" resultType="BookDto">
+		select * from book
+		<if test="bookId !=null">
+			where book_id = #{bookId}
+		</if> 
+	</select>
+	
+	<!-- 	수정(전체) -->
+	<update id="updateAll">
+		update book
+		set book_title = #{bookTitle},
+			book_author = #{bookAuthor},
+			book_publication_date = #{bookPublicationDate},
+			book_price = #{bookPrice},
+			book_page_count = #{bookPageCount},
+			book_genre = #{bookGenre}
+		where book_id = #{bookId}
+	</update>
+	<!-- 	수정(부분) -->
+	<update id ="updateUnit">
+		update book
+		<set>
+			<if test="bookTitle != null">
+			book_title = #{bookTitle},
+			</if>
+			<if test="bookAuthor !=null">
+			book_author = #{bookAuthor},
+			</if>
+			<if test="bookPublicationDate != null">
+			book_publication_date = #{bookPublicationDate},
+			</if>
+			<if test="bookPrice != null">
+			book_price = #{bookPrice},
+			</if>
+			<if test="bookPageCount != null">
+			book_page_count = #{bookPageCount},
+			</if>
+			<if test="bookGenre != null">
+			book_genre = #{bookGenre}
+			</if>
+		</set>
+		where book_id = #{bookId}
+	</update>
+	
+	<!-- 	삭제 -->
+	<delete id="delete">
+		delete book where book_id = #{bookId}
+	</delete>
+	
+	<!-- 	더보기 방식 조회와 개수 -->
+	<select id="listMore" resultType="BookDto">
+		select * from (
+			select rownum rn, TMP.* from (
+				select * from book
+				<if test="lastBookId != null || lastBookId > 0">
+					where #{lastBookId} > book_id
+				</if>
+				order by book_id desc
+			)TMP	
+		) where rn between 1 and #{size}
+	</select>
 </mapper>
