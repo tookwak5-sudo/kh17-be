@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.CountryDto;
+import com.kh.spring11.vo.CountryComplexRequestVO;
 
 @Repository
 public class CountryDaoMybatis implements CountryDao {
@@ -60,6 +61,16 @@ public class CountryDaoMybatis implements CountryDao {
 	@Override
 	public List<CountryDto> searchByCountryName(String keyword) {
 		return sqlSession.selectList("mapper.country.searchByKeyword", keyword);
+	}
+
+	@Override
+	public List<CountryDto> complexSearch(CountryComplexRequestVO vo) {
+		return sqlSession.selectList("mapper.country.complexSearch", vo);
+	}
+
+	@Override
+	public int complexSearchCount(CountryComplexRequestVO vo) {
+		return sqlSession.selectOne("mapper.country.complexSearchCount", vo);
 	}
 	
 	

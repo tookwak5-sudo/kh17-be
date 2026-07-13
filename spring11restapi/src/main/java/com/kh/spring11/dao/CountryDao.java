@@ -3,6 +3,7 @@ package com.kh.spring11.dao;
 import java.util.List;
 
 import com.kh.spring11.dto.CountryDto;
+import com.kh.spring11.vo.CountryComplexRequestVO;
 
 public interface CountryDao {
 	int sequence(); //등록
@@ -13,4 +14,6 @@ public interface CountryDao {
 	List<CountryDto> selectList(int lastCouuntryNo, int size); //목록
 	int count(int lastCountryNo); //개수
 	List<CountryDto> searchByCountryName(String keyword);
+	List<CountryDto> complexSearch(CountryComplexRequestVO vo);
+	int complexSearchCount(CountryComplexRequestVO vo);
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.CountryDto;
 import com.kh.spring11.mapper.CountryMapper;
+import com.kh.spring11.vo.CountryComplexRequestVO;
 import com.kh.spring11.vo.PageVo;
 
 
@@ -117,5 +118,15 @@ public class CountryDaoSpringJDBC implements CountryDao {
 	public List<CountryDto> searchByCountryName(String keyword) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public List<CountryDto> complexSearch(CountryComplexRequestVO vo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int complexSearchCount(CountryComplexRequestVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.CountryDao;
 import com.kh.spring11.dto.CountryDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.CountryComplexRequestVO;
 import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
 
@@ -149,6 +149,19 @@ public class CountryRestController {
 	@GetMapping("/countryName/{keyword}")
 	public List<CountryDto> searchByKeyword(@PathVariable String keyword) {
 		return countryDao.searchByCountryName(keyword);
+	}
+	
+	//조회지만 postMapping을 써야하는 경우
+	@PostMapping("/complexSearch")
+	public ListVO complexSearch(@RequestBody CountryComplexRequestVO vo) {
+		
+		int count = countryDao.complexSearchCount(vo);
+		boolean last = vo.getSize() == null ? true : count <= vo.getSize();
+		
+		return ListVO.builder()
+				.list(countryDao.complexSearch(vo))
+				.last(last)
+			.build();
 	}
 	
 }

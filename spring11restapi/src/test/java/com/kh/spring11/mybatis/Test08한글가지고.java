@@ -49,7 +49,7 @@ public class Test08한글가지고 {
 		int jongSeq = seq % 28; //종성은 28개씩 반복
 		int jungSeq = seq / 28 % 21; //중성은 21개씩 반복
 		int choSeq = seq / 28 / 21;//초성은 중성/종성이 다 변해야 변함
-		log.debug("초 = {}, 중= {}, 종={}", choSeq, jungSeq, jongSeq);
+		log.debug("초 = {}, 중= {}, 종= {}", choSeq, jungSeq, jongSeq);
 		
 		log.debug("초 = {}, 중 = {}, 종 = {}", cho[choSeq], jung[jungSeq], jong[jongSeq]);
 		
