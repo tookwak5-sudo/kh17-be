@@ -18,6 +18,7 @@ import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.LectureDao;
 import com.kh.spring11.dto.LectureDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.LectureComplexRequestVO;
 import com.kh.spring11.vo.LectureInsertVO;
 import com.kh.spring11.vo.LectureUpdateAllVO;
 import com.kh.spring11.vo.LectureUpdateUnitVO;
@@ -261,5 +262,16 @@ public class LectureRestController {
 		
 		lectureDao.update(lectureDto);		
 		return lectureDto;
+	}
+	
+	//조회지만 postMapping을 써야하는 경우(복합검색)
+	@PostMapping("/complexSearch")
+	public ListVO complexSearch(@RequestBody LectureComplexRequestVO vo) {
+		int count = lectureDao.complexSearchCount(vo);
+		boolean last = vo.getSize() == null ? true : count <= vo.getSize();
+		return ListVO.builder()
+					.list(lectureDao.complexSearch(vo))
+					.last(last)
+				.build();
 	}
 }

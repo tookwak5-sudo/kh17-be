@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.LectureDto;
+import com.kh.spring11.vo.LectureComplexRequestVO;
 
 @Repository
 public class LectureDaoMybatis implements LectureDao {
@@ -53,6 +54,16 @@ public class LectureDaoMybatis implements LectureDao {
 	@Override
 	public int count(int lastLectureNo) {
 		return sqlSession.selectOne("mapper.lecture.count", lastLectureNo);
+	}
+
+	@Override
+	public List<LectureDto> complexSearch(LectureComplexRequestVO vo) {
+		return sqlSession.selectList("mapper.lecture.complexSearch", vo);
+	}
+
+	@Override
+	public int complexSearchCount(LectureComplexRequestVO vo) {
+		return sqlSession.selectOne("mapper.lecture.complexSearchCount", vo);
 	}
 
 }

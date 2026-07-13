@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.LectureDto;
 import com.kh.spring11.mapper.LectureMapper;
+import com.kh.spring11.vo.LectureComplexRequestVO;
 import com.kh.spring11.vo.PageVo;
 
 
@@ -95,5 +96,16 @@ public class LectureDaoSpringJDBC implements LectureDao {
 		String sql = "select count(*) from lecture where lecture_no < ?";
 		Object[] params = { lastLectureNo };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
+	
+	@Override
+	public List<LectureDto> complexSearch(LectureComplexRequestVO vo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int complexSearchCount(LectureComplexRequestVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

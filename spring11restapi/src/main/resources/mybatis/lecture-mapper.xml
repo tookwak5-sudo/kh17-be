@@ -93,4 +93,170 @@
 		]]>
 		</if>
 	</select>
+	
+	<!-- 시작검색(검색창 연관검색어에 활용) -->
+	
+	<!-- 	복합검색 	-->
+	<select id="complexSearch" resultType="LectureDto">
+	<!-- 	값이 존재할 경우 where 구문이 생기도록 처리 -->
+	with temp_list as (
+	select rownum rn, TMP.* from(
+		select * from lecture
+		
+	<where>
+	<!-- 번호(rownum)에 따라 더보기를 위한 데이터 필터링을 수행 -->
+	<!-- 카테고리를 리스트 형태로 받아서 처리 -->
+	<if test="lectureCategories != null and lectureCategories.size() > 0">
+	and lecture_category in 
+		<foreach item="lectureCategory" collection="lectureCategories"
+				separator=","	open="(" close=")">
+			#{lectureCategory}
+		</foreach>
+	</if>
+	<!-- 강좌명 : 포함 검색 -->
+	<if test="lectureTitle != null">
+		and instr(lecture_title, #{lectureTitle}) > 0
+	</if>
+	<!-- 강좌유형 : 리스트 형태 -->
+	<if test="lectureTypes != null and lectureTypes.size() > 0">
+	and lecture_type in
+		<foreach item="lectureType" collection="lectureTypes"
+			separator="," open="(" close=")">
+			#{lectureType}
+		</foreach>
+	</if>
+	<!-- 강좌 기간 : 범위 기간 검색 -->
+	<choose>
+		<when test="minLectureDuration != null and maxLectureDuration != null">
+			and lecture_duration between #{minLectureDuration} and #{maxLectureDuration}
+		</when>
+	<when test="minLectureDuration != null">
+		<![CDATA[
+		and lecture_duration >= #{minLectureDuration}
+		]]>
+	</when>
+	<when test="maxLectureDuration != null">
+		<![CDATA[
+		and lecture_duration <= #{maxLectureDuration}
+		]]>
+	</when>
+	</choose>
+	<!-- 가격 -->
+	<choose>
+		<when test="minLecturePrice != null and maxLecturePrice != null">
+			and lecture_price between #{minLecturePrice} and #{maxLecturePrice}
+		</when>
+	<when test="minLecturePrice != null">
+		<![CDATA[
+		and lecture_price >= #{minLecturePrice}
+		]]>
+	</when>
+	<when test="maxLecturePrice != null">
+		<![CDATA[
+		and lecture_price <= #{maxLecturePrice}
+		]]>
+	</when>
+	</choose>
+	</where>
+	<!-- 정렬처리 -->
+	order by
+	<if test="orders != null">
+		<foreach item="order" collection="orders">
+			${order},
+		</foreach>
+	</if>
+			lecture_no desc
+		)TMP
+	)
+	select * from(
+		select * from temp_list 
+		<if test="lastLectureNo != null">
+		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = 5) ]]>
+		</if>
+	) 
+	<if test="size != null">
+	<![CDATA[where rownum <= #{size}]]>
+	</if>
+	</select>
+	
+	<!-- 	복합 검색 카운트 	-->
+	<select id="complexSearchCount" resultType="int">
+	<!-- 	값이 존재할 경우 where 구문이 생기도록 처리 -->
+	with temp_list as (
+	select rownum rn, TMP.* from(
+		select * from lecture
+		
+	<where>
+	<!-- 번호(rownum)에 따라 더보기를 위한 데이터 필터링을 수행 -->
+	<!-- 카테고리를 리스트 형태로 받아서 처리 -->
+	<if test="lectureCategories != null and lectureCategories.size() > 0">
+	and lecture_category in 
+		<foreach item="lectureCategory" collection="lectureCategories"
+				separator=","	open="(" close=")">
+			#{lectureCategory}
+		</foreach>
+	</if>
+	<!-- 강좌명 : 포함 검색 -->
+	<if test="lectureTitle != null">
+		and instr(lecture_title, #{lectureTitle}) > 0
+	</if>
+	<!-- 강좌유형 : 리스트 형태 -->
+	<if test="lectureTypes != null and lectureTypes.size() > 0">
+	and lecture_type in
+		<foreach item="lectureType" collection="lectureTypes"
+			separator="," open="(" close=")">
+			#{lectureType}
+		</foreach>
+	</if>
+	<!-- 강좌 기간 : 범위 기간 검색 -->
+	<choose>
+		<when test="minLectureDuration != null and maxLectureDuration != null">
+			and lecture_duration between #{minLectureDuration} and #{maxLectureDuration}
+		</when>
+	<when test="minLectureDuration != null">
+		<![CDATA[
+		and lecture_duration >= #{minLectureDuration}
+		]]>
+	</when>
+	<when test="maxLectureDuration != null">
+		<![CDATA[
+		and lecture_duration <= #{maxLectureDuration}
+		]]>
+	</when>
+	</choose>
+	<!-- 가격 -->
+	<choose>
+		<when test="minLecturePrice != null and maxLecturePrice != null">
+			and lecture_price between #{minLecturePrice} and #{maxLecturePrice}
+		</when>
+	<when test="minLecturePrice != null">
+		<![CDATA[
+		and lecture_price >= #{minLecturePrice}
+		]]>
+	</when>
+	<when test="maxLecturePrice != null">
+		<![CDATA[
+		and lecture_price <= #{maxLecturePrice}
+		]]>
+	</when>
+	</choose>
+	</where>
+	<!-- 정렬처리 -->
+	order by
+	<if test="orders != null">
+		<foreach item="order" collection="orders">
+			${order},
+		</foreach>
+	</if>
+			lecture_no desc
+		)TMP
+	)
+	select count(*) from(
+		select * from temp_list 
+		<if test="lastLectureNo != null">
+		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = 5) ]]>
+		</if>
+	)
+	</select>
+	
 </mapper>
