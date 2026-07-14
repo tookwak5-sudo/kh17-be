@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.kh.spring11.dto.BookDto;
 
-public class BooDaoMybatis implements BookDao {
+public class BookDaoMybatis implements BookDao {
 
 	@Override
 	public int sequence() {
