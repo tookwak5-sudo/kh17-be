@@ -171,7 +171,7 @@
 	select * from(
 		select * from temp_list 
 		<if test="lastLectureNo != null">
-		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = 5) ]]>
+		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = #{lectureNo}) ]]>
 		</if>
 	) 
 	<if test="size != null">
@@ -254,7 +254,7 @@
 	select count(*) from(
 		select * from temp_list 
 		<if test="lastLectureNo != null">
-		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = 5) ]]>
+		<![CDATA[ where rn > (select rn from temp_list WHERE lecture_no = #{lectureNo}) ]]>
 		</if>
 	)
 	</select>
