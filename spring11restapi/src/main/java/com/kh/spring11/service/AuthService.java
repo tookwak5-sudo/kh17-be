@@ -1,8 +1,12 @@
 package com.kh.spring11.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
@@ -23,7 +27,7 @@ public class AuthService {
 	public AuthLoginResponseVO login(AuthLoginRequestVO request) {
 		//아이디에 해당하는 회원 조회
 		AccountDto accountDto = accountDao.selectOne(request.getAccountId());
-		if(accountDao == null) {
+		if(accountDto == null) {
 			throw new TargetNotfoundException();
 		}
 		

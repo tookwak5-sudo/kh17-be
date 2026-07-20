@@ -2,6 +2,7 @@ package com.kh.spring11.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
+import com.kh.spring11.vo.account.AccountMeResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +26,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "회원 정보 관리 서비스")
 @CommonsApiResponse
 
-@CrossOrigin
+@CrossOrigin(
+		origins = "http://localhost:5173",	
+		allowCredentials = "true")
 @RestController
 @RequestMapping("/api/account")
 public class AccountRestController {
@@ -74,8 +78,22 @@ public class AccountRestController {
 	public AccountFindResponseVO find(@PathVariable String accountId) {
 		AccountDto accountDto = accountDao.selectOne(accountId);
 		if(accountDto == null) throw new TargetNotfoundException();
-		
 		AccountFindResponseVO response = new AccountFindResponseVO();
+		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
+		return response;
+	}
+	
+	//내 정보라는 건 cookie에 포함된 loginId를 읽으면 된다(지금은 ... 나중엔 변함)
+	//@CookieValue로 쿠키의 값을 읽어서 해당하는 정보를 조회해서 반환
+	//stateless(무상태) 서버의 세션 대체 방안
+	@ApiResponse(responseCode = "200", description = "조회 성공")
+	@GetMapping(value="/me", produces="application/json")
+	public AccountMeResponseVO me(
+			@CookieValue(name="loginId", required = true) String accountId
+		) {
+		AccountDto accountDto = accountDao.selectOne(accountId);
+		if(accountDto == null) throw new TargetNotfoundException();
+		AccountMeResponseVO response = new AccountMeResponseVO();
 		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
 		return response;
 	}
