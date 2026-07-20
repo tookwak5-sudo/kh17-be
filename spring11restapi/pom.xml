@@ -111,6 +111,12 @@
 			    <version>1.22.2</version>
 			    <scope>compile</scope>
 		</dependency>
+		<!-- 암호화 보조 도구(인증용) -->
+		<dependency>
+		  <groupId>org.springframework.boot</groupId>
+		  <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
