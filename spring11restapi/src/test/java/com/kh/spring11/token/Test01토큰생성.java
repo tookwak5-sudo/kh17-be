@@ -63,6 +63,6 @@ public class Test01토큰생성 {
 		String jwtToken = jwtEncoder
 							.encode(JwtEncoderParameters.from(jwsHeader, claims))
 							.getTokenValue();
-		log.debug("jwt token = {}" + jwtToken);
+		log.debug("jwt token = {}", jwtToken);
 	}
 }
