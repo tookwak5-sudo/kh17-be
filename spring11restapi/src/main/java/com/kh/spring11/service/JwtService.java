@@ -38,7 +38,7 @@ public class JwtService {
 			//표준 데이터 - iss, iat, exp, sub
 			.issuer(jwtProperties.getIssuer())
 			.issuedAt(current)
-			.expiresAt(current.plusSeconds(jwtProperties.getTokenValidity()))
+			.expiresAt(current.plusSeconds(jwtProperties.getAccessTokenValidity()))
 			//커스텀데이터 - 마음대로
 			.claim("accountId", request.getAccountId())
 			.claim("accountLevel", request.getAccountLevel())

@@ -62,7 +62,7 @@ public class AuthRestController {
 //				.from("loginId", response.getAccountId())
 				.from("accessToken", accessToken) // 이제 아이디가 아니라 토큰을 통해 포스트잇(쿠키) 생성
 				//각종 설정들
-				.maxAge(Duration.ofSeconds(jwtProperties.getTokenValidity())) // 유효시간 30분
+				.maxAge(Duration.ofSeconds(jwtProperties.getAccessTokenValidity())) // 유효시간 30분
 				.path("/")//적용범위
 				.httpOnly(true) // true : 서버전(등뒤) , false :  클라이언트 검용(이마)
 				.secure(false) // https 사용여부
@@ -72,7 +72,7 @@ public class AuthRestController {
 		//결과 반환
 		return ResponseEntity.ok()
 					//쿠키를 추가하는 설정
-					.header(HttpHeaders.SET_COOKIE , postIt.toString())
+					.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
 					.body(response);
 	}
 	
