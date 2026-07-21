@@ -15,10 +15,12 @@ import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
+import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +36,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AccountRestController {
 	@Autowired
 	private AccountDao accountDao;
-	
+	@Autowired
+	private JwtService jwtService;
 	//회원가입
 	@ApiResponse(responseCode = "200", description ="가입 성공")
 	@PostMapping(value = "/", produces= "application/json")
@@ -89,9 +92,12 @@ public class AccountRestController {
 	@ApiResponse(responseCode = "200", description = "조회 성공")
 	@GetMapping(value="/me", produces="application/json")
 	public AccountMeResponseVO me(
-			@CookieValue(name="loginId", required = true) String accountId
+		@CookieValue(name="token", required = true) String token
 		) {
-		AccountDto accountDto = accountDao.selectOne(accountId);
+		// 토큰 해석(jwtService의 필요)
+		TokenParseResponseVO parseVO = jwtService.parseToken(token);
+		
+		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
 		if(accountDto == null) throw new TargetNotfoundException();
 		AccountMeResponseVO response = new AccountMeResponseVO();
 		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
