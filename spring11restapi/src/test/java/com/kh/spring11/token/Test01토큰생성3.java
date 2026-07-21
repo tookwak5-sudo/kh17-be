@@ -17,7 +17,7 @@ public class Test01토큰생성3 {
 	
 	@Test
 	public void test() {
-		String jwtToken = jwtService.createToken(
+		String jwtToken = jwtService.createAccessToken(
 			TokenCreateRequestVO.builder()
 			.accountId("testuser1")
 			.accountNickname("테스트유저1")

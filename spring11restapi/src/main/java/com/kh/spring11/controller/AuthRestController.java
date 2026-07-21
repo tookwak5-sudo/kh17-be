@@ -54,12 +54,13 @@ public class AuthRestController {
 		//토큰 생성
 		TokenCreateRequestVO tokenRequest = new TokenCreateRequestVO();
 		BeanUtils.copyProperties(response, tokenRequest);
-		String token = jwtService.createToken(tokenRequest);
+		String accessToken = jwtService.createAccessToken(tokenRequest);
 		
 		//쿠키 생성
-		ResponseCookie postIt = ResponseCookie
+//		ResponseCookie postIt = ResponseCookie
+		ResponseCookie accessCookie = ResponseCookie
 //				.from("loginId", response.getAccountId())
-				.from("token", token) // 이제 아이디가 아니라 토큰을 통해 포스트잇(쿠키) 생성
+				.from("accessToken", accessToken) // 이제 아이디가 아니라 토큰을 통해 포스트잇(쿠키) 생성
 				//각종 설정들
 				.maxAge(Duration.ofSeconds(jwtProperties.getTokenValidity())) // 유효시간 30분
 				.path("/")//적용범위
@@ -84,8 +85,9 @@ public class AuthRestController {
 //				@CookieValue(name="loginId", required=false) String accountId // 이제 아이디로 하지 않기 때문에 필요없음
 			) {
 		//삭제를 위한 쿠키 생성(생성시와 똑같지만 만료시간이 0초여야함)
-		ResponseCookie postIt = ResponseCookie
-				.from("token", "")
+//		ResponseCookie postIt = ResponseCookie
+		ResponseCookie accessCookie = ResponseCookie
+				.from("accessToken", "")
 				//각종 설정들
 //				.maxAge(Duration.ofMinutes(30L)) // 유효시간 30분
 				.maxAge(Duration.ZERO) //위랑 같은 코드
@@ -97,7 +99,7 @@ public class AuthRestController {
 		
 		//응답 생성
 		return ResponseEntity.noContent()
-				.header(HttpHeaders.SET_COOKIE, postIt.toString())
+				.header(HttpHeaders.SET_COOKIE, accessCookie.toString())
 				.build();
 	}
 }

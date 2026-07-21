@@ -92,10 +92,10 @@ public class AccountRestController {
 	@ApiResponse(responseCode = "200", description = "조회 성공")
 	@GetMapping(value="/me", produces="application/json")
 	public AccountMeResponseVO me(
-		@CookieValue(name="token", required = true) String token
-		) {
+		@CookieValue(name="accessToken", required = true) String accessToken
+	) {
 		// 토큰 해석(jwtService의 필요)
-		TokenParseResponseVO parseVO = jwtService.parseToken(token);
+		TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
 		
 		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
 		if(accountDto == null) throw new TargetNotfoundException();

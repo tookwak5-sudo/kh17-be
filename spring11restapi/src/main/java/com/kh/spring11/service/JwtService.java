@@ -28,8 +28,8 @@ public class JwtService {
 	@Autowired
 	private JwtDecoder jwtDecoder;
 	
-	//토큰 생성 메소드 
-	public String createToken(TokenCreateRequestVO request) {
+	//액세스 토큰 생성 메소드 
+	public String createAccessToken(TokenCreateRequestVO request) {
 		//토큰 발생시각을 객체로 생성
 		Instant current = Instant.now();
 		
@@ -49,8 +49,8 @@ public class JwtService {
 				.getTokenValue();
 	}
 	
-	//토큰 해석 메소드
-	public TokenParseResponseVO parseToken(String token) throws JwtValidationException {
+	//액세스 토큰 해석 메소드
+	public TokenParseResponseVO parseAccessToken(String token) throws JwtValidationException {
 		//오류검사 후 정보추출 (문제가 생기면 JwtValidationException 발생) 
 		Jwt jwt = jwtDecoder.decode(token); 
 		return TokenParseResponseVO.builder()
@@ -59,4 +59,8 @@ public class JwtService {
 					.accountLevel(jwt.getClaimAsString("accountLevel"))
 				.build();
 	}
+	
+	//리프레시 토큰 생성 메소드
+	
+	//리프레시 토큰 해석 메소드
 }

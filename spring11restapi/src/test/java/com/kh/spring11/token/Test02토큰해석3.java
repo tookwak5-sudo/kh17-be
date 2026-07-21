@@ -20,7 +20,7 @@ public class Test02토큰해석3 {
 	public void test() {
 		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5raGFjYWRlbXkuY28ua3IvIiwiYWNjb3VudElkIjoidGVzdHVzZXIxIiwiYWNjb3VudE5pY2tuYW1lIjoi7YWM7Iqk7Yq47Jyg7KCAMSIsImV4cCI6MTc4NDU5NDU5MCwiYWNjb3VudExldmVsIjoi67iM66Gg7KaIIiwiaWF0IjoxNzg0NTk0NTMwfQ.3smY1MSEltXpDf06kqufjJv8ydBrc-cgizd1Qjv-WJ8";
 		
-		TokenParseResponseVO response = jwtService.parseToken(token);
+		TokenParseResponseVO response = jwtService.parseAccessToken(token);
 		
 		//- 커스텀 정보 출력: accountId, accountNickname, accountLevel
 		log.debug("accountId = {}", response.getAccountId());
