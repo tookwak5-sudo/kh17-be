@@ -15,6 +15,7 @@ import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
@@ -92,8 +93,11 @@ public class AccountRestController {
 	@ApiResponse(responseCode = "200", description = "조회 성공")
 	@GetMapping(value="/me", produces="application/json")
 	public AccountMeResponseVO me(
-		@CookieValue(name="accessToken", required = true) String accessToken
+		@CookieValue(name="accessToken", required = false) String accessToken
 	) {
+		if(accessToken == null) {
+			throw new WhoAreYouException();
+		}
 		// 토큰 해석(jwtService의 필요)
 		TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
 		
