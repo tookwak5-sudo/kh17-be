@@ -7,17 +7,21 @@ import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.Cookie;
 
 
@@ -36,7 +40,8 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain securityFilterChan(
 			HttpSecurity http, //Spring Security가 제공하는 http 설정 객체
-			BearerTokenResolver bearerTokenResolver //내가 만든 토큰해석기
+			BearerTokenResolver bearerTokenResolver, //내가 만든 토큰해석기
+			JwtAuthenticationConverter jwtAuthenticationConverter 
 	) throws Exception {
 		//http에 홈페이지 운영 규칙을 모두 설정하고 Build에서 반환
 		http	
@@ -67,10 +72,37 @@ public class SecurityConfiguration {
 					//무조건 허용할 기본 페이지들
 					.requestMatchers(
 						"/active" //생존 확인용 페이지
+						
 						,"/swagger-ui/**"//springdoc ui
 						,"/v3/api-docs/**" //springdoc json
 					).permitAll()
-					//조검부 혀용(내가 만든 요소들)
+					
+					//auth service
+					.requestMatchers(
+						"/service/auth/login" //로그인 페이지
+						,"/service/auth/logout" //로그아웃 페이지
+						,"/service/auth/refresh" //로그인 갱신 페이지
+					).permitAll()
+					
+					//cert service
+					.requestMatchers("/service/cert/**").permitAll()
+					
+					//country api
+					.requestMatchers("/api/country/**").permitAll()
+					
+					//lecutre api
+					.requestMatchers(HttpMethod.POST, "/api/lecture").authenticated()
+					.requestMatchers(HttpMethod.PUT, "/api/lecture/**").authenticated()
+					.requestMatchers(HttpMethod.PATCH, "/api/lecture/**").authenticated()
+					.requestMatchers(HttpMethod.DELETE, "/api/lecture/**").authenticated()
+					
+					//book api
+					.requestMatchers(HttpMethod.POST, "/api/book").authenticated()
+					.requestMatchers(HttpMethod.PUT, "/api/book/**").authenticated()
+					.requestMatchers(HttpMethod.PATCH, "/api/book/**").authenticated()
+					.requestMatchers(HttpMethod.DELETE, "/api/book/**").authenticated()
+					
+					//account api - 조건부 혀용(내가 만든 요소들)
 					.requestMatchers(
 						"/api/account/me" //내 정보
 					).authenticated() //인증 필요
@@ -88,6 +120,13 @@ public class SecurityConfiguration {
 				oauth2 -> 	oauth2
 					//하단에 @Bean으로 만든 해석도구를 oauth2의 표준 해석기로 설정
 					.bearerTokenResolver(bearerTokenResolver)
+					//하단에 @Bean으로 만든 JWT 권한 해석 및 변환기를 설정
+					.jwt(
+						jwt -> jwt.jwtAuthenticationConverter(
+								jwtAuthenticationConverter //내가 만든 도구
+						)
+					)
+					
 			)
 			
 			
@@ -166,7 +205,9 @@ public class SecurityConfiguration {
 			Set<String> allowPaths = Set.of(
 				"/service/auth/login",
 				"/service/auth/logout",
-				"/service/auth/refresh"
+				"/service/auth/refresh",
+				"/service/cert/send",
+				"/service/cert/check"
 			);
 			
 			if(allowPaths.contains(request.getServletPath())) {
@@ -202,4 +243,27 @@ public class SecurityConfiguration {
 		};
 	}
 	
+	//JwtAuthenticationConverter
+	// - JWT의 authorities 항목을 Spring Security Authority로 변환하는 역할
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+		
+		//권한 정보 변환 도구 생성
+		JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+		
+		//jwt에서 authorities와 관련된 claim 이름을 설정
+		converter.setAuthoritiesClaimName("authorities");
+		
+		//기본 접두사 (ROLE_, SCOPE_)를 모두 제거
+		converter.setAuthorityPrefix(""); //접두사 없음
+		
+		//최종 JWT 변환 도구를 생성	
+		JwtAuthenticationConverter result = new JwtAuthenticationConverter();
+		
+		//앞서 만든 도구를 장착
+		result.setJwtGrantedAuthoritiesConverter(converter);
+		
+		//반환
+		return  result;
+	}
 }
