@@ -29,7 +29,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "국가 등록 시스템", description = "국가 정보에 대해 DB처리를 수행하는 컨트롤러 입니다")
 @CommonsApiResponse
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/country")
 public class CountryRestController {

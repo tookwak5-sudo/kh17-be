@@ -35,7 +35,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "도서 처리 시스템", description = "도서 정보에 대해 DB처리를 수행하는 컨트롤러 입니다")
 @CommonsApiResponse
 
-@CrossOrigin // CORS 교차출처 허용(지금은 전체지만, 향후 특정대상만 허용하는 옵션 추가 필요)
+//@CrossOrigin // CORS 교차출처 허용(지금은 전체지만, 향후 특정대상만 허용하는 옵션 추가 필요)
 @RestController // @Controller는 화면(View)을 반환하는 컨트롤러 //@RestController는 데이터(JSON, XML 등)를 반환하는 컨트롤러							
 @RequestMapping("/api/book")
 public class BookRestController {

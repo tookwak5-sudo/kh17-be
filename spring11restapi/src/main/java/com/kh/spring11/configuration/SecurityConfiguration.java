@@ -45,6 +45,8 @@ public class SecurityConfiguration {
 	) throws Exception {
 		//http에 홈페이지 운영 규칙을 모두 설정하고 Build에서 반환
 		http	
+			//csrf 비활성화
+			.csrf(csrf -> csrf.disable())
 			//cors 설정 : 별도로 등록한 CorsConfigurationSource의 설정을 따르겠다(없으면 기본값)
 			.cors(Customizer.withDefaults())
 			//session 설정 : 무상태(STATELESS)로 설정
@@ -91,7 +93,7 @@ public class SecurityConfiguration {
 					.requestMatchers("/api/country/**").permitAll()
 					
 					//lecutre api
-					.requestMatchers(HttpMethod.POST, "/api/lecture").authenticated()
+					.requestMatchers(HttpMethod.POST, "/api/lecture/").authenticated()
 					.requestMatchers(HttpMethod.PUT, "/api/lecture/**").authenticated()
 					.requestMatchers(HttpMethod.PATCH, "/api/lecture/**").authenticated()
 					.requestMatchers(HttpMethod.DELETE, "/api/lecture/**").authenticated()
@@ -105,13 +107,15 @@ public class SecurityConfiguration {
 					//account api - 조건부 혀용(내가 만든 요소들)
 					.requestMatchers(
 						"/api/account/me" //내 정보
-					).authenticated() //인증 필요
+					)
+					//.authenticated() //인증 필요
+					.hasAnyAuthority("브론즈", "실버", "골드", "플래티넘", "다이아")
 					//관리자 기능 - Jwt에 authorities 클레임에 "마스터"가 포함되어 있어야함
 					.requestMatchers(
 						"/api/admin/**"
 					).hasAuthority("마스터")
 					//나머지 모두 거절
-					.anyRequest().denyAll()
+					.anyRequest().permitAll()
 			)
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
 			//→ BearerTokenResolver : AccessToken을 꺼내서 Jwt를 뽑아내는 도구

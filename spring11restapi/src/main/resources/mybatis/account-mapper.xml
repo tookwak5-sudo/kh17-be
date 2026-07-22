@@ -38,7 +38,7 @@
 			select * from account where account_id = #{accountId}
 		</select>
 			
-		<!-- 		존재유무 판단(아이디, 닉네임, 이메일) -->
+		<!-- 존재유무 판단(아이디, 닉네임, 이메일) -->
 		<select id="countAccountId" resultType="int">
 			select count(*) from account where account_id = #{accountId}
 		</select>
@@ -50,4 +50,21 @@
 		<select id="countAccountEmail" resultType="int">
 			select count(*) from account where account_email = #{accountEmail}
 		</select>
+		<!-- 회원 최종로그인 시각 갱신 -->
+		<update id="countAccountLogin">
+			update account set account_login = systimestamp where account_id= #{accountId}
+		</update>
+		
+		<!-- 아이디에 해당하는 비밀번호 확인  -->
+		<select id="checkAccountPassword" resultType="String">
+			select account_password from account where account_id = #{accountId}
+		</select>
+		<!-- 비밀번호 변경 및 변경시간 갱신 -->
+		<update id="changeAccountPassword">
+			update account
+			set account_password = #{accountPassword},
+				account_change = systimestamp
+			where account_id = #{accountId}
+		</update>
+		
 </mapper>

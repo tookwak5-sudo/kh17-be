@@ -29,9 +29,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "회원 정보 관리 서비스")
 @CommonsApiResponse
 
-@CrossOrigin(
-		origins = "http://localhost:5173",	
-		allowCredentials = "true")
+//@CrossOrigin(
+//		origins = "http://localhost:5173",	
+//		allowCredentials = "true")
 @RestController
 @RequestMapping("/api/account")
 public class AccountRestController {

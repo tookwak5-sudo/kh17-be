@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.AccountDto;
+import com.kh.spring11.vo.auth.AuthPasswordChangeVO;
 
 @Repository
 public class AccountDaoMybatis implements AccountDao{
@@ -44,6 +45,23 @@ public class AccountDaoMybatis implements AccountDao{
 	public boolean checkAvailableEmail(String accountEmail) {
 		int count = sqlSession.selectOne("mapper.account.countAccountEmail", accountEmail);
 		return count == 0;
+	}
+
+	@Override
+	public boolean updateAccountLogin(String accountId) {
+		int rows = sqlSession.update("mapper.account.countAccountLogin", accountId);
+		return rows > 0;
+	}
+
+	@Override
+	public String checkAccountPassword(String accountId) {
+		return sqlSession.selectOne("mapper.account.checkAccountPassword", accountId);
+	}
+
+	@Override
+	public boolean changeAccountPassword(AuthPasswordChangeVO passwordChange) {
+		int rows = sqlSession.update("mapper.account.changeAccountPassword", passwordChange);
+		return rows > 0;
 	}
 
 	

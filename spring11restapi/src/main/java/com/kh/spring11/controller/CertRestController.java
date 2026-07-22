@@ -26,7 +26,6 @@ import jakarta.mail.MessagingException;
 @Tag(name = "이메일 발송 서비스")
 @CommonsApiResponse
 
-@CrossOrigin
 @RestController
 @RequestMapping("/service/cert") // restapi는 원래 구정이 없기 때문에 실무에서는 ./cert로 보통 작성
 public class CertRestController {

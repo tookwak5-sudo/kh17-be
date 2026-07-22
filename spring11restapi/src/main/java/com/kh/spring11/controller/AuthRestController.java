@@ -8,8 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,12 +27,13 @@ import com.kh.spring11.service.AuthService;
 import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
+import com.kh.spring11.vo.auth.AuthPasswordRequestVO;
+import com.kh.spring11.vo.auth.AuthPasswordResponseVO;
 import com.kh.spring11.vo.jwt.TokenCreateRequestVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,9 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 @CommonsApiResponse
 
 @Slf4j
-@CrossOrigin(
-		origins = "http://localhost:5173",	
-		allowCredentials = "true")
 @RestController
 @RequestMapping("/service/auth")
 public class AuthRestController {
@@ -78,6 +76,8 @@ public class AuthRestController {
 		// 로그인 처리를 수행하고 결과를 얻어낸다
 		AuthLoginResponseVO response = authService.login(request);
 		
+		//-로그인 시각을 갱신
+		accountDao.updateAccountLogin(response.getAccountId());
 		
 		//토큰 생성
 		TokenCreateRequestVO tokenRequest = new TokenCreateRequestVO();
@@ -298,5 +298,21 @@ public class AuthRestController {
 					refreshCookie.toString()
 				)
 				.body(response);
+	}
+	
+	//비밀번호 변경 매핑
+	@PatchMapping("/passwordChange")
+	public AuthPasswordResponseVO password(
+			@CookieValue("accessToken") String accessToken,
+			@RequestBody AuthPasswordRequestVO request) { //입력한 현재 비번 새로운 비번	
+		TokenParseResponseVO tokenPareResponseVO = jwtService.parseAccessToken(accessToken);
+		String accountId = tokenPareResponseVO.getAccountId();
+		//아이디 없으면 차단
+		if(accountId == null) throw new WhoAreYouException();
+
+		//비밀번호 비교 및 변경
+		AuthPasswordResponseVO response = new AuthPasswordResponseVO();
+		response = authService.checkPassword(accountId, request);
+		return response;
 	}
 }
