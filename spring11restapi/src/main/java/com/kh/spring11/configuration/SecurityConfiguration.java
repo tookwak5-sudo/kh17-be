@@ -73,8 +73,19 @@ public class SecurityConfiguration {
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
 			
 			//예외에 대한 핸들링 설정
-			//→ 인증되지 않은 경우는 401 , 권한이 부족한 경우는 403으로 반환하도록 설정 //원한다면 추가 설정도 가능
-			
+			//→ 인증되지 않은 경우는 401 , 권한이 부족한 경우는 403으로 반환하도록 설정 //원한다면 추가 설정도 가능 
+			//import시 customizer로 하기!!
+			.exceptionHandling(
+				exception -> exception
+					//인증되지 않은 경우
+					.authenticationEntryPoint(
+							(req, res, exp) -> res.setStatus(401)
+					)
+					//접근을 거부당한 경우
+					.accessDeniedHandler(
+							(req, res, exp) -> res.setStatus(403)
+					)
+			)
 		;
 		
 		return http.build();
