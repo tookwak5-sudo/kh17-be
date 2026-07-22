@@ -1,14 +1,19 @@
 package com.kh.spring11.configuration;
 
+import java.time.Duration;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 //보안을 위해 필요한 도구 및 설정을 작성 (향후 스프링 시큐리티 설정도 이곳에 작성)
 @Configuration
@@ -39,7 +44,7 @@ public class SecurityConfiguration {
 			//security의 기본 제공되는 로그인화면과 인증시스템을 비활성화
 			.formLogin(form->form.disable())
 			.httpBasic(basic->basic.disable())
-			//.logout(logout->logout.disable())
+			.logout(logout->logout.disable())
 			//.logout(AbstractHttpConfigurer::disable) //Java Method Reference
 			
 			//HTTP 요청에 대한 처리 계획
@@ -75,4 +80,44 @@ public class SecurityConfiguration {
 		return http.build();
 	}
 	
+	//CorsConfigurationSource 생성 (Security의 기본값으로 자동 설정)
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		//설정 객체를 생성 (import주의! reactiv걸면 안됨)
+		CorsConfiguration config = new CorsConfiguration();
+		
+		//CORS 설정 코드 작성
+		//[1] 허용되는 접근 대상을 지정 (allow origins or pattern)
+		config.setAllowedOrigins(List.of(
+			"http://localhost:5173"	
+		));
+		//[2] 허용할 메소드 설정
+		config.setAllowedMethods(List.of(
+				"GET", "POST", "PUT", "PATCH", "DELETE",
+				//OPTIONS는 불확실한 상황일 때 보내는 사전 답사용 요청
+				// → origin이 다른데(남의 홈페이지인데) GET/HEAD가 아닌 요청을 보내면(GET은 a태그 즉, 조회용으로 쓰기 때문에 주소상관없이 기본적으로 허용) 불확실하다고 판단
+				"OPTIONS",
+				//HEAD는 GET과 같은데 응답 본문을 가져오지 않는 요청방식
+				"HEAD"
+		));
+		//[3] 허용할 HTTP 헤더 설정
+		// → 특정 헤더를 반드시 포함해야 하는 경우가 존재 (ex : 카카오페이 결제 API)
+		// → 보안이 강화되면 CSRF 헤더만 허용하는 경우가 있음 (사이트간 요청 위조 방지 헤더)
+		config.setAllowedHeaders(List.of("*"));
+		//[4] 인증 쿠키 설정
+		config.setAllowCredentials(true);
+		//[5] preflight 시간 설정 (캐싱 유지시간)
+		config.setMaxAge(Duration.ofHours(1L)); //1시간(=3600초, 기본값)
+		
+		//적용시킬 주소까지 포함한 설정 객체로 확장 (import주의! reactiv걸면 안됨)
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		
+		source.registerCorsConfiguration(
+				"/**", //적용할 주소 
+				config //적용할 설정
+		);
+		
+		//완성된 객체 반환
+		return source;
+	}
 }
