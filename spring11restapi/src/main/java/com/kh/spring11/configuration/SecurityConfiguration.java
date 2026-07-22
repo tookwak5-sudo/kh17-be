@@ -1,7 +1,9 @@
 package com.kh.spring11.configuration;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import jakarta.servlet.http.Cookie;
+
 
 //보안을 위해 필요한 도구 및 설정을 작성 (향후 스프링 시큐리티 설정도 이곳에 작성)
 @Configuration
@@ -29,7 +35,8 @@ public class SecurityConfiguration {
 	//→ SecurityFilterChain
 	@Bean
 	public SecurityFilterChain securityFilterChan(
-			HttpSecurity http//Spring Security가 제공하는 http 설정 객체
+			HttpSecurity http, //Spring Security가 제공하는 http 설정 객체
+			BearerTokenResolver bearerTokenResolver //내가 만든 토큰해석기
 	) throws Exception {
 		//http에 홈페이지 운영 규칙을 모두 설정하고 Build에서 반환
 		http	
@@ -53,7 +60,7 @@ public class SecurityConfiguration {
 			// .permitAll() - 모두 수락 (접속 허용)
 			// .denyAll() - 모두 거절 (접속 차단)
 			// .authenticated() - 인증 필요 (인증 방식에 대해서는 따로 정의)
-			// .hasRole() - Spring Security의 기본 역할 (`ROLE_` 로 시작) // 우린 등급(브론즈, 실버 ...)로 하기 때문에 이 방식 사용하기 어려워 강제로 해줘야함
+			// .hasRole() - Spring Security의 기본 역할 (`ROLE_` 로 시작) // springSecurity가 기본적으로 주는 설정을 그대로 따를 때 좋은 방식
 			// .hasAuthority() - 사용자가 임의로 지정한 역할
 			.authorizeHttpRequests(
 				auth -> auth
@@ -67,10 +74,22 @@ public class SecurityConfiguration {
 					.requestMatchers(
 						"/api/account/me" //내 정보
 					).authenticated() //인증 필요
+					//관리자 기능 - Jwt에 authorities 클레임에 "마스터"가 포함되어 있어야함
+					.requestMatchers(
+						"/api/admin/**"
+					).hasAuthority("마스터")
 					//나머지 모두 거절
 					.anyRequest().denyAll()
 			)
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
+			//→ BearerTokenResolver : AccessToken을 꺼내서 Jwt를 뽑아내는 도구
+			//→ JwtAuthenticationConverter : Jwt의 authority를 Spring Security용으로 변환
+			.oauth2ResourceServer(
+				oauth2 -> 	oauth2
+					//하단에 @Bean으로 만든 해석도구를 oauth2의 표준 해석기로 설정
+					.bearerTokenResolver(bearerTokenResolver)
+			)
+			
 			
 			//예외에 대한 핸들링 설정
 			//→ 인증되지 않은 경우는 401 , 권한이 부족한 경우는 403으로 반환하도록 설정 //원한다면 추가 설정도 가능 
@@ -84,7 +103,7 @@ public class SecurityConfiguration {
 					//접근을 거부당한 경우
 					.accessDeniedHandler(
 							(req, res, exp) -> res.setStatus(403)
-					)
+					)	
 			)
 		;
 		
@@ -131,4 +150,56 @@ public class SecurityConfiguration {
 		//완성된 객체 반환
 		return source;
 	}
+	
+	//BearerTokenResolver
+	// - Bearer는 토큰의 한 종류 (인증을 통해 무언가를 얻어내겠다는 의미의 토큰)
+	// - 토큰은 표준이 없어서 JWT앞에 어떤 접두사를 붙여도 무방
+	// - 헤더 방식인 경우 "Authorization: Bearer [토큰값]" 과 같은 형태로 전달
+	// - 카카오는 KAKAOAK 라는 자체 이름을 만들어서 토큰에 적용하여 사용하고 있음 (즉, 자율적)
+	// - 인증용 토큰을 해석하는 도구(accessToken 쿠키)
+	@Bean
+	public BearerTokenResolver bearerTokenResolver() {
+		return request -> {
+			//request는 요청정보이며 이 내부에 쿠키가 들어있으므로 
+			//accessToken을 찾아서 반환(jwtDecoder가 등록되어있으므로)
+			//만약 accessToken이 만료되어도 상관이 없는 주소라면 통과시킨다
+			Set<String> allowPaths = Set.of(
+				"/service/auth/login",
+				"/service/auth/logout",
+				"/service/auth/refresh"
+			);
+			
+			if(allowPaths.contains(request.getServletPath())) {
+				return null;//아무것도 찾지말고 통과
+			}
+			
+			//accessToken이 필요한 주소만 남았으므로 검색을 통해 찾아서 반환
+			Cookie[] cookies = request.getCookies();//모든 쿠키를 긁어온다
+			if(cookies == null) { //options 같은 상황에서 null일 수 있다
+				return null; 
+			}
+//			//클래식 자바 버전으로 쿠키 찾기
+//			String target = null; //일단 없다고 생각하고 시작하자
+//			for(Cookie cookie : cookies) {//전체 쿠키를 반복하며
+//				//이름이 accessToken인 쿠키를 찾아서
+//				if(cookie.getName().equals("accessToken")) {
+//					String token = cookie.getValue(); // 저장된 token을 꺼낸다
+//					//토큰이 없으면 skip
+//					if(token == null || token.isBlank()) continue;
+//					//토큰이 있으면 target에 저장
+//					target = token;
+//				}
+//			}
+//			return target; //찾은 결과를 반환 (null 이거나 유효한 토큰이거나)
+			
+//			모던 자바(Stream API)버전으로 쿠키 찾기
+			return Arrays.stream(cookies)
+					.filter(cookie -> cookie.getName().equals("accessToken"))
+					.map(cookie -> cookie.getValue())
+					.filter(value -> value != null && !value.isBlank())
+					.findFirst()
+					.orElse(null);
+		};
+	}
+	
 }
