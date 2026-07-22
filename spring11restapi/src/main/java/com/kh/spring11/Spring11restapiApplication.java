@@ -6,11 +6,11 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.O
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 //우선 Security를 제외하도록 설정
-//@SpringBootApplication
-@SpringBootApplication(exclude = {
-		SecurityAutoConfiguration.class,
-		OAuth2ResourceServerAutoConfiguration.class
-})
+@SpringBootApplication //정상적 어플래이켠으로 설정
+//@SpringBootApplication(exclude = {
+//		SecurityAutoConfiguration.class,
+//		OAuth2ResourceServerAutoConfiguration.class
+//})
 public class Spring11restapiApplication {
 
 	public static void main(String[] args) {
