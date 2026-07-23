@@ -49,7 +49,7 @@ public class AccountDaoMybatis implements AccountDao{
 
 	@Override
 	public boolean updateAccountLogin(String accountId) {
-		int rows = sqlSession.update("mapper.account.countAccountLogin", accountId);
+		int rows = sqlSession.update("mapper.account.updateAccountLogin", accountId);
 		return rows > 0;
 	}
 

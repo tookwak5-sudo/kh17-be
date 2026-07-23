@@ -76,9 +76,6 @@ public class AuthRestController {
 		// 로그인 처리를 수행하고 결과를 얻어낸다
 		AuthLoginResponseVO response = authService.login(request);
 		
-		//-로그인 시각을 갱신
-		accountDao.updateAccountLogin(response.getAccountId());
-		
 		//토큰 생성
 		TokenCreateRequestVO tokenRequest = new TokenCreateRequestVO();
 		BeanUtils.copyProperties(response, tokenRequest);
@@ -120,7 +117,8 @@ public class AuthRestController {
 		);
 		
 		//(+추가) account_login 정보 갱신
-		
+		accountDao.updateAccountLogin(response.getAccountId());
+				
 		//결과 반환
 		return ResponseEntity.ok()
 		//쿠키를 추가하는 설정
@@ -303,7 +301,8 @@ public class AuthRestController {
 	//비밀번호 변경 매핑
 	@PatchMapping("/passwordChange")
 	public AuthPasswordResponseVO password(
-			@CookieValue("accessToken") String accessToken,
+			@CookieValue(name="accessToken", required=false) String accessToken,
+			HttpServletRequest requests,
 			@RequestBody AuthPasswordRequestVO request) { //입력한 현재 비번 새로운 비번	
 		TokenParseResponseVO tokenPareResponseVO = jwtService.parseAccessToken(accessToken);
 		String accountId = tokenPareResponseVO.getAccountId();
@@ -313,6 +312,7 @@ public class AuthRestController {
 		//비밀번호 비교 및 변경
 		AuthPasswordResponseVO response = new AuthPasswordResponseVO();
 		response = authService.checkPassword(accountId, request);
+		
 		return response;
 	}
 }
