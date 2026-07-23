@@ -20,15 +20,10 @@ public class ChangeAccountRequestVO {
 	private String accountEmail;
 	@NotNull 
 	private String accountPassword;
-	//@Null은 생략가능
-	@Null 		
-	private String accountBirth;
-	@Null 		
+	private String accountBirth;	
 	private String accountContact;
-	@Null @Pattern(regexp = "^[0-9]{5,6}")
-	private String accountPost;
-	@Null 		
+	@Pattern(regexp = "^[0-9]{5,6}")
+	private String accountPost;		
 	private String accountAddress1, accountAddress2;
-	@Null 		
 	private String accountMessage;
 }

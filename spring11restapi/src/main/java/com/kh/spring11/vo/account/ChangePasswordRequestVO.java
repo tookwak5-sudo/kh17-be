@@ -12,6 +12,7 @@ import lombok.Data;
 
 //주요 Annotation
 //- @NotNull : null 불가
+//- @Null은 무조건 null이어야 한다
 //- @NotEmpty : null 불가 + 비어있는 것 불가
 //- @NotBlank : null 불가 + 비어있는 것 불가 + 공백 불가
 // → 현재 우리 프로젝트는 EmptyStringDeserializer가 있어서 @NotNull로도 충분
