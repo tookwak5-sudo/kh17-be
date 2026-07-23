@@ -67,6 +67,16 @@ public class JwtService {
 				.build();
 	}
 	
+	//오버라이딩 오류해석 제거
+	public TokenParseResponseVO parseAccessToken(Jwt jwt) throws JwtValidationException {
+		return TokenParseResponseVO.builder()
+					.accountId(jwt.getClaimAsString("accountId"))
+					.accountNickname(jwt.getClaimAsString("accountNickname"))
+					.accountLevel(jwt.getClaimAsString("accountLevel"))
+				.build();
+	}
+	
+	
 	//리프레시 토큰 생성 메소드(전체 달라고 하거나 아이디만 달라고 하거나)
 	public String createRefreshToken(String accountId) {
 		//토큰 발생시각을 객체로 생성

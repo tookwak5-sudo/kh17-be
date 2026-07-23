@@ -2,8 +2,7 @@ package com.kh.spring11.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
+import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
-import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
@@ -93,13 +92,35 @@ public class AccountRestController {
 	@ApiResponse(responseCode = "200", description = "조회 성공")
 	@GetMapping(value="/me", produces="application/json")
 	public AccountMeResponseVO me(
-		@CookieValue(name="accessToken", required = false) String accessToken
+		//[1] 기존
+		//accessToken이라는 쿠키를 읽는 명령 (+나의 해석 및 검증이 필요)
+		//@CookieValue(name="accessToken", required = false) String accessToken
+		//[2] 업그레이드(1) jwtDecoder 
+		//Spring Security가 해석해낸 JWT를 가져오는 명령 (+ 이미 해석되어 있음)
+		//@AuthenticationPrincipal Jwt jwt
+									
+		//[3] 업그레이드(2) 
+		//아예 무슨 명령을 써야 변환되는지까지 알려주고 최종형태를 달라고 해보자!
+		//@ : 객체를 지정함  // ->jwt는 #this라 지칭 가능 //오타 검증의 문제가 남음
+//		@AuthenticationPrincipal(
+//			expression = "@jwtService.parseAccessToken(#this.tokenValue)"
+//		)
+		//[4] 업그레이드(3) 
+		//공용어노테이션에 지정해버림
+		@CurrentUser
+		TokenParseResponseVO parseVO
 	) {
-		if(accessToken == null) {
-			throw new WhoAreYouException();
-		}
-		// 토큰 해석(jwtService의 필요)
-		TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
+		
+//		if(accessToken == null) {
+//			throw new WhoAreYouException();
+//		} //SecurityConfiguration의 filterChain에서 null일 경우 막는 처리를 해놨기 때문에 이제는 필요없는 코드(이제는 반드시 쿠키가 생깅
+		
+		// 토큰 해석 + 유효성 검증 =@CookieValue로 읽었을 때(jwtDecoder 사용)  <= 유효성 검사 까지 함 근데 이제 Secuirty필터에서 쿠키해석을 먼저하는데 jwtService에서 한번 더 수행하게 됨 수정 필요 
+		//TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
+		
+		//@AuthenticationPrincipal과 같이 쓰는 명령
+		// 토큰을 내가 원하는 형태로 변환만 (+ 유효성 검증은 하지 않음, JwtDecoder 사용하지 않음)
+		//TokenParseResponseVO parseVO = jwtService.parseAccessToken(jwt);
 		
 		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
 		if(accountDto == null) throw new TargetNotfoundException();

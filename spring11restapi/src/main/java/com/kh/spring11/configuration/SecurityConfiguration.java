@@ -38,7 +38,7 @@ public class SecurityConfiguration {
 	//Spring Security 시스템의 구조를 객체화하여 등록
 	//→ SecurityFilterChain
 	@Bean
-	public SecurityFilterChain securityFilterChan(
+	public SecurityFilterChain securityFilterChain(
 			HttpSecurity http, //Spring Security가 제공하는 http 설정 객체
 			BearerTokenResolver bearerTokenResolver, //내가 만든 토큰해석기
 			JwtAuthenticationConverter jwtAuthenticationConverter 
@@ -210,6 +210,7 @@ public class SecurityConfiguration {
 				"/service/auth/login",
 				"/service/auth/logout",
 				"/service/auth/refresh",
+				"/service/auth/passwordChange",
 				"/service/cert/send",
 				"/service/cert/check"
 			);
