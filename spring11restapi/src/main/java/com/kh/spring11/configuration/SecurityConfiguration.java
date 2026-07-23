@@ -106,7 +106,8 @@ public class SecurityConfiguration {
 					
 					//account api - 조건부 혀용(내가 만든 요소들)
 					.requestMatchers(
-						"/api/account/me" //내 정보
+						"/api/account/me", //내 정보
+						"/api/account/password" // 비밀번호 변경
 					)
 					//.authenticated() //인증 필요
 					.hasAnyAuthority("브론즈", "실버", "골드", "플래티넘", "다이아")
@@ -210,7 +211,6 @@ public class SecurityConfiguration {
 				"/service/auth/login",
 				"/service/auth/logout",
 				"/service/auth/refresh",
-				"/service/auth/passwordChange",
 				"/service/cert/send",
 				"/service/cert/check"
 			);

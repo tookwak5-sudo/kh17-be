@@ -50,7 +50,7 @@
 		<select id="countAccountEmail" resultType="int">
 			select count(*) from account where account_email = #{accountEmail}
 		</select>
-		<!-- 회원 최종로그인 시각 갱신 -->
+		<!-- 회원 정보 수정 -->
 		<update id="updateAccountLogin">
 			update account set account_login = systimestamp where account_id= #{accountId}
 		</update>
@@ -60,7 +60,7 @@
 			select account_password from account where account_id = #{accountId}
 		</select>
 		<!-- 비밀번호 변경 및 변경시간 갱신 -->
-		<update id="changeAccountPassword">
+		<update id="updateAccountPassword">
 			update account
 			set account_password = #{accountPassword},
 				account_change = systimestamp

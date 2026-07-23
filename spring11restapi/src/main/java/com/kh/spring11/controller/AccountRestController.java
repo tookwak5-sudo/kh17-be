@@ -2,8 +2,9 @@ package com.kh.spring11.controller;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,15 +16,17 @@ import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
-import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
+import com.kh.spring11.vo.account.ChangePasswordRequestVO;
+import com.kh.spring11.vo.account.ChangePasswordResponseVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "회원 정보 관리 서비스")
 @CommonsApiResponse
@@ -37,7 +40,9 @@ public class AccountRestController {
 	@Autowired
 	private AccountDao accountDao;
 	@Autowired
-	private JwtService jwtService;
+	private PasswordEncoder passwordEncoder;
+//	@Autowired //이제 직접적으로 쓰지 않음
+//	private JwtService jwtService;
 	//회원가입
 	@ApiResponse(responseCode = "200", description ="가입 성공")
 	@PostMapping(value = "/", produces= "application/json")
@@ -128,4 +133,51 @@ public class AccountRestController {
 		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
 		return response;
 	}
+	
+	//비밀번호 변경 매핑
+	@PatchMapping("/password")
+	public ChangePasswordResponseVO password( //DB이름을 유출할 필요없음
+			@CurrentUser TokenParseResponseVO parseVO,
+			//@Valid를 붙이면 Spring Validation을 사용하겠다는 뜻
+			//→ 요구사항에 맞지 않으면 MethodArgumentNotValidException 예외가 발생
+			//→  bad request 로 반환
+			@Valid @RequestBody ChangePasswordRequestVO request
+	){ //입력한 현재 비번 새로운 비번	
+		// [1] DB에서 기존 유저의 정보를 불러온다
+		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
+		if(accountDto == null) throw new TargetNotfoundException();
+		
+		// [2] 비밀번호를 비교한다
+		String db = accountDto.getAccountPassword(); //DB비밀번호
+		String input = request.getPrevAccountPassword(); //사용자 입력 비밀번호
+		boolean valid = passwordEncoder.matches(input, db); //BCrypt 비교
+		if(!valid) { //비밀번호가 안맞아?
+			return ChangePasswordResponseVO.builder()
+					.result(false)
+					.message("비밀번호가 일치하지 않습니다")
+					.build();
+		}
+		
+		//[3] 동일한 비밀번호로 변경을 차단
+		boolean same = request.getPrevAccountPassword().equals(request.getNewAccountPassword());
+		if(same) {
+			return ChangePasswordResponseVO.builder()
+					.result(false)
+					.message("동일한 비밀번호로는 변경이 불가합니다")
+					.build();
+		}
+		
+		//[4] 변경 시도
+		accountDao.updateAccountPassword(AccountDto.builder()
+					.accountId(parseVO.getAccountId())
+					.accountPassword(request.getNewAccountPassword())
+				.build());
+		
+		//[5] 성공 알림
+		return ChangePasswordResponseVO.builder()
+					.result(true)
+					.message("비밀번호 변경이 완료되었습니다")
+				.build();
+	}
+	
 }

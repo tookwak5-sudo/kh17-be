@@ -25,10 +25,10 @@ import com.kh.spring11.dto.AccountRefreshDto;
 import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.AuthService;
 import com.kh.spring11.service.JwtService;
+import com.kh.spring11.vo.account.ChangePasswordRequestVO;
+import com.kh.spring11.vo.account.ChangePasswordResponseVO;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
-import com.kh.spring11.vo.auth.AuthPasswordRequestVO;
-import com.kh.spring11.vo.auth.AuthPasswordResponseVO;
 import com.kh.spring11.vo.jwt.TokenCreateRequestVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
@@ -298,21 +298,4 @@ public class AuthRestController {
 				.body(response);
 	}
 	
-	//비밀번호 변경 매핑
-	@PatchMapping("/passwordChange")
-	public AuthPasswordResponseVO password(
-			@CookieValue(name="accessToken", required=false) String accessToken,
-			HttpServletRequest requests,
-			@RequestBody AuthPasswordRequestVO request) { //입력한 현재 비번 새로운 비번	
-		TokenParseResponseVO tokenPareResponseVO = jwtService.parseAccessToken(accessToken);
-		String accountId = tokenPareResponseVO.getAccountId();
-		//아이디 없으면 차단
-		if(accountId == null) throw new WhoAreYouException();
-
-		//비밀번호 비교 및 변경
-		AuthPasswordResponseVO response = new AuthPasswordResponseVO();
-		response = authService.checkPassword(accountId, request);
-		
-		return response;
-	}
 }

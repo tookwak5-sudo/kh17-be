@@ -6,7 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.AccountDto;
-import com.kh.spring11.vo.auth.AuthPasswordChangeVO;
 
 @Repository
 public class AccountDaoMybatis implements AccountDao{
@@ -59,8 +58,12 @@ public class AccountDaoMybatis implements AccountDao{
 	}
 
 	@Override
-	public boolean changeAccountPassword(AuthPasswordChangeVO passwordChange) {
-		int rows = sqlSession.update("mapper.account.changeAccountPassword", passwordChange);
+	public boolean updateAccountPassword(AccountDto accountDto) {
+		//비밀번호 암호화 처리
+		String origin = accountDto.getAccountPassword();
+		String encrypt = passwordEncoder.encode(origin);
+		accountDto.setAccountPassword(encrypt);
+		int rows = sqlSession.update("mapper.account.updateAccountPassword", accountDto);
 		return rows > 0;
 	}
 
