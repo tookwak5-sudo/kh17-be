@@ -18,6 +18,8 @@ public class ChangeAccountRequestVO {
 	private String accountNickname;
 	@NotNull @Email 	
 	private String accountEmail;
+	@NotNull 
+	private String accountPassword;
 	//@Null은 생략가능
 	@Null 		
 	private String accountBirth;

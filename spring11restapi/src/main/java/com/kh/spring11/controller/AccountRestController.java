@@ -201,10 +201,21 @@ public class AccountRestController {
 		// [1] 정보조회 후 없으면 404처리
 		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
 		
+		//추가 검증이 필요하다면 이곳에 작성 후 거절 상태를 반환
+		//입력비번과 암호화되어 저장된 DB의 비번을 비교
+		boolean passwordValid = passwordEncoder.matches(
+										request.getAccountPassword(), 
+										accountDto.getAccountPassword()
+								);
+		if(passwordValid == false) { //비밀번호가 일치하지 않는다면
+			return ChangeAccountResponseVO.builder()
+						.status(false)
+						.message("비밀번호가 일치하지 않습니다")
+					.build();
+		}
 		// [2] 정보 변경하기
 		BeanUtils.copyProperties(request, accountDto); //request → accountDto
 		
-		//추가 검증이 필요하다면 이곳에 작성 후 거절 상태를 반환
 		
 		// [3] 수정 처리
 		accountDao.updateAll(accountDto);
