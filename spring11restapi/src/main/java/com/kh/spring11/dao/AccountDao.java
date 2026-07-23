@@ -18,4 +18,6 @@ public interface AccountDao {
 	
 	//비밀번호 변경하기 + vo를 만들어서 필요한 정보만 가져오는건 응집도를 높이는 행위가 될 수 있으나 너무 불필요한 작업(Swagger에 보이지 않는 정보이므로 Dto를 가져온다)
 	boolean updateAccountPassword(AccountDto accountDto); 
+	
+	boolean updateAll(AccountDto accountDto);
 }

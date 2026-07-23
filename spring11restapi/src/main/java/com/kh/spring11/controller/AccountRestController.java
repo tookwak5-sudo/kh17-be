@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,8 @@ import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
+import com.kh.spring11.vo.account.ChangeAccountRequestVO;
+import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
 import com.kh.spring11.vo.account.ChangePasswordResponseVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
@@ -155,7 +158,7 @@ public class AccountRestController {
 			return ChangePasswordResponseVO.builder()
 					.result(false)
 					.message("비밀번호가 일치하지 않습니다")
-					.build();
+				.build();
 		}
 		
 		//[3] 동일한 비밀번호로 변경을 차단
@@ -164,19 +167,51 @@ public class AccountRestController {
 			return ChangePasswordResponseVO.builder()
 					.result(false)
 					.message("동일한 비밀번호로는 변경이 불가합니다")
-					.build();
+				.build();
 		}
 		
-		//[4] 변경 시도
+		//[4] 형식 검사
+		String regex = "^(?=.*?[A-Z]+)(?=.*?[a-z]+)(?=.*?[0-9]+)(?=.*?[\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\[\\]\\{\\}\\'\\\"\\`\\~\\<\\>\\.\\,\\/\\?\\\\\\|]+)[A-Za-z0-9\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\[\\]\\{\\}\\'\\\"\\`\\~\\<\\>\\.\\,\\/\\?\\\\\\|]{8,16}$";
+		if(request.getNewAccountPassword().matches(regex) == false) {
+			return ChangePasswordResponseVO.builder()
+					.result(false)
+					.message("비밀번호는 대문자, 소문자, 숫자, 특수문자를 반드시 포함하여 변경해야합니다")
+				.build();
+		}
+		
+		//[5] 변경 시도
 		accountDao.updateAccountPassword(AccountDto.builder()
 					.accountId(parseVO.getAccountId())
 					.accountPassword(request.getNewAccountPassword())
 				.build());
 		
-		//[5] 성공 알림
+		//[6] 성공 알림
 		return ChangePasswordResponseVO.builder()
 					.result(true)
 					.message("비밀번호 변경이 완료되었습니다")
+				.build();
+	}
+
+	// 회원정보 수정(본인)
+	@PutMapping("/")
+	public ChangeAccountResponseVO updateAll(
+			@CurrentUser TokenParseResponseVO parseVO,
+			@Valid @RequestBody ChangeAccountRequestVO request
+	) {
+		// [1] 정보조회 후 없으면 404처리
+		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
+		
+		// [2] 정보 변경하기
+		BeanUtils.copyProperties(request, accountDto); //request → accountDto
+		
+		//추가 검증이 필요하다면 이곳에 작성 후 거절 상태를 반환
+		
+		// [3] 수정 처리
+		accountDao.updateAll(accountDto);
+		
+		return ChangeAccountResponseVO.builder()
+					.status(true)
+					.message("정보변경이 완료되었습니다")
 				.build();
 	}
 	

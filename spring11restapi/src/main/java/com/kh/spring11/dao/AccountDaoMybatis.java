@@ -67,5 +67,9 @@ public class AccountDaoMybatis implements AccountDao{
 		return rows > 0;
 	}
 
-	
+	@Override
+	public boolean updateAll(AccountDto accountDto) {
+		return sqlSession.update("mapper.account.updateAll", accountDto) > 0;
+	}
+
 }
