@@ -1,9 +1,15 @@
 package com.kh.spring11.configuration;
 
+import java.beans.Customizer;
+
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -13,7 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 public class JsonConfiguration {
-	@Bean
+	//@Bean
 	public ObjectMapper objectMaper() {
 		//신규 ObjectMapper 생성
 		ObjectMapper mapper = new ObjectMapper();
@@ -28,5 +34,27 @@ public class JsonConfiguration {
 		
 		//반환
 		return mapper;
+	}
+	
+	//전체를 바꾸는 것이 아니라 특정 설정만 변경
+	@Bean
+	public Jackson2ObjectMapperBuilderCustomizer jsonMapperBuilder() {
+		return builder -> {
+			
+			//String : 기존 도구 사용
+			builder.deserializerByType(
+					String.class, new EmptyStringToNullDeserializer()
+			);
+			
+			//Integer
+			builder.postConfigurer(mapper -> {
+				mapper.coercionConfigFor(Integer.class)
+						.setAcceptBlankAsEmpty(true)
+						.setCoercion(//무엇을 → 어떤 값으로에 대한 설정
+							CoercionInputShape.EmptyString, 
+							CoercionAction.AsNull
+						);
+			});
+		};
 	}
 }

@@ -114,7 +114,7 @@ public class SecurityConfiguration {
 					//관리자 기능 - Jwt에 authorities 클레임에 "마스터"가 포함되어 있어야함
 					.requestMatchers(
 						"/api/admin/**",
-						"/api/admin/search"
+						"/api/account/search"
 					).hasAuthority("마스터")
 					//나머지 모두 거절
 					.anyRequest().permitAll()

@@ -78,4 +78,151 @@
 					account_message = #{accountMessage}
 			where   account_id = #{accountId}
 		</update>
+		
+	<!-- 관리자 회원검색용 구문 -->
+	<select id="complexSearch" resultType="AccountSearchResultVO">
+			<!-- 값이 존재할 경우 where 구문이 생기도록 처리 -->
+		select 
+			account_id, account_nickname,
+			account_email, account_birth,
+			account_contact, account_post,
+			account_address1, account_address2,
+			account_join, account_login, account_change,
+			account_level, account_point, account_block
+		from account
+		<where>
+			<!-- 번호(rownum)에 따라 더보기를 위한 데이터 필터링 수행 -->
+			
+			<!-- 아이디: 일치하는 경우 -->
+			<if test="accountId != null">
+			and account_id = #{accountId}
+			</if>
+			<!-- 닉네임: 일치하는 경우 -->
+			<if test="accountNickname != null">
+			and account_nickname = #{accountNickname}
+			</if>
+			
+			<!-- 연락처: 일치하는 경우 -->
+			<if test="accountContact != null">
+			and account_contact = #{accountContact}
+			</if>
+			<!-- 이메일: 포함(instr)하는 경우 -->
+			<if test="accountEmail != null">
+			<![CDATA[
+			and instr(account_email, #{accountEmail}) > 0
+			]]>
+				</if>
+				<!-- 주소: 포함하는 경우 -->
+				<if test="accountAddress != null">
+					and
+					(
+						instr(account_post, #{accountAddress}) > 0
+						or 
+						instr(account_address1, #{accountAddress}) > 0
+						or 
+						instr(account_address2, #{accountAddress}) > 0
+					)
+				</if>
+			<!-- 생일: 범위 -->
+			<choose>
+				<when test="accountBirthBegin != null and accountBirthEnd !=null">
+					and 
+					to_TIMESTAMP(account_birth, 'YYYY-MM-DD')
+					between 
+						to_timestamp(#{accountBirthBegin}, 'YYYY-MM-DD')
+					and
+        				to_timestamp(#{accountBirthEnd}, 'YYYY-MM-DD')
+				</when>
+				<when test="accountBirthBegin != null">
+					<![CDATA[
+						and account_birth >= to_timestamp(#{accountBirthBegin}, 'YYYY-MM-DD')
+					]]>
+				</when>
+				<when test="accountBirthEnd != null">
+					<![CDATA[
+						and account_birth <= to_timestamp(#{accountBirthEnd}, 'YYYY-MM-DD')
+					]]>
+				</when>		
+			</choose>
+			<!-- 가입일: 범위 -->
+			<choose>
+				<when test="accountJoinBegin != null and accountJoinEnd !=null">
+					and account_join
+					between 
+						to_timestamp(#{accountJoinBegin} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					and
+        				to_timestamp(#{accountJoinEnd} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+				</when>
+				<when test="accountJoinBegin != null">
+					<![CDATA[
+						and account_join >= to_timestamp(#{accountJoinBegin} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					]]>
+				</when>
+				<when test="accountJoinEnd != null">
+					<![CDATA[
+						and account_join < to_timestamp(#{accountJoinEnd} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					]]>
+				</when>		
+			</choose>
+			<!-- 로그인 시각: 범위 -->
+			<choose>
+				<when test="accountLoginBegin != null and accountLoginEnd !=null">
+					and account_login
+					between 
+						to_timestamp(#{accountLoginBegin} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					and
+        				to_timestamp(#{accountLoginEnd} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+				</when>
+				<when test="accountLoginBegin != null">
+					<![CDATA[
+						and account_login >= to_timestamp(#{accountLoginBegin} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					]]>
+				</when>
+				<when test="accountLoginEnd != null">
+					<![CDATA[
+						and account_login < to_timestamp(#{accountLoginEnd} || ' ' || '00:00:00.000', 
+									'YYYY-MM-DD HH24:MI:FF3')
+					]]>
+				</when>		
+			</choose>
+			<!-- 등급: 리스트 형태 -->
+			<if test="accountLevels != null and accountLevels.size() > 0">
+				and account_level in
+				<foreach item="accountLevel" collection="accountLevels" 
+					separator="," open="(" close=")">
+					#{accountLevel}
+				</foreach>
+			</if>
+			
+			<!-- 차단여부: 리스트 형태 -->
+			<if test="accountBlock != null">
+				and account_block = #{accountBlock}
+			</if>
+			
+			<!-- 포인트: 범위 -->
+			<choose>
+			<when test="accountPointMin != null and accountPointMax != null">
+				and account_point between #{accountPointMin} and #{accountPointMax}
+			</when>
+			<when test="accountPointMin != null">
+				<![CDATA[
+				and account_point >= #{accountPointMin}
+				]]>
+			</when>
+			<when test="accountPointMax != null">
+				<![CDATA[
+				and account_point <= #{accountPointMax}
+				]]>
+			</when>
+			</choose>
+		</where>		
+	</select>
+
 </mapper>

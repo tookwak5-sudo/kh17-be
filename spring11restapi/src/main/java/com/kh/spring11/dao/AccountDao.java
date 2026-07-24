@@ -1,6 +1,10 @@
 package com.kh.spring11.dao;
 
+import java.util.List;
+
 import com.kh.spring11.dto.AccountDto;
+import com.kh.spring11.vo.admin.AccountSearchResultVO;
+import com.kh.spring11.vo.admin.AdminUserRequestVO;
 
 public interface AccountDao {
 	void insert(AccountDto accountDto);
@@ -20,4 +24,8 @@ public interface AccountDao {
 	boolean updateAccountPassword(AccountDto accountDto); 
 	
 	boolean updateAll(AccountDto accountDto);
+	
+	//복합검색
+	List<AccountSearchResultVO> complexSearch(AdminUserRequestVO request);
+	int complexSearchCount(AdminUserRequestVO request);
 }
