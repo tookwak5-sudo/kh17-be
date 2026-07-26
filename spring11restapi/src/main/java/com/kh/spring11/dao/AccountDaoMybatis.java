@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
-import com.kh.spring11.vo.admin.AdminUserResponseVO;
 
 @Repository
 public class AccountDaoMybatis implements AccountDao{
@@ -22,10 +21,10 @@ public class AccountDaoMybatis implements AccountDao{
 	@Override
 	public void insert(AccountDto accountDto) {
 		//사용자가 입력한 암호를 BCrypt 방식으로 암호화하여 재설정 후 등록
-		String origin = accountDto.getAccountPassword();
-		String encrypt = passwordEncoder.encode(origin);
-		accountDto.setAccountPassword(encrypt);
-		sqlSession.insert("mapper.account.join", accountDto);
+		String origin = accountDto.getAccountPassword(); //원래 비밀번호
+		String encrypt = passwordEncoder.encode(origin); //암호화된 비밀번호
+		accountDto.setAccountPassword(encrypt); //암호화된 비밀번호를 dto에 넣고
+		sqlSession.insert("mapper.account.join", accountDto); // 비밀번호가 암호화된 DTO를 DB에 저장
 	}
 
 	@Override

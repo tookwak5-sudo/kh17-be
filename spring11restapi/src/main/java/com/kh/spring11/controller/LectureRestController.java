@@ -2,6 +2,7 @@ package com.kh.spring11.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,13 +67,17 @@ public class LectureRestController {
 	public LectureDto insert(@RequestBody LectureInsertVO lectureInsertVO) {
 		int lectureNo = lectureDao.sequence();
 		LectureDto lectureDto = new LectureDto();
+		BeanUtils.copyProperties(lectureInsertVO, lectureDto);
 		lectureDto.setLectureNo(lectureNo);
-		lectureDto.setLectureCategory(lectureInsertVO.getLectureCategory());
-		lectureDto.setLectureTitle(lectureInsertVO.getLectureTitle());
-		lectureDto.setLectureDuration(lectureInsertVO.getLectureDuration());
-		lectureDto.setLecturePrice(lectureInsertVO.getLecturePrice());
-		lectureDto.setLectureType(lectureInsertVO.getLectureType());		
+		
+//		lectureDto.setLectureCategory(lectureInsertVO.getLectureCategory());
+//		lectureDto.setLectureTitle(lectureInsertVO.getLectureTitle());
+//		lectureDto.setLectureDuration(lectureInsertVO.getLectureDuration());
+//		lectureDto.setLecturePrice(lectureInsertVO.getLecturePrice());
+//		lectureDto.setLectureType(lectureInsertVO.getLectureType());		
+		
 		lectureDao.insert(lectureDto);
+		
 		return lectureDto;
 	}
 	
