@@ -37,10 +37,10 @@ public class Test06회원생성 {
 				"도래미", "거꾸", "거곡", "섬섬"
 		);
 		
-		for(int i=1001; i<=1002; i++ ) {
+		for(int i=4; i<=1000; i++ ) {
 			accountDao.insert(AccountDto.builder()
 						.accountId("dummyuser" + i)
-						.accountPassword("dummyUser"+i+"!")
+						.accountPassword("Dummyuser"+i+"!")
 						.accountNickname("더미유저"+i)
 						.accountEmail("dummy"+i+"@kh.com")
 						.accountPost(randomService.generateNumber(

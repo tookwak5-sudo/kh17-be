@@ -1,5 +1,6 @@
 package com.kh.spring11.controller;
 
+import java.io.IOException;
 import java.time.Duration;
 
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,6 @@ import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.AuthService;
 import com.kh.spring11.service.EmailService;
 import com.kh.spring11.service.JwtService;
-import com.kh.spring11.service.RandomService;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
 import com.kh.spring11.vo.auth.AuthTempResponseVO;
@@ -39,6 +39,7 @@ import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -326,18 +327,17 @@ public class AuthRestController {
 	//임시 비밀번호 발행
 	@PostMapping("/tempPassword/{accountId}")
 	public AuthTempResponseVO tempPassword(
-			@PathVariable String accountId) {
+			@PathVariable String accountId) throws MessagingException, IOException {
 		//기존 회원 정보 조회
 		AccountDto accountDto = accountDao.selectOne(accountId);
 		
-		//기존 비밀번호를 임시 비밀번호로 업데이트해서 저장(암호화까지)
-//		accountDao.updateAccountPassword(AccountDto.builder()
-//					.accountId(accountId)
-//					.accountPassword(tempPassword)
-//				.build());
-//		
-//		//이메일로 전송
-		
+		//이메일로 전송 
+		String tempPassword = emailService.sendTempPassword(accountDto.getAccountEmail());//이메일로 전송 
+		//비밀번호 암호화하여 교체
+		accountDao.updateAccountPassword(AccountDto.builder()
+					.accountId(accountId)
+					.accountPassword(tempPassword)
+				.build());
 		
 		//알림 발송
 		return AuthTempResponseVO.builder()

@@ -17,7 +17,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dao.CertDao;
+import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.dto.CertDto;
 
 import jakarta.mail.MessagingException;
@@ -32,6 +34,9 @@ public class EmailService {
 	
 	@Autowired
 	private CertDao certDao;
+	
+	@Autowired
+	private AccountDao accountDao;
 	
 	//이 메소드는 이제부터 비동기(백그라운드,멀티스레드)로 실행된다고 선언!
 	@Async
@@ -151,18 +156,17 @@ public class EmailService {
 	}
 	
 	//임시비밀번호 발송 메소드 (마임메세지용)
-		public void sendTempPassword(String memberEmail) throws MessagingException, IOException {
+		public String sendTempPassword(String memberEmail) throws MessagingException, IOException {
 			//SimpleMailMessage message = new SimpleMailMessage();
 			MimeMessage message =sender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
-			
 			helper.setFrom("tookwak4@gmail.com");
 			helper.setTo(memberEmail);
 			helper.setSubject("[KH정보교육원] 임시비밀번호가 도착하였습니다!");
 			
 			//인증번호 생성(랜덤으로)
 			String number = randomService.generateNumber(12);
-			
+			System.out.println("임시비번 : " + number);
 			//HTML 템플릿 생성
 			String template = this.createCertHtml(number);
 			
@@ -170,21 +174,8 @@ public class EmailService {
 			
 			//이메일 발송
 			sender.send(message);
-			
-			//발송이 되었다면, DB등록 혹은 갱신처리
-			CertDto certDto = certDao.find(memberEmail);
-			if(certDto == null) { //처음 보내는 이메일
-				certDao.add(CertDto.builder()
-							.certEmail(memberEmail)
-							.certNumber(number)
-						.build());
-			}
-			else { //이미 보낸적이 있는 이메일
-				certDao.change(CertDto.builder()
-						.certEmail(memberEmail)
-						.certNumber(number)
-					.build());
-			}
+			//비밀번호 반환
+			return number;
 		}
 	
 }
