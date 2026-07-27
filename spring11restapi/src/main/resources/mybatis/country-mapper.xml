@@ -109,11 +109,11 @@
 	
 	<!-- 복합 검색 -->
 	<select id="complexSearch" resultType="CountryDto">
-		<!--	값이 존재할 경우 where 구문이 생기도록 처리 -->	
 		with temp_list as(	
 			select rownum rn, TMP.* from (
 				select * from country 
 				
+		<!--	값이 존재할 경우 where 구문이 생기도록 처리 -->	
 		<where>
 		
 		<!-- 번호(rownum)에 따라 더보기를 위한 데이터 필터링을 수행 -->

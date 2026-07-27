@@ -1,4 +1,4 @@
-package com.kh.spring11.vo.account;
+package com.kh.spring11.vo.admin;
 
 import java.sql.Timestamp;
 
@@ -8,11 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(name = "회원 조회 응답용 데이터")
+@Schema(name="관리자 상세페이지 응답")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
-public class AccountFindResponseVO {
+public class AccountDetailResponseVO {
 	private String accountId;
 	private String accountEmail;
+//	private String accountPassword;
 	private String accountNickname;
 	private String accountBirth;
 	private String accountContact;
@@ -20,7 +21,6 @@ public class AccountFindResponseVO {
 	private String accountLevel;
 	private String accountMessage;
 	private Timestamp accountJoin, accountLogin, accountChange; // 최종 비밀번호 변경일 
-	private int accountPoint;
-	
 	private String accountBlock;
+	private int accountPoint;
 }

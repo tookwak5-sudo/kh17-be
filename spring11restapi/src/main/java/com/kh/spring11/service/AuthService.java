@@ -1,11 +1,16 @@
 package com.kh.spring11.service;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
+import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
@@ -33,12 +38,31 @@ public class AuthService {
 			, accountDto.getAccountPassword());
 		if(!valid) throw new TargetNotfoundException();
 		
+		//차단여부 확인
+		if(accountDto.getAccountBlock().equals("Y")) {
+			throw new GetOutException();
+		}
+
+		//비밀번호가 변경한 지 30일이 지난 경우
+		//현재 시각을 구하기
+		Timestamp recent = accountDto.getAccountChange(); // 가장 최근 로그인 시각
+		if(recent == null) { //바꾼적 없으면
+			recent = accountDto.getAccountJoin(); //가입일로 저장
+		}
+		LocalDateTime lastChange = recent.toLocalDateTime();
+		LocalDateTime current = LocalDateTime.now(); 
+		
+		Duration duration = Duration.between(lastChange, current);
+		
+		boolean update = duration.toDays() >= 1;
+		
 		//로그인 성공
 		return AuthLoginResponseVO.builder()
-					.accountId(accountDto.getAccountId()) //회원 아이디
-					.accountLevel(accountDto.getAccountLevel()) //회원 레벨
-					.accountNickname(accountDto.getAccountNickname()) // 회원 닉네임
-				.build();
+			.accountId(accountDto.getAccountId()) //회원 아이디
+			.accountLevel(accountDto.getAccountLevel()) //회원 레벨
+			.accountNickname(accountDto.getAccountNickname()) // 회원 닉네임
+			.needUpdate(update)
+		.build();
 	}	
 	
 }

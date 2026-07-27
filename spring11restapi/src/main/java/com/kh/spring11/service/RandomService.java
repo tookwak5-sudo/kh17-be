@@ -24,4 +24,5 @@ public class RandomService {
 		}
 		return buffer.toString(); //반환
 	}
+	
 }

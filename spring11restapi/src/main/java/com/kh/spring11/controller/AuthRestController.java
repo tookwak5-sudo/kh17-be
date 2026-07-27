@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,13 +23,17 @@ import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dao.AccountRefreshDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.dto.AccountRefreshDto;
+import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.AuthService;
+import com.kh.spring11.service.EmailService;
 import com.kh.spring11.service.JwtService;
-import com.kh.spring11.vo.account.ChangePasswordRequestVO;
-import com.kh.spring11.vo.account.ChangePasswordResponseVO;
+import com.kh.spring11.service.RandomService;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
+import com.kh.spring11.vo.auth.AuthTempResponseVO;
+import com.kh.spring11.vo.auth.ChangeBlockRequestVO;
+import com.kh.spring11.vo.auth.ChangeBlockResponseVO;
 import com.kh.spring11.vo.jwt.TokenCreateRequestVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
@@ -57,6 +62,8 @@ public class AuthRestController {
 	private AccountDao accountDao;
 	@Autowired
 	private AccountRefreshDao accountRefreshDao;
+	@Autowired
+	private EmailService emailService;
 	
     AuthRestController(AccountRestController accountRestController) {
         this.accountRestController = accountRestController;
@@ -298,4 +305,44 @@ public class AuthRestController {
 				.body(response);
 	}
 	
+	//회원 차단
+	@PatchMapping("/block/{accountId}")
+	public ChangeBlockResponseVO block(
+			@RequestBody ChangeBlockRequestVO request,
+			@PathVariable String accountId) {
+		
+		request.setAccountId(accountId);
+		AccountDto accountDto = accountDao.selectOne(accountId); // 회원 조회
+		if(accountDto == null) throw new TargetNotfoundException();
+		
+		accountDto.setAccountBlock(request.getAccountBlock()); // 입력값을 넣어주고
+		accountDao.updateAccountBlock(request); //block여부 업데이트
+		ChangeBlockResponseVO response = new ChangeBlockResponseVO(); //응답용 VO에
+		AccountDto result = accountDao.selectOne(accountId); // 회원 조회후에
+		BeanUtils.copyProperties(result, response); // 입력된 차단정보를 담아
+		return response; //보내기
+	}
+	
+	//임시 비밀번호 발행
+	@PostMapping("/tempPassword/{accountId}")
+	public AuthTempResponseVO tempPassword(
+			@PathVariable String accountId) {
+		//기존 회원 정보 조회
+		AccountDto accountDto = accountDao.selectOne(accountId);
+		
+		//기존 비밀번호를 임시 비밀번호로 업데이트해서 저장(암호화까지)
+//		accountDao.updateAccountPassword(AccountDto.builder()
+//					.accountId(accountId)
+//					.accountPassword(tempPassword)
+//				.build());
+//		
+//		//이메일로 전송
+		
+		
+		//알림 발송
+		return AuthTempResponseVO.builder()
+					.result(true)
+					.message("등록된 이메일로 임시비밀번호가 발송되었습니다")
+				.build();
+	}
 }

@@ -150,4 +150,41 @@ public class EmailService {
 				return document.toString();
 	}
 	
+	//임시비밀번호 발송 메소드 (마임메세지용)
+		public void sendTempPassword(String memberEmail) throws MessagingException, IOException {
+			//SimpleMailMessage message = new SimpleMailMessage();
+			MimeMessage message =sender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+			
+			helper.setFrom("tookwak4@gmail.com");
+			helper.setTo(memberEmail);
+			helper.setSubject("[KH정보교육원] 임시비밀번호가 도착하였습니다!");
+			
+			//인증번호 생성(랜덤으로)
+			String number = randomService.generateNumber(12);
+			
+			//HTML 템플릿 생성
+			String template = this.createCertHtml(number);
+			
+			helper.setText(template, true);
+			
+			//이메일 발송
+			sender.send(message);
+			
+			//발송이 되었다면, DB등록 혹은 갱신처리
+			CertDto certDto = certDao.find(memberEmail);
+			if(certDto == null) { //처음 보내는 이메일
+				certDao.add(CertDto.builder()
+							.certEmail(memberEmail)
+							.certNumber(number)
+						.build());
+			}
+			else { //이미 보낸적이 있는 이메일
+				certDao.change(CertDto.builder()
+						.certEmail(memberEmail)
+						.certNumber(number)
+					.build());
+			}
+		}
+	
 }

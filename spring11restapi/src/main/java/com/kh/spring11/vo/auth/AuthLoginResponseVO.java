@@ -11,4 +11,6 @@ public class AuthLoginResponseVO {
 	private String accountId;
 	private String accountLevel;
 	private String accountNickname;
+	private String accountBlock;
+	private boolean needUpdate;
 }

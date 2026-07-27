@@ -30,6 +30,6 @@ public class AdminUserRequestVO {
 	private String accountBlock;
 	
 //	private List<String> orders;
-//	private String lastAccountId;
-//	private Integer size;
+	private String lastAccountId;
+	private Integer size = 10; //기본값 10
 }

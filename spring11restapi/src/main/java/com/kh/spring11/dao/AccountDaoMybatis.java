@@ -8,8 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.AccountDto;
+import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
+import com.kh.spring11.vo.auth.ChangeBlockRequestVO;
 
 @Repository
 public class AccountDaoMybatis implements AccountDao{
@@ -83,6 +85,11 @@ public class AccountDaoMybatis implements AccountDao{
 	@Override
 	public int complexSearchCount(AdminUserRequestVO request) {
 		return sqlSession.selectOne("mapper.account.complexSearchCount", request);
+	}
+
+	@Override
+	public boolean updateAccountBlock(ChangeBlockRequestVO request) {
+		return sqlSession.update("mapper.account.updateAccountBlock", request) > 0;
 	}
 
 

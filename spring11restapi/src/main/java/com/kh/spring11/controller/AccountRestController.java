@@ -27,6 +27,7 @@ import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
 import com.kh.spring11.vo.account.ChangePasswordResponseVO;
+import com.kh.spring11.vo.admin.AccountDetailResponseVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
 import com.kh.spring11.vo.admin.AdminUserResponseVO;
@@ -231,6 +232,8 @@ public class AccountRestController {
 				.build();
 	}
 	
+	// [관리자]
+	
 	//회원 복합 검색
 	@PostMapping("/search")
 	public AdminUserResponseVO search(
@@ -239,7 +242,8 @@ public class AccountRestController {
 		
 		List<AccountSearchResultVO> list = accountDao.complexSearch(request);
 		
-	//	int count = accountDao.complexSearchCount(request);
+		//카운트 조회
+		int count = accountDao.complexSearchCount(request);
 		
 		return AdminUserResponseVO.builder()
 					.list(list)
