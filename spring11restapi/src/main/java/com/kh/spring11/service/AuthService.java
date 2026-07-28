@@ -38,9 +38,9 @@ public class AuthService {
 			, accountDto.getAccountPassword());
 		if(!valid) throw new TargetNotfoundException();
 		
-		//차단여부 확인
+		//차단 회원이라면? 403반환 (GetOutException)
 		if(accountDto.getAccountBlock().equals("Y")) {
-			throw new GetOutException();
+			throw new GetOutException("차단된 회원입니다");
 		}
 
 		//비밀번호가 변경한 지 30일이 지난 경우

@@ -223,7 +223,7 @@ public class EmailService {
 		Elements boxes = document.select(".password-text"); // 무조건 1개
 		Element element = boxes.get(0); //boxes.getFirst();
 		element.text(tempPassword);
-		
+		System.out.println("임시 비밀번호 " + tempPassword);
 		//메세지 생성 및 전송
 		MimeMessage  message = sender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
