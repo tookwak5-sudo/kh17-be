@@ -3,11 +3,14 @@ package com.kh.spring11.service;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.kh.spring11.configuration.LoginProperties;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.GetOutException;
@@ -23,6 +26,9 @@ public class AuthService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private LoginProperties loginProperties;
 	
 	//로그인 처리
 	public AuthLoginResponseVO login(AuthLoginRequestVO request) {
@@ -45,23 +51,34 @@ public class AuthService {
 
 		//비밀번호가 변경한 지 30일이 지난 경우
 		//현재 시각을 구하기
-		Timestamp recent = accountDto.getAccountChange(); // 가장 최근 로그인 시각
-		if(recent == null) { //바꾼적 없으면
-			recent = accountDto.getAccountJoin(); //가입일로 저장
+		// - 설정파일의 need-update-term 보다 변경일이 오래되어야 한다(=초과)
+		
+		Timestamp lastChange = accountDto.getAccountChange(); // 가장 최근 로그인 시각
+		if(lastChange == null) { //바꾼적 없으면
+			lastChange = accountDto.getAccountJoin(); //가입일로 저장
 		}
-		LocalDateTime lastChange = recent.toLocalDateTime();
-		LocalDateTime current = LocalDateTime.now(); 
 		
-		Duration duration = Duration.between(lastChange, current);
+		//바꾼 적이 있는 경우 날짜 계산
+		LocalDateTime lastTime = lastChange.toLocalDateTime(); //최종 바꾼일
+		LocalDateTime current = LocalDateTime.now(); //현재
 		
-		boolean update = duration.toDays() >= 1;
+		
+		//period는 정확한 시점을 알고 싶을때
+		//Duration대략적인 기간을 알고 싶을때
+		//Duration duration = Duration.between(lastTime, current);
+		
+		//ChronoUnit
+		long days = ChronoUnit.DAYS.between(lastTime, current);
+		
+		//properties에서 30일 기준 설정한 데이터를 가져와서 
+		boolean needUpdate = days >= loginProperties.getNeedUpdateTerm();
 		
 		//로그인 성공
 		return AuthLoginResponseVO.builder()
 			.accountId(accountDto.getAccountId()) //회원 아이디
 			.accountLevel(accountDto.getAccountLevel()) //회원 레벨
 			.accountNickname(accountDto.getAccountNickname()) // 회원 닉네임
-			.needUpdate(update)
+			.needUpdate(needUpdate) // 비밀번호 변경이 필요함(30일이후)
 		.build();
 	}	
 	
