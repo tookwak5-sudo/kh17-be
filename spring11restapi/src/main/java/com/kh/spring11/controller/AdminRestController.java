@@ -93,9 +93,11 @@ public class AdminRestController {
 		boolean current = accountDto.getAccountBlock().equals("Y");
 		accountDto.setAccountBlock(current ? "N" : "Y");
 		accountDao.updateAccountBlock(accountDto);
-		return AccountBlockResponseVO.builder()
-					.result(current)
-				.build(); //보내기
+		
+		AccountBlockResponseVO response = new AccountBlockResponseVO();
+		
+		BeanUtils.copyProperties(accountDto, response);
+		return response;
 	}
 	
 	
