@@ -223,4 +223,10 @@ public class AccountRestController {
 				.build();
 	}
 	
+	//30일동안 비밀번호 변경 요청 x 처리(비밀번호 변경시간 갱신)
+	@ApiResponse(responseCode = "200", description = "갱신 처리 완료")
+	@PatchMapping(value ="/remindMeLater/{accountId}", produces = "application/json")
+	public void remindMeLater(@PathVariable String accountId) {
+		accountDao.updateAccountChange(accountId);
+	}
 }

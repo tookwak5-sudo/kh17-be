@@ -34,4 +34,6 @@ public interface AccountDao {
 	//복합검색
 	List<AccountSearchResultVO> complexSearch(AdminUserRequestVO request);
 	int complexSearchCount(AdminUserRequestVO request);
+
+	boolean updateAccountChange(String accountId);
 }
