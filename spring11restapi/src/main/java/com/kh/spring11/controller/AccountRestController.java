@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
-import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
@@ -29,6 +29,7 @@ import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
 import com.kh.spring11.vo.account.ChangePasswordResponseVO;
 import com.kh.spring11.vo.admin.AccountDetailResponseVO;
+import com.kh.spring11.vo.admin.AccountFindResponseVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
 import com.kh.spring11.vo.admin.AdminUserResponseVO;
@@ -39,7 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "회원 정보 관리 서비스")
-@CommonsApiResponse
+@AuthApiResponse
 
 //@CrossOrigin(
 //		origins = "http://localhost:5173",	
@@ -88,18 +89,6 @@ public class AccountRestController {
 	@GetMapping(value ="/check-email/{accountEmail}", produces="application/json")
 	public boolean checkAccountEmail(@PathVariable String accountEmail) {
 		return accountDao.checkAvailableEmail(accountEmail);
-	}
-	
-	//회원정보를 반환하는 매핑(주의 : 내 정보 아님)
-	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value = "/{accountId}", produces="application/json")
-	public AccountFindResponseVO find(@PathVariable String accountId) {
-		AccountDto accountDto = accountDao.selectOne(accountId);
-		if(accountDto == null) throw new TargetNotfoundException();
-		
-		AccountFindResponseVO response = new AccountFindResponseVO();
-		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
-		return response;
 	}
 	
 	//내 정보라는 건 cookie에 포함된 loginId를 읽으면 된다(지금은 ... 나중엔 변함)
@@ -231,24 +220,6 @@ public class AccountRestController {
 		return ChangeAccountResponseVO.builder()
 					.status(true)
 					.message("정보변경이 완료되었습니다")
-				.build();
-	}
-	
-	// [관리자]
-	
-	//회원 복합 검색
-	@PostMapping("/search")
-	public AdminUserResponseVO search(
-			@RequestBody AdminUserRequestVO request
-	) {
-		
-		List<AccountSearchResultVO> list = accountDao.complexSearch(request);
-		
-		//카운트 조회
-		int count = accountDao.complexSearchCount(request);
-		
-		return AdminUserResponseVO.builder()
-					.list(list)
 				.build();
 	}
 	

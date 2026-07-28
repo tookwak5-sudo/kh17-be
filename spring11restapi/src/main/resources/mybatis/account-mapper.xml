@@ -85,7 +85,7 @@
 		</update>
 		
 	<!-- 관리자 회원 차단 갱신 -->
-	<update id="updateAccountBlock">
+	<update id="block">
 		update account
 		set account_block = #{accountBlock}
 		where account_id = #{accountId}

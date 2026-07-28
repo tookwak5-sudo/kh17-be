@@ -29,11 +29,11 @@ import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.AuthService;
 import com.kh.spring11.service.EmailService;
 import com.kh.spring11.service.JwtService;
+import com.kh.spring11.vo.admin.AccountBlockRequestVO;
+import com.kh.spring11.vo.admin.AccountBlockResponseVO;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
 import com.kh.spring11.vo.auth.AuthTempResponseVO;
-import com.kh.spring11.vo.auth.ChangeBlockRequestVO;
-import com.kh.spring11.vo.auth.ChangeBlockResponseVO;
 import com.kh.spring11.vo.jwt.TokenCreateRequestVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
@@ -306,23 +306,6 @@ public class AuthRestController {
 				.body(response);
 	}
 	
-	//회원 차단
-	@PatchMapping("/block/{accountId}")
-	public ChangeBlockResponseVO block(
-			@RequestBody ChangeBlockRequestVO request,
-			@PathVariable String accountId) {
-		
-		request.setAccountId(accountId);
-		AccountDto accountDto = accountDao.selectOne(accountId); // 회원 조회
-		if(accountDto == null) throw new TargetNotfoundException();
-		
-		accountDto.setAccountBlock(request.getAccountBlock()); // 입력값을 넣어주고
-		accountDao.updateAccountBlock(request); //block여부 업데이트
-		ChangeBlockResponseVO response = new ChangeBlockResponseVO(); //응답용 VO에
-		AccountDto result = accountDao.selectOne(accountId); // 회원 조회후에
-		BeanUtils.copyProperties(result, response); // 입력된 차단정보를 담아
-		return response; //보내기
-	}
 	
 	//임시 비밀번호 발행
 	@PostMapping("/tempPassword/{accountId}")

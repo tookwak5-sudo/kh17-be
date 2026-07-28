@@ -1,4 +1,4 @@
-package com.kh.spring11.vo.account;
+package com.kh.spring11.vo.admin;
 
 import java.sql.Timestamp;
 

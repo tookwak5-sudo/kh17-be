@@ -6,7 +6,7 @@ import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
-import com.kh.spring11.vo.auth.ChangeBlockRequestVO;
+import com.kh.spring11.vo.admin.AccountBlockRequestVO;
 
 public interface AccountDao {
 	void insert(AccountDto accountDto);
@@ -23,7 +23,8 @@ public interface AccountDao {
 	String checkAccountPassword(String accountId);
 	
 	//회원 차단여부
-	boolean updateAccountBlock(ChangeBlockRequestVO request);
+//	boolean updateAccountBlock(AccountBlockRequestVO request);
+	boolean updateAccountBlock(AccountDto accountDto);
 	
 	//비밀번호 변경하기 + vo를 만들어서 필요한 정보만 가져오는건 응집도를 높이는 행위가 될 수 있으나 너무 불필요한 작업(Swagger에 보이지 않는 정보이므로 Dto를 가져온다)
 	boolean updateAccountPassword(AccountDto accountDto); 
