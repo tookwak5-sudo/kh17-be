@@ -1,5 +1,6 @@
 package com.kh.spring11.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.AuthApiResponse;
-import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.service.EmailService;
+import com.kh.spring11.service.RandomService;
 import com.kh.spring11.vo.admin.AccountFindResponseVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
@@ -25,6 +27,7 @@ import com.kh.spring11.vo.admin.AccountBlockResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 
 @Tag(name= "관리자 API")
 @AuthApiResponse
@@ -34,6 +37,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AdminRestController {
 	@Autowired
 	private AccountDao accountDao;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private RandomService randomService;
 	
 	//회원정보를 반환하는 매핑(주의 : 내 정보 아님)
 	@ApiResponse(responseCode = "200", description = "조회 성공")
@@ -100,6 +109,28 @@ public class AdminRestController {
 		return response;
 	}
 	
-	
+	//임시 비밀번호 발행
+	@ApiResponse(responseCode = "200", description= "변경 메일 발송 성공")
+	@PostMapping("/tempPassword/{accountId}")
+	public void tempPassword(@PathVariable String accountId) throws MessagingException, IOException {
+		
+		AccountDto accountDto = accountDao.selectOne(accountId);
+		if(accountDto == null) throw new TargetNotfoundException();
+		
+		//[1] 임시 비밀번호 발행
+		//String randomPassword = randomService.generateNumber(12);
+		String randomPassword = randomService.generateString(12);
+		
+		//[2] DB 변경
+		accountDao.updateAccountPassword(AccountDto.builder()
+					.accountId(accountId)
+					.accountPassword(randomPassword)
+				.build());
+		
+		//[3] 이메일 변경
+		emailService.sendTempPassword(accountDto.getAccountEmail(), randomPassword);
+		
+	}
+
 	
 }

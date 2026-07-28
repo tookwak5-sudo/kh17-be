@@ -306,26 +306,4 @@ public class AuthRestController {
 				.body(response);
 	}
 	
-	
-	//임시 비밀번호 발행
-	@PostMapping("/tempPassword/{accountId}")
-	public AuthTempResponseVO tempPassword(
-			@PathVariable String accountId) throws MessagingException, IOException {
-		//기존 회원 정보 조회
-		AccountDto accountDto = accountDao.selectOne(accountId);
-		
-		//이메일로 전송 
-		String tempPassword = emailService.sendTempPassword(accountDto.getAccountEmail());//이메일로 전송 
-		//비밀번호 암호화하여 교체
-		accountDao.updateAccountPassword(AccountDto.builder()
-					.accountId(accountId)
-					.accountPassword(tempPassword)
-				.build());
-		
-		//알림 발송
-		return AuthTempResponseVO.builder()
-					.result(true)
-					.message("등록된 이메일로 임시비밀번호가 발송되었습니다")
-				.build();
-	}
 }

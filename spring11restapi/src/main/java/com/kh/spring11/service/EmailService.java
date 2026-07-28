@@ -1,9 +1,14 @@
 package com.kh.spring11.service;
 
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,9 +22,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.kh.spring11.configuration.EmailProperties;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dao.CertDao;
-import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.dto.CertDto;
 
 import jakarta.mail.MessagingException;
@@ -37,6 +42,9 @@ public class EmailService {
 	
 	@Autowired
 	private AccountDao accountDao;
+	
+	@Autowired
+	private EmailProperties emailProperties;
 	
 	//이 메소드는 이제부터 비동기(백그라운드,멀티스레드)로 실행된다고 선언!
 	@Async
@@ -85,6 +93,7 @@ public class EmailService {
 		MimeMessage message =sender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
 		
+		helper.setFrom(emailProperties.getFrom());
 		helper.setFrom("tookwak4@gmail.com");
 		helper.setTo(memberEmail);
 		helper.setSubject("[KH정보교육원] 인증코드가 도착하였습니다!");
@@ -155,27 +164,76 @@ public class EmailService {
 				return document.toString();
 	}
 	
-	//임시비밀번호 발송 메소드 (마임메세지용)
-		public String sendTempPassword(String memberEmail) throws MessagingException, IOException {
-			//SimpleMailMessage message = new SimpleMailMessage();
-			MimeMessage message =sender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
-			helper.setFrom("tookwak4@gmail.com");
-			helper.setTo(memberEmail);
-			helper.setSubject("[KH정보교육원] 임시비밀번호가 도착하였습니다!");
-			
-			//인증번호 생성(랜덤으로)
-			String number = randomService.generateNumber(12);
-			System.out.println("임시비번 : " + number);
-			//HTML 템플릿 생성
-			String template = this.createCertHtml(number);
-			
-			helper.setText(template, true);
-			
-			//이메일 발송
-			sender.send(message);
-			//비밀번호 반환
-			return number;
-		}
+	//임시비밀번호 발송하는 서비스
+//	public void sendTempPassword(String email, String tempPassword) throws MessagingException, IOException {
+//		//SimpleMailMessage message = new SimpleMailMessage();
+//		MimeMessage message =sender.createMimeMessage();
+//		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+//		helper.setFrom("tookwak4@gmail.com");
+//		helper.setTo(email);
+//		helper.setSubject("[KH정보교육원] 임시비밀번호가 도착하였습니다!");
+//		
+//		//인증번호 생성(랜덤으로)
+//		String number = randomService.generateNumber(12);
+//		System.out.println("임시비번 : " + number);
+//		//HTML 템플릿 생성
+//		String template = this.createCertHtml(number);
+//		
+//		helper.setText(template, true);
+//		
+//		//이메일 발송
+//		sender.send(message);
+//	}
 	
+	//임시비밀번호 발송하는 서비스
+	public void sendTempPassword(String email, String tempPassword) throws MessagingException, IOException {
+//		//단문 메세지
+//		SimpleMailMessage message = new SimpleMailMessage();
+//		
+//		message.setFrom(emailProperties.getFrom());
+//		message.setTo(email);
+//		message.setSubject("[KH정보교육원] 임시 비밀번호 안내");
+//		message.setText("임시 비밀번호는 ["+ tempPassword +"] 입니다. \n" + "외부에 노출되지 않도록 주의하세요");
+		
+		//마임 메세지
+		ClassPathResource resource = new ClassPathResource(
+				"templates/temp-password-template.html");//src제외한 나머지 경로탐색
+		File target = resource.getFile();
+//		BufferedReader reader = new BufferedReader(new FileReader(target)); //애초부터 systemREader을 통해 읽어옴 읽는 도구를 선택할 수 없음
+		BufferedReader reader = new BufferedReader(
+				//내가 바이트 단위로 읽을 건데  (읽는 도구 선택가능) // 위 방식으로 하면 깨질 수 있는 위험이 있을 수도 있기 때문에 아래와 같이 내가 명시할 수 있는 코드로 작성
+				new InputStreamReader(new FileInputStream(target), StandardCharsets.UTF_8
+				)
+		);
+				
+		String content = reader.lines() 
+				.collect( //합쳐
+					Collectors.joining( //콜랙테에서 
+						System.lineSeparator()) // /n 줄바꿈 표시를 찾아서 
+				);
+		
+		//구글에 데이터가 깨져서 들어가서 확인해 보기위해 찍은 코드
+//		System.out.println("<Content>");
+//		System.out.println(content);
+		
+		reader.close();
+		
+		//String → HTML
+		Document document = Jsoup.parse(content);
+		Elements boxes = document.select(".password-text"); // 무조건 1개
+		Element element = boxes.get(0); //boxes.getFirst();
+		element.text(tempPassword);
+		
+		//메세지 생성 및 전송
+		MimeMessage  message = sender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+		helper.setFrom(emailProperties.getFrom());
+		helper.setTo(email);
+		helper.setSubject("[KH정보교육원] 임시 비밀번호 안내");
+		helper.setText(document.toString(), true); //HTML모드
+		
+		sender.send(message);
+	}
+	
+
 }

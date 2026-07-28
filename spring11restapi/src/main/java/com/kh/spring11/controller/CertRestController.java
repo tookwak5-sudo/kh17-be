@@ -5,13 +5,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
+import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dao.CertDao;
 import com.kh.spring11.dto.CertDto;
 import com.kh.spring11.service.EmailService;
@@ -31,6 +31,8 @@ import jakarta.mail.MessagingException;
 public class CertRestController {
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired AccountDao accountDao;
 	
 	@Autowired
 	private CertDao certDao;
@@ -89,4 +91,5 @@ public class CertRestController {
 					.build();
 		}
 	}
+	
 }

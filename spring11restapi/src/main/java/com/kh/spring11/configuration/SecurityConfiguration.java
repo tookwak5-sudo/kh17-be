@@ -87,7 +87,10 @@ public class SecurityConfiguration {
 					).permitAll()
 					
 					//cert service
-					.requestMatchers("/service/cert/**").permitAll()
+					.requestMatchers(
+						"/service/send",	
+						"/service/check"
+					).permitAll()
 					
 					//country api
 					.requestMatchers("/api/country/**").permitAll()
