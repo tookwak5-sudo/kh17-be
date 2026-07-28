@@ -1,5 +1,6 @@
 package com.kh.spring11.controller;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -95,6 +96,7 @@ public class AccountRestController {
 	public AccountFindResponseVO find(@PathVariable String accountId) {
 		AccountDto accountDto = accountDao.selectOne(accountId);
 		if(accountDto == null) throw new TargetNotfoundException();
+		
 		AccountFindResponseVO response = new AccountFindResponseVO();
 		BeanUtils.copyProperties(accountDto, response); //가능한 항목 복사
 		return response;
