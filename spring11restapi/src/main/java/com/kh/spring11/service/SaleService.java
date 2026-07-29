@@ -1,6 +1,7 @@
 package com.kh.spring11.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ public interface SaleService {
 	SaleAddResponseVO add(SaleAddRequestVO request) throws IllegalStateException, IOException;
 	SaleAddResponseVO add(
 		SaleAddRequestVO2 request, 
-		MultipartFile thumbnail
+		MultipartFile thumbnail,
+		List<MultipartFile> detailImages
 		)throws IllegalStateException, IOException;
 }

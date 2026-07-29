@@ -26,8 +26,14 @@
  		select * from sale where sale_no = #{saleNo}
  	</select>
  	
+ 	<!-- 썸네일 연결 -->
  	<insert id="connect">
  		insert into sale_thumbnail (sale_no, attach_no)
  		values( #{saleNo}, #{attachNo} )
+ 	</insert>
+ 	<!-- 상세이미지 연결 -->
+ 	<insert id="connectDetailImages">
+ 		insert into sale_information (sale_no, attach_no)
+ 		values( #{saleNo} , #{attachNo} )
  	</insert>
  </mapper>

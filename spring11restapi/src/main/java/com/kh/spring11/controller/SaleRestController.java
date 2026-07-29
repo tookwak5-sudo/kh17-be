@@ -1,6 +1,7 @@
 package com.kh.spring11.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,9 +40,13 @@ public class SaleRestController {
 			
 		//[2]리엑트에서 데이터들이 파트별로 전송될 경우
 		@Valid @RequestPart(value = "sale") SaleAddRequestVO2 request, //6개의 데이터가 담길 객체
-		@Valid @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail	//썸네일이 담길 객체(이쪽을 선호)
-		)throws IllegalStateException, IOException {
+		@RequestPart(value = "thumbnail", required = false) 
+		MultipartFile thumbnail,	//썸네일이 담길 객체(이쪽을 선호)
+		
+		@RequestPart(value = "detailImages", required = false)
+		List<MultipartFile> detailImages
+			)throws IllegalStateException, IOException {
 //		return saleService.add(request); // [1]
-		return saleService.add(request, thumbnail); // [2]
+		return saleService.add(request, thumbnail, detailImages); // [2]
 	}
 }

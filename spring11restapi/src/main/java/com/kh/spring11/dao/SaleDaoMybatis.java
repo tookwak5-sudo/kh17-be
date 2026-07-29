@@ -37,4 +37,12 @@ public class SaleDaoMybatis implements SaleDao {
 		sqlSession.insert("mapper.sale.connect", params);
 	}
 
+	@Override
+	public void connectDetailImage(int saleNo, int attachNo) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("saleNo", saleNo);
+		params.put("attachNo", attachNo);
+		sqlSession.insert("mapper.sale.connectDetailImages", params);
+	}
+
 }

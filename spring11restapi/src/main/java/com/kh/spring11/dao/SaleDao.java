@@ -7,4 +7,5 @@ public interface SaleDao {
 	void insert(SaleDto saleDto);
 	SaleDto selectOne(int saleNo);
 	void connect(int saleNo, int attachNo);
+	void connectDetailImage(int saleNo, int attachNo);
 }

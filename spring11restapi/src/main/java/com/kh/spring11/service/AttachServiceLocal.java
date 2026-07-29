@@ -41,7 +41,6 @@ public class AttachServiceLocal implements AttachService {
 
 	@Override
 	public void delete(int attach) {
-		// TODO Auto-generated method stub
 		
 	}
 	
