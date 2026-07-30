@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.vo.sale.SaleListItemVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
@@ -51,6 +52,16 @@ public class SaleDaoMybatis implements SaleDao {
 	@Override
 	public List<SaleListItemVO> selectList(SaleListRequestVO request) {
 		return sqlSession.selectList("mapper.sale.list", request);
+	}
+
+	@Override
+	public Integer findAttach(int saleNo) {
+		return sqlSession.selectOne("mapper.sale.findAttach", saleNo);
+	}
+
+	@Override
+	public List<Integer> findDetails(int saleNo) {
+		return sqlSession.selectList("mapper.sale.findDetails", saleNo);
 	}
 
 }

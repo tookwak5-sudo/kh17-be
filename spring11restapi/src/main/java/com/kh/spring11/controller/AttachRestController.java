@@ -28,7 +28,7 @@ public class AttachRestController {
 	@Autowired
 	private AttachService attachService;
 	
-	@GetMapping("/{attachNo")
+	@GetMapping("/{attachNo}")
 	public ResponseEntity<?> download(  //불확실한 경우 제너릭에 ?표시
 			@PathVariable int attachNo
 			) throws IOException{

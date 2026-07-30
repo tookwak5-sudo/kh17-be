@@ -2,6 +2,7 @@ package com.kh.spring11.dao;
 
 import java.util.List;
 
+import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.vo.sale.SaleListItemVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
@@ -14,4 +15,7 @@ public interface SaleDao {
 	void connectDetailImage(int saleNo, int attachNo);
 	
 	List<SaleListItemVO> selectList(SaleListRequestVO request);
+	List<Integer> findDetails(int saleNo);
+	Integer findAttach(int saleNo);
+	
 }

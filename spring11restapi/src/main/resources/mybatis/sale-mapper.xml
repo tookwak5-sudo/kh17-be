@@ -54,4 +54,18 @@
 		</where>
 		order by s.sale_no desc
  	</select>
+ 	
+ 	<!-- 썸네일 찾기 -->
+ 	<select id="findAttach" resultType="Integer">
+ 		select attach_no from sale_thumbnail
+ 		where sale_no = #{saleNo}
+ 	</select>
+ 	<!-- 상세이미지 조회 -->
+ 	<select id="findDetails" resultType="Integer">
+ 		select attach_no from sale_information
+ 		where sale_no = #{saleNo}
+ 		order by attach_no asc
+ 	</select>
+ 	
+ 	
  </mapper>

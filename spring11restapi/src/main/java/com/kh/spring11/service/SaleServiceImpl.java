@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.spring11.dao.AttachDao;
 import com.kh.spring11.dao.SaleDao;
+import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
+import com.kh.spring11.vo.sale.SaleDetailResponseVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +30,8 @@ public class SaleServiceImpl implements SaleService {
 	private SaleDao saleDao;
 	@Autowired
 	private AttachService attachService;
+	@Autowired
+	private AttachDao attachDao;
 	
 	@Transactional//이 메소드에서 발생하는 DB작업은 all or nothing 처리가 됨
 	@Override
@@ -101,7 +107,7 @@ public class SaleServiceImpl implements SaleService {
 		BeanUtils.copyProperties(resultDto, response);
 		
 		//(+추가) 첨부파일이 있으면 첨부파일을 등록 후 상품정보와 연결
-		if(thumbnail.isEmpty() == false) {
+		if(thumbnail != null && thumbnail.isEmpty() == false) {
 			int attachNo = attachService.save(thumbnail);
 			saleDao.connect(saleNo, attachNo);
 		}
@@ -118,5 +124,44 @@ public class SaleServiceImpl implements SaleService {
 		}
 		
 		return response;
+	}
+
+	@Override
+	public SaleDetailResponseVO findSaleDetail(int saleNo) {
+		//[1] SaleDto를 조회해오기
+		SaleDto saleDto = saleDao.selectOne(saleNo);
+		if(saleDto == null) {
+			throw new TargetNotfoundException();
+		}
+		//[2] thumbnail 있으면 첨부파일 가져오기(없을 수도 있음)
+		Integer attachNo = saleDao.findAttach(saleNo);
+		AttachDto thumbnail = attachDao.selectOne(attachNo);
+		
+		//[3] details 조회(없을 수도 있음
+		List<Integer> attachNumbers = saleDao.findDetails(saleNo); 
+		System.out.println("번호들 :" + attachNumbers);
+		List<AttachDto> details = attachDao.selectList(attachNumbers);
+		
+		return SaleDetailResponseVO.builder()
+					.saleDto(saleDto)
+					.thumbnail(thumbnail)
+					.details(details)
+				.build();
+	}
+
+	@Override
+	public void delete(int saleNo) {
+		//[1] 썸네일 및 첨부파일 번호 조회
+		Integer attachNo = saleDao.findAttach(saleNo);
+		List<Integer> attachNumbers = saleDao.findDetails(saleNo); 
+
+//		saleDao.delete(saleNo);
+//		
+//		//[2] attach를 삭제
+//		attachDao.delete(attachNo);
+//		
+//		//[3] details 삭제
+//		attachDao.deleteAll(attachNumbers);
+		
 	}
 }
