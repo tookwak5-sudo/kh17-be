@@ -1,6 +1,10 @@
 package com.kh.spring11.vo.sale;
 
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,4 +29,12 @@ public class SaleAddRequestVO2 {
 	private String saleContent;
 	@NotNull @PositiveOrZero
 	private Integer saleStock;
+	
+	//첨부파일
+	//[1] 썸네일
+	private MultipartFile thumbnail;
+	//[2] 상세이미지
+	private List<MultipartFile> detailImages; //사용은 List가 편함
+											
+//		private MultipartFile[] detailImages; //보통은 가변 List, 불변 배열
 }

@@ -19,7 +19,7 @@ public class AttachDto {
 	//- 만약 유형을 알 수 없으면 null 대신 application/octet-stream 을 반환한다
 	public String getAttachTypeString() {
 		if(attachType == null) {
-			return "application/octet-strema";
+			return "application/octet-stream";
 		}
 		return attachType;
 	}

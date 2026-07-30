@@ -36,4 +36,22 @@
  		insert into sale_information (sale_no, attach_no)
  		values( #{saleNo} , #{attachNo} )
  	</insert>
+ 	
+ 	<!-- 고객이 볼 상품목록 -->
+ 	<select id="list" resultType="SaleListItemVO">
+ 		select  s.sale_no,
+		    s.sale_name,
+		    s.sale_category,
+		    s.sale_original_price,
+		    s.sale_discount_price,
+	    	t.attach_no 
+		 from sale S
+			left outer join sale_thumbnail T  on s.sale_no = T.sale_no 
+		<where>
+			<if test="saleCategory != null">
+				and s.sale_category = #{saleCategory}
+			</if>
+		</where>
+		order by s.sale_no desc
+ 	</select>
  </mapper>

@@ -57,6 +57,7 @@ public class SaleServiceImpl implements SaleService {
 		BeanUtils.copyProperties(resultDto, response);
 		
 		//(+추가) 첨부파일이 있으면 첨부파일을 등록 후 상품정보와 연결
+		List<MultipartFile> detailImages = request.getDetailImages();
 		MultipartFile thumbnail = request.getThumbnail();
 		if(thumbnail.isEmpty() == false) {
 			int attachNo = attachService.save(thumbnail);
