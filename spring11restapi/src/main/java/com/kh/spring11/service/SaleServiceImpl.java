@@ -14,6 +14,7 @@ import com.kh.spring11.dao.AttachDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
@@ -163,7 +164,7 @@ public class SaleServiceImpl implements SaleService {
 		//[2] 다 지워진 뒤 상품정보를 삭제
 		saleDao.delete(saleNo); //상품 정보(마지막)
 
-		//[3] DB의 파일정보를 먼저 삭제하가ㅗ 실물파일을 삭제하도록 처리 + @Transactional
+		//[3] DB의 파일정보를 먼저 삭제하고 실물파일을 삭제하도록 처리 + @Transactional
 		// → 파일번호만 알면 AttachService에서 가능 (파일 1개에 대해서)
 		attachService.delete(thumbnailNo); //썸네일 삭제 지시
 		for(Integer attachNo : detailNumbers) {
@@ -208,5 +209,18 @@ public class SaleServiceImpl implements SaleService {
 		Integer thumbnailNo = saleDao.findAttach(saleNo);
 		//[2] 기존 썸네일이 있다면 제거
 		attachService.delete(thumbnailNo); //null은 알아서 제거됨
+	}
+
+	@Override
+	public void deleteDetailImage(int saleNo, int attachNo) {
+		//[1] 상세 이미지 번호만 조회
+		List<Integer> detailNumbers = saleDao.findDetails(saleNo);
+		//[2] 실제 지우려는 이미지가 포함되어 있지 않은 경우 (즉, 다른 상품 이미지라면) 차단
+		if(detailNumbers.contains(attachNo) == false) {
+			throw new GetOutException(); //403
+		}
+		//[3] 포함된 정상적인 이미지라면 삭제
+		attachService.delete(attachNo);
+		
 	}
 }

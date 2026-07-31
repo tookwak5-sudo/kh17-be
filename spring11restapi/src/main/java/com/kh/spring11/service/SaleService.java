@@ -27,5 +27,6 @@ public interface SaleService {
 	void edit(int saleNo, SaleEditRequestVO request);
 	
 	ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws Exception, IOException;
-	void deleteThumbnail(int saleNo); 
+	void deleteThumbnail(int saleNo);
+	void deleteDetailImage(int saleNo, int attachNo); 
 }

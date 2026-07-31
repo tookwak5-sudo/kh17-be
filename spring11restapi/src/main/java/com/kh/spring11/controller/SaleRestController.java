@@ -143,4 +143,13 @@ public class SaleRestController {
 		saleService.deleteThumbnail(saleNo); // 작업이 한 마디로 설명이 안되면 service를 만들기
 		
 	}
+	
+	@ApiResponse(responseCode = "200", description = "상세 이미지 1개 삭제 성공")
+	@DeleteMapping("/detailImage/sale/{saleNo}/attach/{attachNo}")
+	public void deleteDetailImage(
+				@PathVariable int saleNo, 
+				@PathVariable int attachNo //pathvariable도 modelAttribute로 묶어서 받을 수 있음
+	) {
+		saleService.deleteDetailImage(saleNo, attachNo);
+	}
 }
