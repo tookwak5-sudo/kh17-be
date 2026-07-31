@@ -15,6 +15,7 @@ import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
@@ -180,5 +181,23 @@ public class SaleServiceImpl implements SaleService {
 		saleDto.setSaleNo(saleNo); //번호 복사
 		BeanUtils.copyProperties(request, saleDto); //나머지 전달된 데이터 복사
 		saleDao.update(saleDto);
+	}
+	
+	@Transactional
+	@Override
+	public ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws Exception, IOException {
+		//썸네일 변경을 위한 구체적인 코드
+		//[1] 기존 썸네일 번호를 조회
+		Integer thumbnailNo = saleDao.findAttach(saleNo);
+		//[2] 기존 썸네일이 있다면 제거
+		attachService.delete(thumbnailNo); //null은 알아서 제거됨
+		//[3] 신규 썸네일 추가
+		int newThumbnailNo = attachService.save(thumbnail);
+		saleDao.connect(saleNo, newThumbnailNo); //연결
+		//[4] 신규 썸네일 정보 조회
+		AttachDto attachDto = attachDao.selectOne(newThumbnailNo);
+		return ChangeThumbnailResponseVO.builder()
+					.attach(attachDto)
+				.build();
 	}
 }

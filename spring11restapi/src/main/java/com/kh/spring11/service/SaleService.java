@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
@@ -24,4 +25,6 @@ public interface SaleService {
 	void deleteSale(int saleNo);
 	
 	void edit(int saleNo, SaleEditRequestVO request);
+	
+	ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws Exception, IOException;
 }
