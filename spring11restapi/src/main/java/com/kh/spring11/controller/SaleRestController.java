@@ -125,14 +125,22 @@ public class SaleRestController {
 	
 	//썸네일만 변경하는 매핑
 	@ApiResponse(responseCode = "200", description = "썸네일 변경 완료")
-	@PatchMapping(value="/thumnail/{saleNo}")
+	@PatchMapping(value="/thumbnail/{saleNo}")
 	public ChangeThumbnailResponseVO changeThumbnail(
 			@PathVariable int saleNo,
 			@RequestPart(value = "thumbnail") MultipartFile thumbnail
 			) throws IOException, Exception {
-		//기존의 이미지가 있다면 제거
-		//신규 이미지를 추가
+		  //기존의 이미지가 있다면 제거
+		 //신규 이미지를 추가
 		//추가된 이미지의 정보를 반환
 		return saleService.changeThumbnail(saleNo, thumbnail);
+	}
+	//produces는 json데이터를 줄때
+	//consume은 명시해줄때 즉, 뭔가를 설명해줄 때 produces와 consume사용
+	@ApiResponse(responseCode = "200", description="썸네일 이미지 삭제 성공")
+	@DeleteMapping("/thumbnail/{saleNo}")
+	public void deleteThumbnail(@PathVariable int saleNo) {
+		saleService.deleteThumbnail(saleNo); // 작업이 한 마디로 설명이 안되면 service를 만들기
+		
 	}
 }

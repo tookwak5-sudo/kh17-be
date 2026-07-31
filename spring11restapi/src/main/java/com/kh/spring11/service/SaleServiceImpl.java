@@ -200,4 +200,13 @@ public class SaleServiceImpl implements SaleService {
 					.attach(attachDto)
 				.build();
 	}
+
+	@Override
+	public void deleteThumbnail(int saleNo) {
+		//saleNo를 이용해서 썸네일의 attachNo를 구한 뒤 제거 처리
+		//[1] 기존 썸네일 번호를 조회
+		Integer thumbnailNo = saleDao.findAttach(saleNo);
+		//[2] 기존 썸네일이 있다면 제거
+		attachService.delete(thumbnailNo); //null은 알아서 제거됨
+	}
 }
