@@ -46,4 +46,10 @@ public class AttachDaoMybatis implements AttachDao {
 		return sqlSession.selectList("mapper.attach.findList", attachNumbers);
 	}
 
+	@Override
+	public boolean deleteList(List<Integer> attachNumbers) {
+		if(attachNumbers == null || attachNumbers.isEmpty()) return false;
+		return sqlSession.delete("mapper.attach.deleteList", attachNumbers) > 0;
+	}
+
 }

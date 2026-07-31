@@ -39,4 +39,14 @@
 		)
 		order by attach_no asc
 	</select>
+	
+	<!-- 여러개 삭제  -->
+	<delete id="deleteList">
+		delete from attach
+		where attach_no in (
+			<foreach item="attachNo" collection="list" separator=",">
+				#{attachNo}
+			</foreach>
+		)
+	</delete>
 </mapper>

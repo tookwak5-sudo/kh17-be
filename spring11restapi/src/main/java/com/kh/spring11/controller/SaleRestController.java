@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -20,6 +21,7 @@ import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
+import com.kh.spring11.vo.sale.SaleEditRequestVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
 import com.kh.spring11.vo.sale.SaleListResponseVO;
 
@@ -76,9 +78,17 @@ public class SaleRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description="상세 정보 삭제 성공")
-	@DeleteMapping(value="/{saleNo}", produces="application/json")
+	@DeleteMapping(value="/{saleNo}")
 	public void delete(@PathVariable int saleNo) {
-		
-		
+		saleService.deleteSale(saleNo);		
+	}
+	
+	@ApiResponse(responseCode = "200", description="상품 정보 수정 성공")
+	@PutMapping(value = "/{saleNo}")
+	public void edit(
+			@PathVariable int saleNo,
+			@Valid @RequestPart SaleEditRequestVO request
+			) {
+		saleService.edit(saleNo, request);
 	}
 }

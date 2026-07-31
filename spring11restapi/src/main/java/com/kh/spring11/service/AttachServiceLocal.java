@@ -75,8 +75,21 @@ public class AttachServiceLocal implements AttachService {
 	}
 	
 	@Override
-	public void delete(int attach) {
+	public void delete(Integer attachNo) {
+		if(attachNo == null) return;
 		
+		//DB정보 삭제
+		attachDao.delete(attachNo);	
+		
+		//실물파일 삭제
+		//- 저장 위치를 참조하는 객체를 생성
+		File dir = storageProperties.getLocalRoot();
+		if(dir.exists()) { //디렉터리가 있다면
+			File target = new File(dir, String.valueOf(attachNo));
+			if(target.exists()) { //파일이 있다면
+				target.delete(); //지워!
+			}
+		}
 	}
 
 	

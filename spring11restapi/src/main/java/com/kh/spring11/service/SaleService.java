@@ -9,6 +9,9 @@ import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
+import com.kh.spring11.vo.sale.SaleEditRequestVO;
+
+import jakarta.validation.Valid;
 
 public interface SaleService {
 	SaleAddResponseVO add(SaleAddRequestVO request) throws IllegalStateException, IOException;
@@ -18,5 +21,7 @@ public interface SaleService {
 		List<MultipartFile> detailImages
 		)throws IllegalStateException, IOException;
 	SaleDetailResponseVO findSaleDetail(int saleNo);
-	void delete(int saleNo);
+	void deleteSale(int saleNo);
+	
+	void edit(int saleNo, SaleEditRequestVO request);
 }

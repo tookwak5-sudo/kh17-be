@@ -11,5 +11,6 @@ public interface AttachDao {
 	AttachDto selectOne(Integer attachNo);
 	boolean delete(int attachNo);
 	List<AttachDto> selectList(List<Integer> attachNumbers);
+	boolean deleteList(List<Integer> attachNumbers);
 	
 }

@@ -120,6 +120,11 @@ public class SecurityConfiguration {
 						"/api/sale/add"
 					).hasAuthority("마스터")
 					
+					.requestMatchers(HttpMethod.DELETE, "/api/sale/**")
+					.hasAuthority("마스터")
+					.requestMatchers(HttpMethod.PUT, "/api/sale/**")
+					.hasAuthority("마스터")
+					
 					//나머지 모두 허용
 					.anyRequest().permitAll()
 			)

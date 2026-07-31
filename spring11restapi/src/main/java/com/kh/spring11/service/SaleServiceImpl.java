@@ -19,6 +19,7 @@ import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
+import com.kh.spring11.vo.sale.SaleEditRequestVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -148,20 +149,36 @@ public class SaleServiceImpl implements SaleService {
 					.details(details)
 				.build();
 	}
+	
+	@Transactional
+	@Override
+	public void deleteSale(int saleNo) {
+		//상품 정보 및 이미지 정보 + 실물파일까지 삭제
+		
+		//[1] 썸네일 및 상세이미지의 파일번호 조회
+		Integer thumbnailNo = saleDao.findAttach(saleNo); //없을 수도 있어서 Integer
+		List<Integer> detailNumbers = saleDao.findDetails(saleNo); 
+
+		//[2] 다 지워진 뒤 상품정보를 삭제
+		saleDao.delete(saleNo); //상품 정보(마지막)
+
+		//[3] DB의 파일정보를 먼저 삭제하가ㅗ 실물파일을 삭제하도록 처리 + @Transactional
+		// → 파일번호만 알면 AttachService에서 가능 (파일 1개에 대해서)
+		attachService.delete(thumbnailNo); //썸네일 삭제 지시
+		for(Integer attachNo : detailNumbers) {
+			attachService.delete(attachNo);//상세이미지 삭제 지시
+		}
+	}
 
 	@Override
-	public void delete(int saleNo) {
-		//[1] 썸네일 및 첨부파일 번호 조회
-		Integer attachNo = saleDao.findAttach(saleNo);
-		List<Integer> attachNumbers = saleDao.findDetails(saleNo); 
-
-//		saleDao.delete(saleNo);
-//		
-//		//[2] attach를 삭제
-//		attachDao.delete(attachNo);
-//		
-//		//[3] details 삭제
-//		attachDao.deleteAll(attachNumbers);
+	public void edit(int saleNo, SaleEditRequestVO request) {
+		//요청에 saleDiscountPrice가 없는 경우는  saleOriginaPrice와 동일하게 변경
+		if(request.getSaleDiscountPrice() == null) 
+			request.setSaleDiscountPrice(request.getSaleOriginalPrice());
 		
+		SaleDto saleDto = new SaleDto();
+		saleDto.setSaleNo(saleNo); //번호 복사
+		BeanUtils.copyProperties(request, saleDto); //나머지 전달된 데이터 복사
+		saleDao.update(saleDto);
 	}
 }

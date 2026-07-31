@@ -64,4 +64,14 @@ public class SaleDaoMybatis implements SaleDao {
 		return sqlSession.selectList("mapper.sale.findDetails", saleNo);
 	}
 
+	@Override
+	public boolean delete(int saleNo) {
+		return sqlSession.delete("mapper.sale.delete", saleNo) > 0;
+	}
+
+	@Override
+	public boolean update(SaleDto saleDto) {
+		return sqlSession.update("mapper.sale.update", saleDto) > 0;
+	}
+
 }

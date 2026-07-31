@@ -67,5 +67,20 @@
  		order by attach_no asc
  	</select>
  	
+ 	<!-- 썸네일 삭제 -->
+ 	<delete id="delete">
+ 		delete from sale where sale_no = #{saleNo}
+ 	</delete>
  	
+ 	<!-- 수정  -->
+ 	<update id="update">
+ 		update sale 
+ 		set	 	sale_name = #{saleName},
+ 				sale_category = #{saleCategory},
+ 				sale_original_price = #{saleOriginalPrice},
+ 				sale_discount_price = #{saleDiscountPrice},
+ 				sale_content = #{saleContent},
+ 				sale_stock = #{saleStock}
+ 		where 	sale_no = #{saleNo}
+ 	</update>
  </mapper>

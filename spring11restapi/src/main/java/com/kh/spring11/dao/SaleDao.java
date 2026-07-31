@@ -17,5 +17,7 @@ public interface SaleDao {
 	List<SaleListItemVO> selectList(SaleListRequestVO request);
 	List<Integer> findDetails(int saleNo);
 	Integer findAttach(int saleNo);
+	boolean delete(int saleNo);
+	boolean update(SaleDto saleDto);
 	
 }
