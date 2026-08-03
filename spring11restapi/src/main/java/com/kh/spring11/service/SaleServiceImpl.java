@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@Profile("local") //spring profile에서 local이 활성화 되어 있으면 등록될 대상
 public class SaleServiceImpl implements SaleService {
 	@Autowired
 	private SaleDao saleDao;
