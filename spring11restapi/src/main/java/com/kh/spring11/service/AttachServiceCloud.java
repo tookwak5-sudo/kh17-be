@@ -57,7 +57,7 @@ public class AttachServiceCloud implements AttachService {
 		//AWS에 저장 처리
 		//[1] AWS S3 전용 클라이언트 생성(이미 만들었으니 패스)
 		//[2] 업로드할 파일명과 내용을 준비
-		String objectKey = "uploads/"+ attachNo; //업로드 파일명(시퀀스)
+		String objectKey = storageProperties.getAwsRoot() + "/"+ attachNo; //업로드 파일명(시퀀스)
 		
 		//[3] 업로드 요청(PutObjectRequest)을 보낼 요청객체, 응답객체를 준비
 		PutObjectRequest request = PutObjectRequest.builder()
@@ -93,7 +93,7 @@ public class AttachServiceCloud implements AttachService {
 		
 		//AWS에서 파일 삭제 요청 (통신상의 오류가 나지 않으면 실행이 된다고 믿음/ 검증x)
 		//삭제 요청은 DeleteObjectReqeust, DeleteObjectResponse로 처리
-		String objectKey = "uploads/"+attachNo; //지울 대상의 경로
+		String objectKey = storageProperties.getAwsRoot() + "/"+ attachNo; // 지울 대상의 경로
 		DeleteObjectRequest request = DeleteObjectRequest.builder()
 					.bucket(storageProperties.getAwsBucket())
 					.key(objectKey)
@@ -112,7 +112,7 @@ public class AttachServiceCloud implements AttachService {
 		if(attachDto == null) throw new TargetNotfoundException();
 		
 		//[3] 실제 파일 데이터를 불러와서 Resource 형태로 포장
-		String objectKey = "uploads/"+attachNo; //Test02에서 올려놓은 파일
+		String objectKey = storageProperties.getAwsRoot() + "/"+ attachNo; //Test02에서 올려놓은 파일
 		
 		GetObjectRequest request = GetObjectRequest.builder()
 				.bucket(storageProperties.getAwsBucket())
@@ -122,7 +122,7 @@ public class AttachServiceCloud implements AttachService {
 		
 		//s3Client.getObject(request); //이렇게만 하면 메모리로 받는 것(ResponseInputStream)
 		
-		//byte로 추출 (in-memory 방식)
+		//byte로 추출 (in-memory 방식) - 불러오는 시간이 짧음/ 그치만 렘의 크기의 한계 때문에 
 		ResponseInputStream<GetObjectResponse> stream = s3Client.getObject(request);
 		GetObjectResponse response = stream.response();
 		
