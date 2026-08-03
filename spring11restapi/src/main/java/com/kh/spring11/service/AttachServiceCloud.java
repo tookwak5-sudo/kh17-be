@@ -7,21 +7,28 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring11.configuration.StorageProperties;
 import com.kh.spring11.dao.AttachDao;
 import com.kh.spring11.dto.AttachDto;
+import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.attach.AttachInfoVO;
 
 import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -99,8 +106,42 @@ public class AttachServiceCloud implements AttachService {
 	}
 
 	@Override
-	public AttachInfoVO load(int attachNo) throws IOException {
-		return null;
+	public AttachInfoVO load(int attachNo) throws IOException {		
+//		[1] 정보 조회
+		AttachDto attachDto = attachDao.selectOne(attachNo);
+		if(attachDto == null) throw new TargetNotfoundException();
+		
+		//[3] 실제 파일 데이터를 불러와서 Resource 형태로 포장
+		String objectKey = "uploads/"+attachNo; //Test02에서 올려놓은 파일
+		
+		GetObjectRequest request = GetObjectRequest.builder()
+				.bucket(storageProperties.getAwsBucket())
+				.key(objectKey)
+				.build();
+		
+		
+		//s3Client.getObject(request); //이렇게만 하면 메모리로 받는 것(ResponseInputStream)
+		
+		//byte로 추출 (in-memory 방식)
+		ResponseInputStream<GetObjectResponse> stream = s3Client.getObject(request);
+		GetObjectResponse response = stream.response();
+		
+		log.debug("Content-Type = {}", response.contentType());
+		log.debug("Content-Length = {}", response.contentLength());
+		log.debug("ETag = {}", response.eTag());
+		
+		
+//		byte[] data = FileCopyUtils.copyToByteArray(target);
+		byte[] data = stream.readAllBytes();
+		Resource resource = new ByteArrayResource(data);
+		
+		stream.close();
+		
+		//[4] 조회 결과를 포장해서 반환
+		return AttachInfoVO.builder()
+					.attachDto(attachDto)
+					.resource(resource)
+				.build();
 	}
 
 }
