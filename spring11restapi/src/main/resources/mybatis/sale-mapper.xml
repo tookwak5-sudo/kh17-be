@@ -67,7 +67,7 @@
  		order by attach_no asc
  	</select>
  	
- 	<!-- 썸네일 삭제 -->
+ 	<!--  삭제 -->
  	<delete id="delete">
  		delete from sale where sale_no = #{saleNo}
  	</delete>

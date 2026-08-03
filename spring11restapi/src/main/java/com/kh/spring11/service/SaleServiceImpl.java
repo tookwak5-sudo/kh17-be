@@ -173,15 +173,28 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public void edit(int saleNo, SaleEditRequestVO request) {
+	public void edit(int saleNo, SaleEditRequestVO request, List<MultipartFile> detailImages) throws IllegalStateException, IOException {
 		//요청에 saleDiscountPrice가 없는 경우는  saleOriginaPrice와 동일하게 변경
 		if(request.getSaleDiscountPrice() == null) 
 			request.setSaleDiscountPrice(request.getSaleOriginalPrice());
 		
+		//기본정보 변경
 		SaleDto saleDto = new SaleDto();
 		saleDto.setSaleNo(saleNo); //번호 복사
 		BeanUtils.copyProperties(request, saleDto); //나머지 전달된 데이터 복사
 		saleDao.update(saleDto);
+		
+		//상세이미지 추가 등록
+		//(+추가) 상세이미지가 있으면 첨부파일 등록 후 상품정보와 연결
+		boolean exist = detailImages != null && detailImages.size() > 0;
+		if(exist) { //파라미터가 있으면
+			for(MultipartFile detail : detailImages) { //복하여
+				if(detail.isEmpty() == false) { //비어있지 않은 이미지
+					int attachNo = attachService.save(detail); //등록
+					saleDao.connectDetailImage(saleNo, attachNo); //연결
+				}
+			}
+		}
 	}
 	
 	@Transactional
@@ -222,5 +235,14 @@ public class SaleServiceImpl implements SaleService {
 		//[3] 포함된 정상적인 이미지라면 삭제
 		attachService.delete(attachNo);
 		
+	}
+	
+	@Transactional
+	@Override
+	public void deleteDetailImages(int saleNo, List<Integer> detailNumbers) {
+			//	이미지가 적기 때문에 반복문으로 DB에 지속적으로 접근해서 처리
+			for(int number : detailNumbers) {
+				deleteDetailImage(saleNo, number);
+			}
 	}
 }

@@ -118,9 +118,11 @@ public class SaleRestController {
 					)
 				) 
 			)
-			@Valid @RequestPart(value = "sale") SaleEditRequestVO request		
-			) {
-		saleService.edit(saleNo, request);
+			@Valid @RequestPart(value = "sale") SaleEditRequestVO request,
+			@RequestPart(value = "detailImages", required = false)
+			List<MultipartFile> detailImages
+		) throws IllegalStateException, IOException {
+			saleService.edit(saleNo, request, detailImages);
 	}
 	
 	//썸네일만 변경하는 매핑
@@ -152,4 +154,16 @@ public class SaleRestController {
 	) {
 		saleService.deleteDetailImage(saleNo, attachNo);
 	}
+	
+	//삭제이긴 하지만 데이터를 많이 보내야 하기 때문에 Post
+	@ApiResponse(responseCode ="200", description = "상세 이미지 다수 삭제 성공")
+	@PostMapping("/deleteDetailImages/{saleNo}")
+	public void deleteDetailImages(
+				@PathVariable int saleNo,
+				@RequestBody List<Integer> detailNumbers
+			) {
+		saleService.deleteDetailImages(saleNo, detailNumbers);
+	}
+	
+	
 }
