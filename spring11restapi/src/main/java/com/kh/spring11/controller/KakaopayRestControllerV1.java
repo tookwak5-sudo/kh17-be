@@ -1,25 +1,39 @@
 package com.kh.spring11.controller;
 
+import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.configuration.KakaopayProperties;
+import com.kh.spring11.service.FlashService;
 import com.kh.spring11.service.KakaopayService;
+import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
+import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayBuyRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayBuyResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayReadyRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayReadyResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayReadyResultVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @Tag(name= "무식한 결제 API")
 @AuthApiResponse
+
+@Slf4j
 @RestController
 @RequestMapping("/api/kakaopay/v1")
 public class KakaopayRestControllerV1 {
@@ -29,25 +43,64 @@ public class KakaopayRestControllerV1 {
 	@Autowired
 	private KakaopayProperties kakaopayProperties;
 	
+	@Autowired
+	private FlashService flashService;
+	
 	@ApiResponse(responseCode = "200", description = "무식한 결제 성공")
 	@PostMapping(value ="/buy", produces = "application/json")
-	public KakaopayBuyResponseVO buy(KakaopayBuyRequestVO request) {
+	public KakaopayBuyResponseVO buy(
+		@Valid @RequestBody	KakaopayBuyRequestVO request) {
 //		보낼 데이터(Body) 준비(필수요소만)
+		String partnerOrderId = UUID.randomUUID().toString();
 		KakaopayReadyRequestVO payRequest = KakaopayReadyRequestVO.builder()
 					.cid(kakaopayProperties.getCid())
-					.partnerOrderId(UUID.randomUUID().toString())
+					.partnerOrderId(partnerOrderId)
 					.partnerUserId("testuser1")
 					.itemName(request.getName())
 					.totalAmount(request.getPrice())
-					.approvalUrl("http://localhost:8080/success")
-					.cancelUrl("http://localhost:8080/cancel")
-					.failUrl("http://localhost:8080/fail")
 				.build();
 		
 		KakaopayReadyResponseVO payResponse = kakaopayService.ready(payRequest);
+		
+		//결제 승인 요청 매핑에서 필요로하는 데이터를 FlashService를 이용해서 저장한다
+		flashService.addKakaopayReadyFlashData(
+				KakaopayReadyResultVO.builder()
+					.partnerOrderId(partnerOrderId)
+					.partnerUserId(payRequest.getPartnerUserId())
+					.tid(payResponse.getTid())
+				.build()
+		);
 		
 		return KakaopayBuyResponseVO.builder()
 					.url(payResponse.getNextRedirectPcUrl())
 				.build();
 	}
+	
+	//결제의 결과에 따라 카카오페이가 불러주는 매핑
+	@GetMapping("/buy/success/{partnerOrderId}")
+	public ResponseEntity<?> success(
+			@RequestParam(value = "pg_token") String pgToken,
+			@PathVariable String partnerOrderId
+			) {
+		//(Q) 결제 승인요청을 이 곳에서 해야 하는데 필요한 정보 5개 중 2개(pg_token, partnerOrderId) 보유
+		// 나머지 정보는 FlashService에서 찾아보기!
+		KakaopayReadyResultVO result = flashService.getKakaopayReadyFlashData(partnerOrderId);
+		
+		//모인 데이터들로 승인 요청을 진행
+		KakaopayApproveResponseVO payResponse = kakaopayService.approve(
+					KakaopayApproveRequestVO.builder()
+					.cid(kakaopayProperties.getCid())
+					.tid(result.getTid())
+					.partnerOrderId(result.getPartnerOrderId())
+					.partnerUserId(result.getPartnerUserId())
+					.pgToken(pgToken)
+					.build()
+				);
+		return ResponseEntity.status(302)
+					.location(URI.create("http://localhost:5173/pay/v1/buy/success"))
+					.build();
+	}
+//	@GetMapping("buy/cancel/{partnerOrderId}")
+//	@GetMapping("buy/fail/{partnerOrderId}")
+	
 }
