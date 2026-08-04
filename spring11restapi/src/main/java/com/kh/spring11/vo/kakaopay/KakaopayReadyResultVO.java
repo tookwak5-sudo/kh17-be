@@ -11,5 +11,6 @@ public class KakaopayReadyResultVO {
 	private String tid;
 	private String partnerOrderId;
 	private String partnerUserId;
+	private String clientPage;
 }
 

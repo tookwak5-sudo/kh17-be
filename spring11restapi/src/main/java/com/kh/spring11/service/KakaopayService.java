@@ -1,13 +1,10 @@
 package com.kh.spring11.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.kh.spring11.configuration.KakaopayProperties;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
@@ -34,6 +31,15 @@ public class KakaopayService {
 		String url = "/online/v1/payment/ready";
 		
 //		(+추가) approvalUrl, cancelUrl, failUrl을 현재 페이지 주소를 알아내서 계산
+		log.debug("context path = {}", ServletUriComponentsBuilder.fromCurrentContextPath());
+		log.debug("current request = {}", ServletUriComponentsBuilder.fromCurrentRequest()); //?안 붙음 
+		log.debug("current requestURI = {}", ServletUriComponentsBuilder.fromCurrentRequestUri()); //쿼리스트림 즉, ?가 붙음 
+		log.debug("current Servlet mapping = {}", ServletUriComponentsBuilder.fromCurrentServletMapping());
+		
+		String baseUrl = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+		request.setApprovalUrl(baseUrl+"/success/"+request.getPartnerOrderId());
+		request.setCancelUrl(baseUrl+"/cancel/"+request.getPartnerOrderId());
+		request.setFailUrl(baseUrl+"/fail/"+request.getPartnerOrderId());
 		
 //		요청 발송 및 응답 수신
 		KakaopayReadyResponseVO response = webClient.post() //POST요청
