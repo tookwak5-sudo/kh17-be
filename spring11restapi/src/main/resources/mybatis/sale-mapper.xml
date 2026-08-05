@@ -83,4 +83,22 @@
  				sale_stock = #{saleStock}
  		where 	sale_no = #{saleNo}
  	</update>
+ 	
+ 	<!-- 지정한 정보들에 대한 상품 정보 + thumbnail -->
+ 	<select id="findOrders" resultType="SaleListItemVO">
+ 		select  s.sale_no,
+		    s.sale_name,
+		    s.sale_category,
+		    s.sale_original_price,
+		    s.sale_discount_price,
+	    	t.attach_no 
+		 from sale S
+			left outer join sale_thumbnail T  on s.sale_no = T.sale_no 
+		where s.sale_no in (
+			<foreach item="saleNo" collection="list" separator=",">
+				#{saleNo}			
+			</foreach>
+		)
+		order by s.sale_no asc
+ 	</select>
  </mapper>

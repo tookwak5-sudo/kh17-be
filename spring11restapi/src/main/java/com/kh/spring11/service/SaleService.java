@@ -11,6 +11,7 @@ import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
 import com.kh.spring11.vo.sale.SaleEditRequestVO;
+import com.kh.spring11.vo.sale.SaleListItemVO;
 
 import jakarta.validation.Valid;
 
@@ -29,5 +30,6 @@ public interface SaleService {
 	ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws Exception, IOException;
 	void deleteThumbnail(int saleNo);
 	void deleteDetailImage(int saleNo, int attachNo);
-	void deleteDetailImages(int saleNo, List<Integer> detailNumbers); 
+	void deleteDetailImages(int saleNo, List<Integer> detailNumbers);
+	List<SaleListItemVO> findOrders(List<Integer> saleNumbers); 
 }
