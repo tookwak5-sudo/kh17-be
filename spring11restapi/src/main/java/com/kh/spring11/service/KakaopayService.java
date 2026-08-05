@@ -36,6 +36,9 @@ public class KakaopayService {
 		log.debug("current requestURI = {}", ServletUriComponentsBuilder.fromCurrentRequestUri()); //쿼리스트림 즉, ?가 붙음 
 		log.debug("current Servlet mapping = {}", ServletUriComponentsBuilder.fromCurrentServletMapping());
 		
+		//CID 매번 설정하지말고 서비스에서 자동으로 지정(설정값 활용)
+		request.setCid(kakaopayProperties.getCid());
+		
 		String baseUrl = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
 		request.setApprovalUrl(baseUrl+"/success/"+request.getPartnerOrderId());
 		request.setCancelUrl(baseUrl+"/cancel/"+request.getPartnerOrderId());
@@ -55,6 +58,9 @@ public class KakaopayService {
 	//결제승인
 	public KakaopayApproveResponseVO approve(KakaopayApproveRequestVO request) {
 		String url = "/online/v1/payment/approve";
+		
+		//CID 매번 설정하지말고 서비스에서 자동으로 지정(설정값 활용)
+		request.setCid(kakaopayProperties.getCid());
 		
 		KakaopayApproveResponseVO response = webClient.post() //POST요청
 				.uri(url)//상세주소
