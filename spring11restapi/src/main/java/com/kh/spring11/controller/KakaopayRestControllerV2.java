@@ -3,7 +3,6 @@ package com.kh.spring11.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.configuration.KakaopayProperties;
+import com.kh.spring11.dao.PurchaseDao;
+import com.kh.spring11.dao.SaleDao;
+import com.kh.spring11.dto.PurchaseDetailDto;
+import com.kh.spring11.dto.PurchaseDto;
+import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.service.FlashService;
 import com.kh.spring11.service.KakaopayService;
 import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayBuyRequestVO2;
@@ -58,6 +63,12 @@ public class KakaopayRestControllerV2 {
 	@Autowired
 	private FlashService flashService;
 	
+	@Autowired
+	private PurchaseDao purchaseDao;
+	
+	@Autowired
+	private SaleDao saleDao;
+	
 	@ApiResponse(responseCode = "200", description = "구매 요청 성공")
 	@PostMapping(value ="/buy", produces = "application/json")
 	public KakaopayBuyResponseVO2 buy(
@@ -65,6 +76,14 @@ public class KakaopayRestControllerV2 {
 		@RequestHeader("X-Client-Page") String clientPage,
 		@CurrentUser TokenParseResponseVO parseVO //현재 사용자의 정보
 			) {
+		
+		//clientPage(현재 구매자가 보고있는 페이지)추가처리
+		//- ?가 있으면 돌아가는 경로 산정이 어렵다
+		//- 혹시라도 clientPage에 ?가 있다면 해당 키워드 뒷부분을 제거한다
+		int position = clientPage.indexOf("?");
+		if(position >= 0) { //존재한다면
+			clientPage = clientPage.substring(0, position); //앞부분부터 포지션까지 남긴다
+		}
 		
 		//상품명(itemName)과 상품금액(totalAmount)을 계산해야한다
 		// - 상품명 : 첫 상품명 + 외 ?건 형태로 작성 (단, 1개만 구매하면 뒷부분은 추가하지 않는다)
@@ -105,7 +124,9 @@ public class KakaopayRestControllerV2 {
 		);
 		
 		//결제 준비요청 정보 생성
-		String partnerOrderId = UUID.randomUUID().toString();
+		//String partnerOrderId = UUID.randomUUID().toString();
+		//지금부터는 partnerOrderId에 시퀀스가 들어감
+		String partnerOrderId = String.valueOf(purchaseDao.purchaseSequence());
 		KakaopayReadyRequestVO payRequest = KakaopayReadyRequestVO.builder()
 					.partnerOrderId(partnerOrderId)
 					.partnerUserId(parseVO.getAccountId())
@@ -153,7 +174,41 @@ public class KakaopayRestControllerV2 {
 					.pgToken(pgToken)
 				.build()
 				);
-	
+		
+		//실 결제가 완료된 후 DB에 결제한 상품의 정보를 저장
+		//[1] 대표정보 등록 (번호는 준비단계에서 만들어서 partnerOrderId에 문자열 형태로 넣어둠)
+		int purchaseNo = Integer.parseInt(payResponse.getPartnerOrderId());
+		purchaseDao.purchaseInsert(
+			PurchaseDto.builder()
+				.purchaseNo(purchaseNo)
+				.purchaseName(payResponse.getItemName())
+				.purchaseTotal(payResponse.getAmount().getTotal()) //구매금액
+				.purchaseRemain(payResponse.getAmount().getTotal()) //환불가능금액(=구매금액과 동일)
+				.purchaseOwner(payResponse.getPartnerUserId())//구매자
+				.purchaseTid(payResponse.getTid())//거래번호
+			.build()
+		);
+		
+		
+		//[2] 상세정보 등록
+		List<BuyVO> orders = result.getOrders();
+		for(BuyVO order : orders) {
+			int purchaseDetailNo = purchaseDao.purchaseDetailSequence();
+			SaleDto saleDto = saleDao.selectOne(order.getSaleNo());//상품정보 조회
+			
+			purchaseDao.purchaseDetailInsert(
+				PurchaseDetailDto.builder()
+					.purchaseDetailNo(purchaseDetailNo)
+					.purchaseDetailOrigin(purchaseNo)//대표번호
+					.purchaseDetailItem(order.getSaleNo())//상품번호
+					.purchaseDetailName(saleDto.getSaleName()) //상품명 스냅샷
+					.purchaseDetailPrice(saleDto.getSaleDiscountPrice()) //상품가격 스냅샷
+					.purchaseDetailQty(order.getQuantity()) //수량
+				.build()
+			);
+		}
+		
+		//React로 리다이렉트
 		return ResponseEntity.status(302)
 				.location(URI.create(result.getClientPage()+"/success"))
 				.build();

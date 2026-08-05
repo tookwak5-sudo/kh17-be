@@ -110,10 +110,12 @@ public class SecurityConfiguration {
 					//account api - 조건부 혀용(내가 만든 요소들)
 					.requestMatchers(
 						"/api/account/me", //내 정보
-						"/api/account/password" // 비밀번호 변경
+						"/api/account/password", // 비밀번호 변경
+						"/api/kakaopay/v2/buy"
 					)
 					//.authenticated() //인증 필요
 					.hasAnyAuthority("브론즈", "실버", "골드", "플래티넘", "다이아")
+					
 					//관리자 기능 - Jwt에 authorities 클레임에 "마스터"가 포함되어 있어야함
 					.requestMatchers(
 						"/api/admin/**",
