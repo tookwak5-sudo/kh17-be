@@ -28,12 +28,12 @@
 	</select>
 	
 	<insert id="purchaseDetailInsert">
-		insert into purchaseDetail(
+		insert into purchase_detail(
 			purchase_detail_no, purchase_detail_origin,
 			purchase_detail_item, purchase_detail_name,
 			purchase_detail_price, purchase_detail_qty
 		) values(
-			#{purchaseDetailNo}, #{purchaseDetailOrigion},
+			#{purchaseDetailNo}, #{purchaseDetailOrigin},
 			#{purchaseDetailItem}, #{purchaseDetailName},
 			#{purchaseDetailPrice}, #{purchaseDetailQty}
 		)
