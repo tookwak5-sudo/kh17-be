@@ -43,4 +43,11 @@
 	<select id="purchaseFind" resultType="PurchaseDto">
 		select * from purchase where purchase_no = #{purchaseNo}
 	</select>
+	
+	<!-- 존재하는 결제번호에 대해 해당하는 상품 정보들 출력 -->
+	<select id="purchaseDetailFind" resultType="PurchaseDetailDto">
+		select * from purchase_detail 
+		where purchase_detail_origin = #{purchaseDetailOrigin}
+		order by purchase_detail_no asc
+	</select>
 </mapper>

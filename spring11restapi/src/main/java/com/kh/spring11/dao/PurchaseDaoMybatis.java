@@ -1,5 +1,7 @@
 package com.kh.spring11.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,6 +37,11 @@ public class PurchaseDaoMybatis implements PurchaseDao {
 	@Override
 	public PurchaseDto selectOne(int purchaseNo) {
 		return sqlSession.selectOne("mapper.purchase.purchaseFind", purchaseNo);
+	}
+
+	@Override
+	public List<PurchaseDetailDto> selectDetails(int purchaseDetailOrigin) {
+		return sqlSession.selectList("mapper.purchase.purchaseDetailFind", purchaseDetailOrigin);
 	}
 
 }

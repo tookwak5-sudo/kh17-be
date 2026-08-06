@@ -79,4 +79,9 @@ public class SaleDaoMybatis implements SaleDao {
 		return sqlSession.selectList("mapper.sale.findOrders", saleNumbers);
 	}
 
+	@Override
+	public SaleListItemVO findOrder(int saleNo) {
+		return sqlSession.selectOne("mapper.sale.findOrder", saleNo);
+	}
+
 }

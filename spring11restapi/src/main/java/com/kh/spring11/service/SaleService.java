@@ -32,4 +32,5 @@ public interface SaleService {
 	void deleteDetailImage(int saleNo, int attachNo);
 	void deleteDetailImages(int saleNo, List<Integer> detailNumbers);
 	List<SaleListItemVO> findOrders(List<Integer> saleNumbers); 
+	SaleListItemVO findOrder(int saleNo);
 }
