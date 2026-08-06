@@ -32,4 +32,9 @@ public class PurchaseDaoMybatis implements PurchaseDao {
 		sqlSession.insert("mapper.purchase.purchaseDetailInsert", purchaseDetailDto);
 	}
 
+	@Override
+	public PurchaseDto selectOne(int purchaseNo) {
+		return sqlSession.selectOne("mapper.purchase.purchaseFind", purchaseNo);
+	}
+
 }

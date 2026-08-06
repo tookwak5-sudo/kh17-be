@@ -38,4 +38,9 @@
 			#{purchaseDetailPrice}, #{purchaseDetailQty}
 		)
 	</insert>
+	
+	<!-- 한 개 조회  -->
+	<select id="purchaseFind" resultType="PurchaseDto">
+		select * from purchase where purchase_no = #{purchaseNo}
+	</select>
 </mapper>

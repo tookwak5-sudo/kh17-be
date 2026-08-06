@@ -8,4 +8,5 @@ public interface PurchaseDao {
 	void purchaseInsert(PurchaseDto purchaseDto);
 	int purchaseDetailSequence();
 	void purchaseDetailInsert(PurchaseDetailDto purchaseDetailDto);
+	PurchaseDto selectOne(int purchaseNo);
 }
