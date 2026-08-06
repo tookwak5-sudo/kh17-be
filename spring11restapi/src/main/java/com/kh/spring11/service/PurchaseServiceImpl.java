@@ -6,13 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.PurchaseDetailDto;
 import com.kh.spring11.dto.PurchaseDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.GetOutException;
+import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelRequestVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayReadyResultVO2;
 
 @Service
@@ -22,6 +28,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 	private PurchaseDao purchaseDao;
 	@Autowired
 	private SaleDao saleDao;
+	@Autowired
+	private KakaopayService kakaopayService;
 	
 	@Transactional //이렇게 N+1구조에서는 transactional을 사용하기
 	@Override
@@ -57,6 +65,79 @@ public class PurchaseServiceImpl implements PurchaseService {
 				.build()
 			);
 		}
+	}
+	
+	@Transactional
+	@Override
+	public KakaopayCancelResponseVO cancelAll(int purchaseNo 
+				,TokenParseResponseVO parseVO) {
+		//구매내역 조회 (Tid를 얻기 위해)
+		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseNo);
+		
+		//취소 불가능한 상황 제거
+		if(purchaseDto == null) 
+			throw new TargetNotfoundException();
+		if(!purchaseDto.getPurchaseOwner().equals(parseVO.getAccountId()))
+			throw new GetOutException();
+		if(purchaseDto.getPurchaseStatus().equals("전체취소"))
+			throw new GetOutException();
+		if(purchaseDto.getPurchaseStatus().equals("차단"))
+			throw new GetOutException();
+		if(purchaseDto.getPurchaseRemain() == 0)
+			throw new GetOutException();
+		
+		//DB 처리
+		purchaseDao.purchaseCancel(purchaseNo);
+		
+		//취소 요청
+		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
+				KakaopayCancelRequestVO.builder()
+					.tid(purchaseDto.getPurchaseTid())
+					.cancelAmount(purchaseDto.getPurchaseRemain())
+				.build()
+		);
+		
+		return payResponse;
+	}
+	
+	@Transactional
+	@Override
+	public KakaopayCancelResponseVO cancelUnit(
+				int purchaseDetailNo) {
+		//구매내역 조회 (Tid를 얻기 위해)
+		PurchaseDetailDto purchaseDetailDto = purchaseDao.selectDetailOne(purchaseDetailNo);
+		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseDetailDto.getPurchaseDetailOrigin());
+		//취소 불가능한 상황 제거
+		if(purchaseDetailDto == null) 
+			throw new TargetNotfoundException();
+		
+		// 전체 결제 상태
+		if (purchaseDto.getPurchaseStatus().equals("전체취소"))
+		    throw new GetOutException();
+
+		if (purchaseDto.getPurchaseStatus().equals("차단"))
+		    throw new GetOutException();
+
+		if(!purchaseDetailDto.getPurchaseDetailStatus().equals("승인"))
+			throw new GetOutException();
+		if(purchaseDetailDto.getPurchaseDetailPrice() == 0)
+			throw new GetOutException();
+		if(purchaseDetailDto.getPurchaseDetailQty() == 0)
+			throw new GetOutException();
+		
+		//DB 처리
+		purchaseDao.purchaseDetailCancel(purchaseDetailNo);
+		//취소 요청
+		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
+				KakaopayCancelRequestVO.builder()
+					.tid(purchaseDto.getPurchaseTid())
+					.cancelAmount(
+						purchaseDetailDto.getPurchaseDetailPrice()
+						* purchaseDetailDto.getPurchaseDetailQty())
+				.build()
+		);
+		
+		return payResponse;
 	}
 
 }

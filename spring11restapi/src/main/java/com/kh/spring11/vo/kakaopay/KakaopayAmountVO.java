@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class KakaopayAmountVO {
 	@JsonAlias("total")
 	private Integer total;
-	@JsonAlias("taxFree")
+	@JsonAlias("tax_free")
 	private Integer taxFree;
 	@JsonAlias("vat")
 	private Integer vat;
@@ -24,6 +24,6 @@ public class KakaopayAmountVO {
 	private Integer point;
 	@JsonAlias("discount")
 	private Integer discount;
-	@JsonAlias("greanDeposit")
+	@JsonAlias("green_deposit")
 	private Integer greenDeposit;
 }

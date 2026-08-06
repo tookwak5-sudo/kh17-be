@@ -50,4 +50,25 @@
 		where purchase_detail_origin = #{purchaseDetailOrigin}
 		order by purchase_detail_no asc
 	</select>
+	
+	<!-- 전체 취소  -->
+	<update id="purchaseCancel">
+		update purchase
+		set purchase_status = '전체취소',
+			purchase_remain = 0
+		where purchase_no = #{purchaseNo}
+	</update>
+	
+	<!-- 부분 취소  -->
+	<update id="purchaseDetailCancel">
+		update purchase_detail
+		set 
+		purchase_detail_status = '취소'
+		where purchase_detail_no = #{purchaseDetailNo}
+	</update>
+	
+	<!-- purchaseDetail한개 조회 -->
+	<select id="purchaseDetailFindOne" resultType="PurchaseDetailDto">
+		select * from purchase_detail where purchase_detail_no = #{purchaseDetailNo}
+	</select>
 </mapper>

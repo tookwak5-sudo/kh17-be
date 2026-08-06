@@ -3,6 +3,7 @@ package com.kh.spring11.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +17,10 @@ import com.kh.spring11.dto.PurchaseDto;
 import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.service.KakaopayService;
+import com.kh.spring11.service.PurchaseService;
 import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderResponseVO;
 import com.kh.spring11.vo.purchase.PurchaseHeavyInfoResponseVO;
@@ -39,6 +42,9 @@ public class PurchaseRestController {
 	private SaleService saleService;
 	@Autowired
 	private KakaopayService kakaopayService;
+	
+	@Autowired
+	private PurchaseService purchaseService;
 	
 	//소유자 확인이 필요
 	@ApiResponse(responseCode = "200", description="결제 정보 조회 성공")
@@ -97,4 +103,21 @@ public class PurchaseRestController {
 					.payResponse(payResponse)
 				.build();
 	}
+	//구매건 전체취소
+	@ApiResponse(responseCode= "200", description="구매건 전체 취소 성공")
+	@DeleteMapping(value = "/cancelAll/{purchaseNo}", produces="application/json")
+	public void cancelAll(@PathVariable int purchaseNo,
+			@CurrentUser TokenParseResponseVO parseVO) {
+		KakaopayCancelResponseVO payResponse = purchaseService.cancelAll(purchaseNo, parseVO);
+		//추가 작업이 있다면 진행
+	}
+	
+	//구매 상세건 취소 (부분취소)
+	@ApiResponse(responseCode= "200", description="구매건 상세건 취소 성공")
+	@DeleteMapping(value = "/cancelUnit/{purchaseDetailNo}", produces="application/json")
+	public void cancelUnit(@PathVariable int purchaseDetailNo){
+		KakaopayCancelResponseVO payResponse = purchaseService.cancelUnit(purchaseDetailNo);
+		//추가 작업이 있다면 진행
+	}
+	
 }

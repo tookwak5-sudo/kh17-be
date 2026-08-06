@@ -44,4 +44,19 @@ public class PurchaseDaoMybatis implements PurchaseDao {
 		return sqlSession.selectList("mapper.purchase.purchaseDetailFind", purchaseDetailOrigin);
 	}
 
+	@Override
+	public boolean purchaseCancel(int purchaseNo) {
+		return sqlSession.update("mapper.purchase.purchaseCancel", purchaseNo) > 0;
+	}
+
+	@Override
+	public boolean purchaseDetailCancel(int purchaseDetailNo) {
+		return sqlSession.update("mapper.purchase.purchaseDetailCancel", purchaseDetailNo) > 0;
+	}
+
+	@Override
+	public PurchaseDetailDto selectDetailOne(int purchaseDetailNo) {
+		return sqlSession.selectOne("mapper.purchase.purchaseDetailFindOne", purchaseDetailNo);
+	}
+
 }
