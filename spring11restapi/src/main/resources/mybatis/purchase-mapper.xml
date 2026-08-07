@@ -59,7 +59,7 @@
 		where purchase_no = #{purchaseNo}
 	</update>
 	
-	<!-- 부분 취소  -->
+	<!-- 전체 취소(상세부분)  -->
 	<update id="purchaseDetailCancel">
 		update purchase_detail
 		set 
@@ -67,8 +67,24 @@
 		where purchase_detail_origin = #{purchaseOriginNo}
 	</update>
 	
-	<!-- purchaseDetail한개 조회 -->
-	<select id="purchaseDetailFindOne" resultType="PurchaseDetailDto">
+	<!-- 상세주문번호로 상세 주문내역 1개를 조회하는 구문 -->
+	<select id="purchaseDetailOne" resultType="PurchaseDetailDto">
 		select * from purchase_detail where purchase_detail_no = #{purchaseDetailNo}
 	</select>
+	
+	<!-- 세부항목취소에 따른 주문내역 변경 구문 -->
+	<update id="purchaseCancel">
+		update purchase
+		set		purchase_remain = purchase_remain - #{amount},
+				purhcase_status = case
+					when purchase_remain - #{amount} > 0 then '부분취소'
+					else '전체취소'
+				end
+		where 	purchase_no = #{purchaseNo}
+	</update>
+	<update id="purchaseDetailCancelUnit">
+		update purchase_detail
+		set		purchase_detail_status = '취소'
+		where 	purchase_detail_no = #{purchaseDetailNo}
+	</update>
 </mapper>

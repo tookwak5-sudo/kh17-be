@@ -115,8 +115,10 @@ public class PurchaseRestController {
 	//구매 상세건 취소 (부분취소)
 	@ApiResponse(responseCode= "200", description="구매건 상세건 취소 성공")
 	@DeleteMapping(value = "/cancelUnit/{purchaseDetailNo}", produces="application/json")
-	public void cancelUnit(@PathVariable int purchaseDetailNo){
-		KakaopayCancelResponseVO payResponse = purchaseService.cancelUnit(purchaseDetailNo);
+	public void cancelUnit(@PathVariable int purchaseDetailNo,
+						@CurrentUser TokenParseResponseVO parseVO){
+		KakaopayCancelResponseVO payResponse = 
+					purchaseService.cancelUnit(purchaseDetailNo, parseVO);
 		//추가 작업이 있다면 진행
 	}
 	

@@ -1,6 +1,8 @@
 package com.kh.spring11.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +60,21 @@ public class PurchaseDaoMybatis implements PurchaseDao {
 	}
 
 	@Override
-	public PurchaseDetailDto selectDetailOne(int purchaseDetailOrigin) {
-		return sqlSession.selectOne("mapper.purchase.purchaseDetailFindOne", purchaseDetailOrigin);
+	public PurchaseDetailDto selectDetailOne(int purchaseDetailNo) {
+		return sqlSession.selectOne("mapper.purchase.purchaseDetailOne", purchaseDetailNo);
+	}
+
+	@Override
+	public boolean purchaseCancel(int purchaseNo, int amount) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("purchaseNo", purchaseNo);
+		params.put("amout", amount);
+		return sqlSession.update("mapper.purchase.purchaseCancel", params) > 0;
+	}
+
+	@Override
+	public boolean purchaseDetailCancelUnit(int purchaseDetailNo) {
+		return sqlSession.update("mapper.purchase.purchaseDetailCancelUnit", purchaseDetailNo) > 0;
 	}
 
 }

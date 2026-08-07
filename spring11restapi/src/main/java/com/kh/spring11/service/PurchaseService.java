@@ -12,5 +12,5 @@ public interface PurchaseService {
 	);
 
 	KakaopayCancelResponseVO cancelAll(int purchaseNo, TokenParseResponseVO parseVO);
-	KakaopayCancelResponseVO cancelUnit(int purchaseDetailNo);
+	KakaopayCancelResponseVO cancelUnit(int purchaseDetailNo, TokenParseResponseVO parseVO);
 }

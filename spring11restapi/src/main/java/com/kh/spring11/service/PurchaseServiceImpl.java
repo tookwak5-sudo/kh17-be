@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.PurchaseDetailDto;
@@ -103,40 +102,55 @@ public class PurchaseServiceImpl implements PurchaseService {
 		return payResponse;
 	}
 	
+	
+	//구매 건 중 하나의 상세 상품의 취소
+	//- 일부 개수만 취소하는건 불가능하게 설정
 	@Transactional
 	@Override
 	public KakaopayCancelResponseVO cancelUnit(
-				int purchaseDetailNo) {
-		//구매내역 조회 (Tid를 얻기 위해)
+				int purchaseDetailNo, TokenParseResponseVO parseVO) {
+		//[1] 구매 상세 내역 조회 (Tid를 얻기 위해)
 		PurchaseDetailDto purchaseDetailDto = purchaseDao.selectDetailOne(purchaseDetailNo);
-		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseDetailDto.getPurchaseDetailOrigin());
-		//취소 불가능한 상황 제거
 		if(purchaseDetailDto == null) 
 			throw new TargetNotfoundException();
+		//[2] 구매 대표 정보를 조회
+		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseDetailDto.getPurchaseDetailOrigin());
+		if(purchaseDto == null) 
+			throw new TargetNotfoundException();
 		
-		// 전체 결제 상태
-		if (purchaseDto.getPurchaseStatus().equals("전체취소"))
-		    throw new GetOutException();
-
-		if (purchaseDto.getPurchaseStatus().equals("차단"))
-		    throw new GetOutException();
-
-		if(!purchaseDetailDto.getPurchaseDetailStatus().equals("승인"))
+		//[3] 취소가 가능한 구매건인지 검증
+		if(purchaseDetailDto.getPurchaseDetailStatus().equals("취소"))
 			throw new GetOutException();
+		if(purchaseDto.getPurchaseStatus().equals("전체취소"))
+		    throw new GetOutException();
+		if(purchaseDto.getPurchaseStatus().equals("차단"))
+			throw new GetOutException();
+		if(purchaseDto.getPurchaseRemain() == 0)
+			throw new GetOutException();
+		if(!purchaseDto.getPurchaseOwner().equals(parseVO.getAccountId()))
+			throw new GetOutException();
+
 		if(purchaseDetailDto.getPurchaseDetailPrice() == 0)
 			throw new GetOutException();
 		if(purchaseDetailDto.getPurchaseDetailQty() == 0)
 			throw new GetOutException();
 		
+		//취소 요청 (현재 상품 금액만큼만 = 상품거래액 x 수량)
+		int amount = purchaseDetailDto.getPurchaseDetailTotal(); 
+		if(purchaseDto.getPurchaseRemain() < amount)//취소가능액이 상품금액보다 작다면
+			throw new GetOutException();
 		
-		purchaseDao.purchaseDetailCancel(purchaseDetailNo);
+		//DB처리
+		//[1] 구매 대표 정보의 취소 가능금액 차감 + 상태 재계산
+		purchaseDao.purchaseCancel(purchaseDto.getPurchaseNo(), amount);
+		//[2] 구매 상세 정보의 상태를 취소로 변경
+		purchaseDao.purchaseDetailCancelUnit(purchaseDetailNo);
+		
 		//취소 요청
 		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
 				KakaopayCancelRequestVO.builder()
 					.tid(purchaseDto.getPurchaseTid())
-					.cancelAmount(
-						purchaseDetailDto.getPurchaseDetailPrice()
-						* purchaseDetailDto.getPurchaseDetailQty())
+					.cancelAmount(amount)
 				.build()
 		);
 		
