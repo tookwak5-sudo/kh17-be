@@ -56,5 +56,17 @@
 		order by c.cart_item asc
 	</select>
 	
+	<!-- 지정한 번호들을 삭제 -->
+	<delete id="deleteItems">
+		delete cart 
+		where 	cart_owner = #{cartOwner}
+				and
+				cart_item in (
+					<foreach item="number" collection="list" separator=",">
+						#{number}
+					</foreach>
+				) 
+	</delete>
+	
 	
 </mapper>

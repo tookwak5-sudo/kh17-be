@@ -12,4 +12,7 @@ public interface CartDao {
 	CartDto selectOne(CartDto cartDto);
 	List<CartItemVO> selectList(String cartOwner);
 //	boolean delete(CartDto cartDto);
+	
+	
+	boolean delete(String partnerUserId, List<Integer> numbers);
 }

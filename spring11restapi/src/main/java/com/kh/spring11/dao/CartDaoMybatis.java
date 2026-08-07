@@ -1,6 +1,8 @@
 package com.kh.spring11.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,14 @@ public class CartDaoMybatis implements CartDao {
 	@Override
 	public boolean update(CartDto cartDto) {
 		return sqlSession.update("mapper.cart.change", cartDto) > 0;
+	}
+
+	@Override
+	public boolean delete(String cartOwner, List<Integer> numbers) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("cartOWner", cartOwner);
+		params.put("numbers", numbers);
+		return sqlSession.delete("mapper.cart.deleteItems", params) > 0;
 	}
 
 }
