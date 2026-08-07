@@ -18,7 +18,7 @@ public class CartDaoMybatis implements CartDao {
 	public void insertOrUpdate(CartDto cartDto) {
 		CartDto findDto = sqlSession.selectOne("mapper.cart.find", cartDto);
 		
-		 System.out.println("cartDto = " + cartDto);
+		// System.out.println("cartDto = " + cartDto);
 		if(findDto == null) { // 처음
 			sqlSession.insert("mapper.cart.add", cartDto);
 		}
@@ -36,6 +36,11 @@ public class CartDaoMybatis implements CartDao {
 	@Override
 	public List<CartItemVO> selectList(String cartOwner) {
 		return sqlSession.selectList("mapper.cart.list", cartOwner);
+	}
+
+	@Override
+	public boolean update(CartDto cartDto) {
+		return sqlSession.update("mapper.cart.change", cartDto) > 0;
 	}
 
 }

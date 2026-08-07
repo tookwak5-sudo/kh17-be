@@ -7,6 +7,8 @@ import com.kh.spring11.vo.purchase.CartItemVO;
 
 public interface CartDao {
 	void insertOrUpdate(CartDto cartDto);
+	boolean update(CartDto cartDto);
+	
 	CartDto selectOne(CartDto cartDto);
 	List<CartItemVO> selectList(String cartOwner);
 //	boolean delete(CartDto cartDto);

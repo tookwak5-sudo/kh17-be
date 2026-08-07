@@ -1,11 +1,10 @@
 package com.kh.spring11.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,8 @@ import com.kh.spring11.dto.CartDto;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.purchase.CartAddRequestVO;
 import com.kh.spring11.vo.purchase.CartAddResponseVO;
+import com.kh.spring11.vo.purchase.CartChangeRequestVO;
+import com.kh.spring11.vo.purchase.CartChangeResponseVO;
 import com.kh.spring11.vo.purchase.CartListResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,8 +31,14 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/cart")
 public class CartRestController {
+
+    private final Jackson2ObjectMapperBuilderCustomizer jsonMapperBuilder;
 	@Autowired
 	private CartDao cartDao;
+
+    CartRestController(Jackson2ObjectMapperBuilderCustomizer jsonMapperBuilder) {
+        this.jsonMapperBuilder = jsonMapperBuilder;
+    }
 	
 	@ApiResponse(responseCode = "200", description = "장바구니 추가 성공")
 	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,4 +75,28 @@ public class CartRestController {
 				.build();
 		
 	}
+	
+	@ApiResponse(responseCode= "200", description = "장바구니 수량 변경 성공")
+	@PatchMapping("/")
+	public CartChangeResponseVO changeCartQty(
+			@Valid @RequestBody CartChangeRequestVO request,
+			@CurrentUser TokenParseResponseVO parseVO) {
+			cartDao.update(CartDto.builder()
+						.cartOwner(parseVO.getAccountId())
+						.cartItem(request.getNo())
+						.cartQty(request.getQty())
+					.build());
+			CartDto findDto = cartDao.selectOne(
+					CartDto.builder()
+						.cartOwner(parseVO.getAccountId()) //소유자
+						.cartItem(request.getNo()) //상품번호
+					.build()
+			);
+			
+			return CartChangeResponseVO.builder()
+						.cart(findDto)
+					.build();
+	}
+	
+
 }
