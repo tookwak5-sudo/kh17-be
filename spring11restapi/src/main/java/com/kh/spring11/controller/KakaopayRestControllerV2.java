@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +63,7 @@ public class KakaopayRestControllerV2 {
 	private PurchaseService purchaseService;
 	
 	@ApiResponse(responseCode = "200", description = "구매 요청 성공")
-	@PostMapping(value ="/buy", produces = "application/json")
+	@PostMapping(value ="/buy", produces = MediaType.APPLICATION_JSON_VALUE)
 	public KakaopayBuyResponseVO2 buy(
 		@Valid @RequestBody	KakaopayBuyRequestVO2 request,
 		@RequestHeader("X-Client-Page") String clientPage,

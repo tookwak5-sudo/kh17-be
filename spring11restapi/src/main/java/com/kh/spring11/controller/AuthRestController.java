@@ -1,17 +1,15 @@
 package com.kh.spring11.controller;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,22 +22,17 @@ import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dao.AccountRefreshDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.dto.AccountRefreshDto;
-import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.error.WhoAreYouException;
 import com.kh.spring11.service.AuthService;
 import com.kh.spring11.service.EmailService;
 import com.kh.spring11.service.JwtService;
-import com.kh.spring11.vo.admin.AccountBlockRequestVO;
-import com.kh.spring11.vo.admin.AccountBlockResponseVO;
 import com.kh.spring11.vo.auth.AuthLoginRequestVO;
 import com.kh.spring11.vo.auth.AuthLoginResponseVO;
-import com.kh.spring11.vo.auth.AuthTempResponseVO;
 import com.kh.spring11.vo.jwt.TokenCreateRequestVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +64,7 @@ public class AuthRestController {
     }
 	
 	@ApiResponse(responseCode ="200", description = "가입 성공")
-	@PostMapping(value="/login" , produces = "application/json")
+	@PostMapping(value="/login" , produces = MediaType.APPLICATION_JSON_VALUE)
 //	public AuthLoginResponseVO login(// 데이터만 반환
 	public ResponseEntity<AuthLoginResponseVO> login ( //데이터 + 헤더 + 쿠키를 반환
 			@RequestHeader(

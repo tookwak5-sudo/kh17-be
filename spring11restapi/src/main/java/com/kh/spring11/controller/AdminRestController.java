@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,11 +20,11 @@ import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.service.EmailService;
 import com.kh.spring11.service.RandomService;
+import com.kh.spring11.vo.admin.AccountBlockResponseVO;
 import com.kh.spring11.vo.admin.AccountFindResponseVO;
 import com.kh.spring11.vo.admin.AccountSearchResultVO;
 import com.kh.spring11.vo.admin.AdminUserRequestVO;
 import com.kh.spring11.vo.admin.AdminUserResponseVO;
-import com.kh.spring11.vo.admin.AccountBlockResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +47,7 @@ public class AdminRestController {
 	
 	//회원정보를 반환하는 매핑(주의 : 내 정보 아님)
 	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value = "/{accountId}", produces="application/json")
+	@GetMapping(value = "/{accountId}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public AccountFindResponseVO find(@PathVariable String accountId) {
 		AccountDto accountDto = accountDao.selectOne(accountId);
 		if(accountDto == null) throw new TargetNotfoundException();
@@ -59,7 +60,7 @@ public class AdminRestController {
 
 	//회원 복합 검색
 	@ApiResponse(responseCode = "200", description="검색 성공")
-	@PostMapping(value ="/search", produces = "application/json")
+	@PostMapping(value ="/search", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AdminUserResponseVO search(
 			@RequestBody AdminUserRequestVO request
 	) {
@@ -93,7 +94,7 @@ public class AdminRestController {
 //	}
 	
 	@ApiResponse(responseCode = "200", description = "차단/해제 성공")
-	@PatchMapping(value = "/block/{accountId}", produces = "application/json")
+	@PatchMapping(value = "/block/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountBlockResponseVO block(
 			@PathVariable String accountId) {
 		AccountDto accountDto = accountDao.selectOne(accountId); // 회원 조회

@@ -1,10 +1,8 @@
 package com.kh.spring11.controller;
 
-import java.time.Duration;
-import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.AuthApiResponse;
-import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
@@ -28,11 +25,6 @@ import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
 import com.kh.spring11.vo.account.ChangePasswordResponseVO;
-import com.kh.spring11.vo.admin.AccountDetailResponseVO;
-import com.kh.spring11.vo.admin.AccountFindResponseVO;
-import com.kh.spring11.vo.admin.AccountSearchResultVO;
-import com.kh.spring11.vo.admin.AdminUserRequestVO;
-import com.kh.spring11.vo.admin.AdminUserResponseVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,7 +48,7 @@ public class AccountRestController {
 //	private JwtService jwtService;
 	//회원가입
 	@ApiResponse(responseCode = "200", description ="가입 성공")
-	@PostMapping(value = "/", produces= "application/json")
+	@PostMapping(value = "/", produces= MediaType.APPLICATION_JSON_VALUE)
 	public AccountJoinResponseVO join(
 			@RequestBody AccountJoinRequestVO request) { 	
 		//AccountDto에 AccountJoinRequestVO의 데이터를 복사하고 가입처리
@@ -72,21 +64,21 @@ public class AccountRestController {
 	
 	//아이디 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
 	@ApiResponse(responseCode = "200", description = "존재하는 아이디")
-	@GetMapping(value ="/check-id/{accountId}", produces="application/json")
+	@GetMapping(value ="/check-id/{accountId}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public boolean checkAccountId(@PathVariable String accountId) {
 		return accountDao.checkAvailableId(accountId);
 	}
 		
 	//닉네임 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
 	@ApiResponse(responseCode = "200", description = "존재하는 닉네임")
-	@GetMapping(value ="/check-nickname/{accountNickname}", produces="application/json")
+	@GetMapping(value ="/check-nickname/{accountNickname}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public boolean checkAccountNickname(@PathVariable String accountNickname) {
 		return accountDao.checkAvailableNickname(accountNickname);
 	}
 	
 	//이메일 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
 	@ApiResponse(responseCode = "200", description = "존재하는 이메일")
-	@GetMapping(value ="/check-email/{accountEmail}", produces="application/json")
+	@GetMapping(value ="/check-email/{accountEmail}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public boolean checkAccountEmail(@PathVariable String accountEmail) {
 		return accountDao.checkAvailableEmail(accountEmail);
 	}
@@ -95,7 +87,7 @@ public class AccountRestController {
 	//@CookieValue로 쿠키의 값을 읽어서 해당하는 정보를 조회해서 반환
 	//stateless(무상태) 서버의 세션 대체 방안
 	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value="/me", produces="application/json")
+	@GetMapping(value="/me", produces=MediaType.APPLICATION_JSON_VALUE)
 	public AccountMeResponseVO me(
 		//[1] 기존
 		//accessToken이라는 쿠키를 읽는 명령 (+나의 해석 및 검증이 필요)
@@ -225,7 +217,7 @@ public class AccountRestController {
 	
 	//30일동안 비밀번호 변경 요청 x 처리(비밀번호 변경시간 갱신)
 	@ApiResponse(responseCode = "200", description = "갱신 처리 완료")
-	@PatchMapping(value ="/remindMeLater/{accountId}", produces = "application/json")
+	@PatchMapping(value ="/remindMeLater/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void remindMeLater(@PathVariable String accountId) {
 		accountDao.updateAccountChange(accountId);
 	}

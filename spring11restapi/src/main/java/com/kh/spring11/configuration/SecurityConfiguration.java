@@ -113,6 +113,7 @@ public class SecurityConfiguration {
 						"/api/account/password", // 비밀번호 변경
 						"/api/kakaopay/v2/buy"
 						,"/api/purchase/**"
+						,"/api/cart/**"
 					)
 					//.authenticated() //인증 필요
 					.hasAnyAuthority("브론즈", "실버", "골드", "플래티넘", "다이아")
@@ -131,8 +132,8 @@ public class SecurityConfiguration {
 					.hasAuthority("마스터")
 					
 					//나머지 모두 허용
-//					.anyRequest().permitAll()
-					.anyRequest().authenticated()
+					.anyRequest().permitAll()
+//					.anyRequest().authenticated()
 			)
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
 			//→ BearerTokenResolver : AccessToken을 꺼내서 Jwt를 뽑아내는 도구

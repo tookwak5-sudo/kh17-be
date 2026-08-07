@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,7 @@ public class KakaopayRestControllerV1 {
 	private FlashService flashService;
 	
 	@ApiResponse(responseCode = "200", description = "무식한 결제 성공")
-	@PostMapping(value ="/buy", produces = "application/json")
+	@PostMapping(value ="/buy", produces = MediaType.APPLICATION_JSON_VALUE)
 	public KakaopayBuyResponseVO buy(
 		@Valid @RequestBody	KakaopayBuyRequestVO request,
 		@RequestHeader("X-Client-Page") String clientPage

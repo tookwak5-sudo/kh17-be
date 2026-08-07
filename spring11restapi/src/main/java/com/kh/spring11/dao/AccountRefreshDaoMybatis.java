@@ -14,6 +14,7 @@ public class AccountRefreshDaoMybatis implements AccountRefreshDao {
 	@Override
 	public void insertOrUpdate(AccountRefreshDto accountRefreshDto) { //mybatis에서는 네이밍홀더를 쓰기 때문에 굳이 id를 ㅂ낼 필요없이 dto보냄 된다
 		AccountRefreshDto findDto = sqlSession.selectOne("mapper.accountRefresh.find", accountRefreshDto);
+		
 		if(findDto == null) { //없으니까 insert
 			sqlSession.insert("mapper.accountRefresh.add", accountRefreshDto);
 		}

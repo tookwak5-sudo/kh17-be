@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="mapper.cart">
+	<insert id="add">
+		insert into cart (cart_owner, cart_item, cart_qty)
+		values(#{cartOwner}, #{cartItem}, #{cartQty})
+	</insert>
+	
+	<update id="change">
+		update cart 
+		set 	cart_qty = #{cartQty}
+		where 	cart_owner = #{cartOwner} 
+				and
+				cart_item = #{cartItem}
+	</update>
+	<delete id="delete">
+		delete cart 
+		where 	cart_owner = #{cartOwner} 
+				and
+				cart_item = #{cartItem}
+	</delete>
+	<select id="find" resultType="CartDto">
+		select * from cart 
+		where 	cart_owner = #{cartOwner} 
+				and
+				cart_item = #{cartItem}
+	</select>
+	
+	
+	<!-- Mybatis에게 알려줄 양식을 수동으로 작성 -->
+	<resultMap type="CartItemVO" id="CustomCartItemVO">
+		<result column="sale_no" property="no"/>
+		<result column="sale_name" property="name"/>
+		<result column="sale_category" property="category"/>
+		<result column="sale_original_price" property="original"/>
+		<result column="sale_discount_price" property="discount"/>
+		<result column="sale_reg_time" property="time"/>
+		<result column="cart_qty" property="qty"/>
+		<result column="attach_no" property="thumbnail"/>
+	</resultMap>
+	
+	<!-- 장바구니 목록 : 수동 매핑이므로 resultType 대신 resultMap을 사용 -->
+	<select id="list" resultMap="CustomCartItemVO">
+		select 
+			s.sale_no, s.sale_name, s.sale_category,
+			s.sale_original_price, s.sale_discount_price,
+			s.sale_reg_time, c.cart_qty, st.attach_no
+		from cart c  
+			inner join sale s on c.cart_item = s.sale_no
+			left outer join sale_thumbnail st on s.sale_no = st.sale_no
+		where c.cart_owner = #{cartOwner}
+		order by c.cart_item asc
+	</select>
+	
+	
+</mapper>

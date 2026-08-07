@@ -3,7 +3,7 @@ package com.kh.spring11.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,7 +40,7 @@ public class CountryRestController {
 	
 	@ApiResponse(responseCode = "200", description = "등록 성공")
 //	@PostMapping("/")
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CountryDto insert(@RequestBody CountryDto countryDto) {
 		int countryNo = countryDao.sequence();
 		countryDto.setCountryNo(countryNo);

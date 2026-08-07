@@ -114,7 +114,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 		if(purchaseDetailDto == null) 
 			throw new TargetNotfoundException();
 		//[2] 구매 대표 정보를 조회
-		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseDetailDto.getPurchaseDetailOrigin());
+		PurchaseDto purchaseDto = purchaseDao.selectOne(
+				purchaseDetailDto.getPurchaseDetailOrigin());
 		if(purchaseDto == null) 
 			throw new TargetNotfoundException();
 		

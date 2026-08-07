@@ -51,7 +51,7 @@ public class SaleRestController {
 	@ApiResponse(responseCode = "200", description ="상품 등록 성공")
 	@PostMapping(
 			value = "/", 
-			produces = "application/json",
+			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = "multipart/form-data" //spring doc를 위하여 요구형태 명시
 	)
 	public SaleAddResponseVO add(
@@ -65,7 +65,7 @@ public class SaleRestController {
 			content = @Content(
 				encoding = @Encoding(
 					name = "sale",
-					//contentType = "application/json"
+					//contentType = MediaType.APPLICATION_JSON_VALUE
 					contentType = MediaType.APPLICATION_JSON_VALUE
 				)
 			) 
@@ -90,7 +90,7 @@ public class SaleRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description="상세 정보 조회 성공")
-	@GetMapping(value="/{saleNo}", produces="application/json")
+	@GetMapping(value="/{saleNo}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public SaleDetailResponseVO detail(@PathVariable int saleNo) {
 		
 		return saleService.findSaleDetail(saleNo);
@@ -116,7 +116,7 @@ public class SaleRestController {
 				content = @Content(
 					encoding = @Encoding(
 						name = "sale",
-						//contentType = "application/json"
+						//contentType = MediaType.APPLICATION_JSON_VALUE
 						contentType = MediaType.APPLICATION_JSON_VALUE
 					)
 				) 
@@ -170,7 +170,7 @@ public class SaleRestController {
 	
 	//주문용 상품 정보 조회 명령
 	@ApiResponse(responseCode = "200", description = "주문할 상품 정보 조회 성공")
-	@PostMapping(value = "/orders", produces = "application/json")
+	@PostMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 	public SaleOrderResponseVO orders(
 			@Valid @RequestBody SaleOrderRequestVO request) {
 			List<SaleListItemVO> saleList = saleService.findOrders(request.getSaleNumbers());

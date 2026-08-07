@@ -3,6 +3,7 @@ package com.kh.spring11.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,7 @@ public class PurchaseRestController {
 	
 	//소유자 확인이 필요
 	@ApiResponse(responseCode = "200", description="결제 정보 조회 성공")
-	@GetMapping(value ="/simple/{purchaseNo}", produces = "application/json")
+	@GetMapping(value ="/simple/{purchaseNo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PurchaseInfoResponseVO find(@PathVariable int purchaseNo,
 								@CurrentUser TokenParseResponseVO parseVO) {
 		//구매내역 조회
@@ -74,7 +75,7 @@ public class PurchaseRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description="결제 정보(+카카오페이) 조회성공")
-	@GetMapping(value ="/heavy/{purchaseNo}", produces = "application/json")
+	@GetMapping(value ="/heavy/{purchaseNo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PurchaseHeavyInfoResponseVO  findWithKakao(
 			@PathVariable int purchaseNo,
 			@CurrentUser TokenParseResponseVO parseVO) {
@@ -105,7 +106,7 @@ public class PurchaseRestController {
 	}
 	//구매건 전체취소
 	@ApiResponse(responseCode= "200", description="구매건 전체 취소 성공")
-	@DeleteMapping(value = "/cancelAll/{purchaseNo}", produces="application/json")
+	@DeleteMapping(value = "/cancelAll/{purchaseNo}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public void cancelAll(@PathVariable int purchaseNo,
 			@CurrentUser TokenParseResponseVO parseVO) {
 		KakaopayCancelResponseVO payResponse = purchaseService.cancelAll(purchaseNo, parseVO);
@@ -114,7 +115,7 @@ public class PurchaseRestController {
 	
 	//구매 상세건 취소 (부분취소)
 	@ApiResponse(responseCode= "200", description="구매건 상세건 취소 성공")
-	@DeleteMapping(value = "/cancelUnit/{purchaseDetailNo}", produces="application/json")
+	@DeleteMapping(value = "/cancelUnit/{purchaseDetailNo}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public void cancelUnit(@PathVariable int purchaseDetailNo,
 						@CurrentUser TokenParseResponseVO parseVO){
 		KakaopayCancelResponseVO payResponse = 

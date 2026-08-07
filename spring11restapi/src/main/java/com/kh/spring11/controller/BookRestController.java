@@ -3,7 +3,7 @@ package com.kh.spring11.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -56,7 +56,7 @@ public class BookRestController {
 					responseCode = "200",
 					description = "등록 성공",
 					content = @Content(
-					mediaType = "application/json",
+					mediaType = MediaType.APPLICATION_JSON_VALUE,
 					schema = @Schema(implementation = BookDto.class)
 					)
 				)
@@ -88,7 +88,7 @@ public class BookRestController {
 						responseCode = "200",
 						description = "전체 조회 성공",
 						content = @Content(
-							mediaType = "application/json",
+							mediaType = MediaType.APPLICATION_JSON_VALUE,
 							array = @ArraySchema(
 								schema = @Schema(implementation = BookDto.class)
 							)	
@@ -139,7 +139,7 @@ public class BookRestController {
 						responseCode = "200",
 						description = "대상 조회 성공",
 						content = @Content(
-								mediaType = "application/json",
+								mediaType = MediaType.APPLICATION_JSON_VALUE,
 								schema = @Schema(implementation = BookDto.class)
 						)
 				)
@@ -164,7 +164,7 @@ public class BookRestController {
 						responseCode = "200",
 						description = "대상 삭제 성공",
 						content = @Content(
-								mediaType = "application/json",
+								mediaType = MediaType.APPLICATION_JSON_VALUE,
 								schema = @Schema(implementation = BookDto.class)
 						)
 				)
@@ -191,7 +191,7 @@ public class BookRestController {
 						responseCode = "200",
 						description = "도서 정보 변경 성공",
 						content = @Content(
-								mediaType = "application/json",
+								mediaType = MediaType.APPLICATION_JSON_VALUE,
 								schema = @Schema(implementation = BookDto.class)
 						)
 					)
@@ -230,7 +230,7 @@ public class BookRestController {
 				responseCode = "200",
 				description = "도서 정보 변경 성공",
 				content = @Content(
-					mediaType = "application/json",
+					mediaType = MediaType.APPLICATION_JSON_VALUE,
 					schema = @Schema(implementation = BookDto.class)
 				)
 			)
