@@ -73,10 +73,10 @@
 	</select>
 	
 	<!-- 세부항목취소에 따른 주문내역 변경 구문 -->
-	<update id="purchaseCancel">
+	<update id="purchaseCancelUnit">
 		update purchase
 		set		purchase_remain = purchase_remain - #{amount},
-				purhcase_status = case
+				purchase_status = case
 					when purchase_remain - #{amount} > 0 then '부분취소'
 					else '전체취소'
 				end

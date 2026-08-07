@@ -142,10 +142,10 @@ public class PurchaseServiceImpl implements PurchaseService {
 		
 		//DB처리
 		//[1] 구매 대표 정보의 취소 가능금액 차감 + 상태 재계산
-		purchaseDao.purchaseCancel(purchaseDto.getPurchaseNo(), amount);
+		purchaseDao.purchaseCancelUnit(purchaseDto.getPurchaseNo(), amount);
 		//[2] 구매 상세 정보의 상태를 취소로 변경
 		purchaseDao.purchaseDetailCancelUnit(purchaseDetailNo);
-		
+	
 		//취소 요청
 		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
 				KakaopayCancelRequestVO.builder()

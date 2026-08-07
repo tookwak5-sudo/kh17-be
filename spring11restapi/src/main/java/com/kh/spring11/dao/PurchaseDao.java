@@ -16,6 +16,6 @@ public interface PurchaseDao {
 	boolean purchaseCancel(int purchaseNo);
 	boolean purchaseDetailCancel(int purchaseDetailNo);
 	
-	boolean purchaseCancel(int purchaseNo, int amount);
+	boolean purchaseCancelUnit(int purchaseNo, int amount);
 	boolean purchaseDetailCancelUnit(int purchaseDetailNo);
 }
