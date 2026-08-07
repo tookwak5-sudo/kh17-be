@@ -14,5 +14,5 @@ public interface PurchaseDao {
 	PurchaseDetailDto selectDetailOne(int purchaseDetailNo);
 	List<PurchaseDetailDto> selectDetails(int purchaseDetailOrigin);
 	boolean purchaseCancel(int purchaseNo);
-	boolean purchaseDetailCancel(int purchaseDetailNo);
+	boolean purchaseDetailCancel(int purchaseDetailOrigin);
 }

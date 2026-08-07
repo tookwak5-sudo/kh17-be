@@ -87,7 +87,10 @@ public class PurchaseServiceImpl implements PurchaseService {
 			throw new GetOutException();
 		
 		//DB 처리
+		//[1] 구매 대표정보의 취소금액 변경 및 상태 변경
 		purchaseDao.purchaseCancel(purchaseNo);
+		//[2] 구매 대표정보와 연결된 구매 상세정보 항목들의 상태를 취소로 변경
+		purchaseDao.purchaseDetailCancel(purchaseNo);
 		
 		//취소 요청
 		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
@@ -125,7 +128,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 		if(purchaseDetailDto.getPurchaseDetailQty() == 0)
 			throw new GetOutException();
 		
-		//DB 처리
+		
 		purchaseDao.purchaseDetailCancel(purchaseDetailNo);
 		//취소 요청
 		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
