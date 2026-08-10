@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Controller //등록은 컨트롤러지만 실제 역할은 웹소켓 서버
+//@Controller //등록은 컨트롤러지만 실제 역할은 웹소켓 서버 (주석처리 시 비활성화)
 public class WebSocketV1BasicServer {
 	
 // 아주 간단한 통신서버 ecoserver라고 함
