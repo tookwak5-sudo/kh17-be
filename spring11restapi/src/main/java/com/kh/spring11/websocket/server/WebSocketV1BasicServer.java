@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller //등록은 컨트롤러지만 실제 역할은 웹소켓 서버
-public class BasicWebSocketServer {
+public class WebSocketV1BasicServer {
 	
 // 아주 간단한 통신서버 ecoserver라고 함
 	// 1. 라이브러리 설정
