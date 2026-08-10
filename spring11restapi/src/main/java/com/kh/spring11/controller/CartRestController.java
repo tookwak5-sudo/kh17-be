@@ -3,8 +3,10 @@ package com.kh.spring11.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,6 +98,14 @@ public class CartRestController {
 			return CartChangeResponseVO.builder()
 						.cart(findDto)
 					.build();
+	}
+	
+	@ApiResponse(responseCode = "200", description = "장바구니 삭제 성공")
+	@DeleteMapping("/{cartItem}")
+	public void deleteCart(@PathVariable int cartItem,
+							@CurrentUser TokenParseResponseVO parseVO) {
+//		cartDao.delete(parseVO.getAccountId(), List.of(cartItem))
+		cartDao.delete(parseVO.getAccountId(), cartItem);
 	}
 	
 

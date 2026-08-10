@@ -115,4 +115,11 @@
 		where s.sale_no = #{saleNo}
  	</select>
  	
+ 	<!-- 상품 재고수량 변경 -->
+ 	<update id="updateQty">
+ 		update sale
+ 		set sale_stock = GREATEST(sale_stock - #{quantity}, 0)
+ 		where sale_no = #{saleNo}
+ 	</update>
+ 	
  </mapper>

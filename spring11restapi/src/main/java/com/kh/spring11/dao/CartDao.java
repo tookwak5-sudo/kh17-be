@@ -14,5 +14,6 @@ public interface CartDao {
 //	boolean delete(CartDto cartDto);
 	
 	
-	boolean delete(String partnerUserId, List<Integer> numbers);
+	boolean delete(String cartOwner, List<Integer> numbers);
+	boolean delete(String cartOwner, int cartItem);
 }

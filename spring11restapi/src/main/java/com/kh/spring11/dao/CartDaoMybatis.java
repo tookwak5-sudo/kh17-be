@@ -48,9 +48,15 @@ public class CartDaoMybatis implements CartDao {
 	@Override
 	public boolean delete(String cartOwner, List<Integer> numbers) {
 		Map<String, Object> params = new HashMap<>();
-		params.put("cartOWner", cartOwner);
+		params.put("cartOwner", cartOwner);
 		params.put("numbers", numbers);
 		return sqlSession.delete("mapper.cart.deleteItems", params) > 0;
 	}
-
+	@Override
+	public boolean delete(String cartOwner, int cartItem) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("cartOwner", cartOwner);
+		params.put("cartItem", cartItem);
+		return sqlSession.delete("mapper.cart.deleteItem", params) > 0;
+	}
 }

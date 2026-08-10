@@ -62,11 +62,18 @@
 		where 	cart_owner = #{cartOwner}
 				and
 				cart_item in (
-					<foreach item="number" collection="list" separator=",">
+					<foreach item="number" collection="numbers" separator=",">
 						#{number}
 					</foreach>
 				) 
 	</delete>
 	
+	<!-- 지정한 번호를 삭제 -->
+	<delete id="deleteItem">
+		delete cart 
+		where 	cart_owner = #{cartOwner}
+				and
+				cart_item = #{cartItem}
+	</delete>
 	
 </mapper>

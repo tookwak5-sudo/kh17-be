@@ -69,7 +69,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 		}
 		
 		//[3] 상품의 재고 차감
-//		saleDao.updateSaleQty(???)
+		for(BuyVO order : orders) { //구매한 상품목록을 확인하여
+			saleDao.updateSaleQty(order); //상품번호와 개수를 전달하고 수정으 ㄹ요청
+		}
 		
 		//[4] 장바구니의 내역 삭제 (구매한 상품만 
 		//cartDao.delete(구매자, 상품번호); // x버튼 누르면 사용
@@ -163,7 +165,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 		purchaseDao.purchaseCancelUnit(purchaseDto.getPurchaseNo(), amount);
 		//[2] 구매 상세 정보의 상태를 취소로 변경
 		purchaseDao.purchaseDetailCancelUnit(purchaseDetailNo);
-	
+		
 		//취소 요청
 		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
 				KakaopayCancelRequestVO.builder()

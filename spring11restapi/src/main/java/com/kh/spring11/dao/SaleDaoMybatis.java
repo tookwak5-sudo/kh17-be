@@ -8,8 +8,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.sale.SaleListItemVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
 
@@ -83,5 +83,9 @@ public class SaleDaoMybatis implements SaleDao {
 	public SaleListItemVO findOrder(int saleNo) {
 		return sqlSession.selectOne("mapper.sale.findOrder", saleNo);
 	}
-
+	
+	@Override
+	public boolean updateSaleQty(BuyVO order) {
+		return sqlSession.update("mapper.sale.updateQty", order) > 0;
+	}
 }

@@ -91,7 +91,12 @@ public class KakaopayRestControllerV2 {
 		List<SaleListItemVO> saleList = saleService.findOrders(saleNumbers);
 		if(saleList.isEmpty()) throw new GetOutException();
 		
-		//(+추가) 재고수량 검사
+		//(+추가) 상품 재고수량 검사
+		boolean canOrder = saleService.checkSaleStock(request.getOrders());
+		if(canOrder == false) {
+			//거절로직 (ex : 403, 거절응답반환, ...)
+			throw new GetOutException();
+		}
 		
 		//상품명 계산
 		String itemName = saleList.get(0).getSaleName(); // 첫 상품명
