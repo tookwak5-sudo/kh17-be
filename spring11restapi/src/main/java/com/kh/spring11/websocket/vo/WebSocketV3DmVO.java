@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 
 //사용자에게 보내줄 데이터
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
-public class WebSocketV3ResponseVO {
-	private String sender;
+public class WebSocketV3DmVO {
+	@Builder.Default
+	private String type = "dm";
+	private String senderId, senderLevel, senderNickname;
+	private String receiverId, receiverLevel, receiverNickname;
 	private String content;
 	private LocalDateTime time;
 }

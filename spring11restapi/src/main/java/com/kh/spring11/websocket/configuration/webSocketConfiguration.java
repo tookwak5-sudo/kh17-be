@@ -1,7 +1,13 @@
 package com.kh.spring11.websocket.configuration;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.security.messaging.context.AuthenticationPrincipalArgumentResolver;
+import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -40,5 +46,20 @@ public class webSocketConfiguration implements WebSocketMessageBrokerConfigurer{
 		// -/public/** - 공개된 메세지가 오고가는 채널
 		// -/private/** - 비공개 메세지가 오고가는 채널
 		registry.enableSimpleBroker("/public", "/private");
+	}
+	
+	//@Current를 가져오지 못하기 때문에 직접 2가지 도구를 설정해줘야함
+
+	//[1]클라이언트에서 서버로 들어오는 STOMP 메세지의 채널 설정
+	// → SecurityContextChannelInterceptor를 설정해서 웹소켓 메세지의 사용자 정보를 복원
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		//교차지점 간섭해서 데이터를 가져오는 방법
+		registration.interceptors(new SecurityContextChannelInterceptor());
+	}
+	//[2]@AuthenticationPrincipal과 같은 애노테이션을 이용한 자동 해석이 가능하도록 도구를 설정
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		argumentResolvers.add(new AuthenticationPrincipalArgumentResolver());
 	}
 }

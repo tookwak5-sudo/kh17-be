@@ -173,6 +173,12 @@
 		    <scope>compile</scope>
 		</dependency>
 		
+		<!-- 스프링 시큐리티 메세지 처리도구 -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-messaging</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
