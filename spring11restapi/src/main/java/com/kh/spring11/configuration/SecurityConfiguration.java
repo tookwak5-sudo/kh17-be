@@ -131,6 +131,9 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.PATCH, "/api/sale/thumbnail/**")
 					.hasAuthority("마스터")
 					
+					//회원전용 웹소켓 주소에 대한 인증 요구 처리 (이걸 해야 웹소켓 접속시 인증정보가 같이 넘어감)
+					.requestMatchers("/ws-member/**").authenticated()
+					
 					//나머지 모두 허용
 					.anyRequest().permitAll()
 //					.anyRequest().authenticated()

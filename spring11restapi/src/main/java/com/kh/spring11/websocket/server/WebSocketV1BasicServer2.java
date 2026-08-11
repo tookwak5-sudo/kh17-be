@@ -24,6 +24,7 @@ public class WebSocketV1BasicServer2 {
 	
 	@MessageMapping("/basic")//웹소켓(STOMP)의 매핑 방식
 	//@SendTo("/public/basic")//메세지가 전송될 채널 지정 (주소가 고정되어 있을 경우)
+	//전송된 메세지를 객체로도 받을 수 있음
 	public void basic(Message<WebSocketV1RequestVO> message) {//사용자가 보낸 메세지를 수신
 		
 		//수신된 객체를 꺼낸다
@@ -36,4 +37,5 @@ public class WebSocketV1BasicServer2 {
 				.build();
 		simpMessagingTemplate.convertAndSend("/public/basic", response);
 	}
+	
 }
