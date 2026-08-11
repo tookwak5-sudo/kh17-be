@@ -69,8 +69,6 @@ public class WebSocketV3MemberServer {
 			}
 		}
 		
-		
-		
 		//(+추가) DM인지 여부를 검사하여 별도로 처리
 		if(isPrivateMessage(request.getContent())) { //DM이 맞다면
 			//아이디 추출 + 존재 여부 검사 + DM 발송
