@@ -1,6 +1,7 @@
 package com.kh.spring11.websocket.server;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
@@ -17,6 +18,7 @@ import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.websocket.vo.WebSocketV3ChatVO;
 import com.kh.spring11.websocket.vo.WebSocketV3DmVO;
 import com.kh.spring11.websocket.vo.WebSocketV3RequestVO;
+import com.kh.spring11.websocket.vo.WebSocketV3SystemVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,15 +33,43 @@ public class WebSocketV3MemberServer {
 	@Autowired
 	private AccountDao accountDao;
 	
+	//연습용 비속어 목록 //비동기화 방식 why? 조회만 하기 때문
+	private Set<String> filters = Set.of(
+			"수박", "시베리아", "신발끈", "개나리", "십장생"
+	);
+	
 	@MessageMapping("/chat") //(/app/chat 이지만 /app은 공용주소라서 자동설정됨
 	public void chat(
 			//@CurrentUser TokenParseResponseVO parseVO, //안됨
 			@AuthenticationPrincipal Jwt jwt,
 			Message<WebSocketV3RequestVO> message) {
 		TokenParseResponseVO parseVO = jwtService.parseAccessToken(jwt);
-//		log.debug("parseVO = {}", parseVO);
+		log.debug("parseVO = {}", parseVO);
+		
 		//헤더 또는 페이로드(바디) 추출
 		WebSocketV3RequestVO request = message.getPayload();
+		
+		//(+추가) 비속어 검사
+		// - 미리 준비해둔 비속어 목록(or 서비스)에서 검사하여 문제가 있다고 판정되면
+		// - 메세지 전송을 중지하고 발신자에게 시스템메세지를 발송
+		String payload = request.getContent();
+		for(String filter : filters) {
+			if(payload.contains(filter)) {//욕설 포함된 경우
+				//시스템 메세지 발송
+				WebSocketV3SystemVO response = WebSocketV3SystemVO.builder()
+							.content("욕설이나 비속어는 사용하실 수 없습니다")
+							.level("danger")
+							.time(LocalDateTime.now())
+						.build();
+				
+				simpMessagingTemplate.convertAndSend(
+						"/private/system"+parseVO.getAccountId(), response
+				);
+				return;
+			}
+		}
+		
+		
 		
 		//(+추가) DM인지 여부를 검사하여 별도로 처리
 		if(isPrivateMessage(request.getContent())) { //DM이 맞다면
