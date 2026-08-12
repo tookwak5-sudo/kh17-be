@@ -87,6 +87,6 @@
 			ACC.account_level
 		from room_user RU
 			inner join  account ACC on RU.account_id = ACC.account_id
-		where room_no = #{roomNo}; 
+		where room_no = #{roomNo}
 	</select>
 </mapper>
