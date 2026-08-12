@@ -16,5 +16,5 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 	errorOnInvalidType = true 
 )
 public @interface CurrentUser {
-	boolean required() default true;//required=true 옵션을 내장시킨다 
+//	boolean required() default true;//required=true 옵션을 내장시킨다 
 }

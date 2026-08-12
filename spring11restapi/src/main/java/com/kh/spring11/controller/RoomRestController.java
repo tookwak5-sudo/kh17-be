@@ -66,6 +66,11 @@ public class RoomRestController {
 		}
 	}
 	
+//	@GetMapping("/")
+//	public List<RoomDto> list() {
+//		return roomDao.selectList();
+//	}
+	
 	@GetMapping("/")
 	public RoomListResponseVO list(
 			//security filter chain에서 permitAll()로 처리된 경우만 null이 가능
@@ -80,11 +85,7 @@ public class RoomRestController {
 					.rooms(rooms)
 				.build();
 	}
-	
-//	@GetMapping("/")
-//	public List<RoomDto> list() {
-//		return roomDao.selectList();
-//	}
+
 	
 	//방 참여 코드
 	@PostMapping("/enter")
