@@ -1,6 +1,8 @@
 package com.kh.spring11.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,27 @@ public class RoomDaoMybatis implements RoomDao {
 	@Override
 	public List<RoomDto> selectList() {
 		return sqlSession.selectList("mapper.room.list");
+	}
+
+	@Override
+	public void enter(int roomNo, String accountId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("roomNo", roomNo);
+		params.put("accountId", accountId);
+		sqlSession.insert("mapper.room.enter", params);
+	}
+
+	@Override
+	public void leave(int roomNo, String accountId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("roomNo", roomNo);
+		params.put("accountId", accountId);
+		sqlSession.insert("mapper.room.leave", params);
+	}
+
+	@Override
+	public List<String> getMembers(int roomNo) {
+		return sqlSession.selectList("mapper.room.member", roomNo);
 	}
 
 }

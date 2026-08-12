@@ -34,4 +34,25 @@
 		select * from room 
 		order by room_no asc
 	</select>
+	
+	<!-- 방 참여(참여자 등록) -->
+	<insert id="enter">
+		insert into room_user(room_no, account_id)
+		values( #{roomNo}, #{accountId} )
+	</insert>
+	
+	<!-- 방 나가기(참여자 제거)  -->
+	<delete id="leave">
+		delete room_user
+		where room_no = #{roomNo}
+				and
+				account_id = #{accountId}
+	</delete>
+	
+	<!-- 참여자 명단 조회 -->
+	<select id="member" resultType="String">
+		select account_id from room_user
+		where room_no = #{roomNo}
+		order by account_id asc
+	</select>
 </mapper>

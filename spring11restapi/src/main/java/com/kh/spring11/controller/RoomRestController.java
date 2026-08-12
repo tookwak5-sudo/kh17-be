@@ -18,6 +18,8 @@ import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.room.RoomCreateRequestVO;
+import com.kh.spring11.vo.room.RoomEnterRequestVO;
+import com.kh.spring11.vo.room.RoomEnterResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,5 +67,45 @@ public class RoomRestController {
 	@GetMapping("/")
 	public List<RoomDto> list() {
 		return roomDao.selectList();
+	}
+	
+	//방 참여 코드
+	@PostMapping("/enter")
+	public RoomEnterResponseVO enter(
+			@Valid @RequestBody RoomEnterRequestVO request,
+			@CurrentUser TokenParseResponseVO parseVO) {
+		//방 존재 여부 검사
+		RoomDto roomDto = roomDao.selectOne(request.getRoomNo());
+		if(roomDto == null) throw new TargetNotfoundException();
+		
+		//이미 참여중인지 검사
+		List<String> members = roomDao.getMembers(request.getRoomNo());
+		if(members.contains(parseVO.getAccountId())) {//이미 참여중이면
+			return RoomEnterResponseVO.builder()
+						.result(true)
+						.message("이미 참여중인 방입니다")
+					.build();
+		}
+		
+		
+		//인원제한 걸려있는 지 검사
+		if(roomDto.getRoomLimit() == members.size()) {
+			return RoomEnterResponseVO.builder()
+					.result(false)
+					.message("해당 방의 정원이 모두 찼습니다")
+				.build();
+		}
+		
+		//(+미래) 차단테이블이 따로 있다면 차단테이블을 조회해서 자격 여부를 판정
+		
+		//참여처리
+		roomDao.enter(request.getRoomNo(), parseVO.getAccountId());
+		
+				
+		//응답 반환 데이터
+		return RoomEnterResponseVO.builder()
+					.result(false)
+					.message(request.getRoomNo()+"번 채팅방에 입장하셨습니다")
+				.build();
 	}
 }
