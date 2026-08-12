@@ -71,7 +71,9 @@ public class RoomRestController {
 			//security filter chain에서 permitAll()로 처리된 경우만 null이 가능
 			@CurrentUser TokenParseResponseVO parseVO) {
 		
-		List<RoomListVO> rooms = roomDao.selectList(parseVO.getAccountId());
+		List<RoomListVO> rooms = parseVO != null ? 
+				roomDao.selectList(parseVO.getAccountId()) //있으면 로그인
+				: roomDao.selectList(); //없으면 일반유저
 		
 		return RoomListResponseVO.builder()
 					.count(rooms.size())
