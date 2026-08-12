@@ -137,7 +137,8 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.PUT, "/api/room/**").authenticated()
 					.requestMatchers(HttpMethod.PATCH, "/api/room/**").authenticated()
 					.requestMatchers(HttpMethod.DELETE, "/api/room/**").authenticated()
-					.requestMatchers(HttpMethod.GET, "/api/room/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/room/").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/room/**").authenticated()
 					
 					//나머지 모두 허용
 					.anyRequest().permitAll()

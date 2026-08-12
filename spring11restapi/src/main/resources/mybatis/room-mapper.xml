@@ -55,7 +55,7 @@
 			left outer join (
 				select * from room_user where account_id = #{accountId}
 			) MY on R.room_no = MY.room_no
-		order by R.room_no asc;
+		order by R.room_no asc
 	</select>
 	
 	<!-- 방 참여(참여자 등록) -->
