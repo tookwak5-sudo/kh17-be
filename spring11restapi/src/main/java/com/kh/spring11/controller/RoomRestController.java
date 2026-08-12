@@ -20,6 +20,8 @@ import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.room.RoomCreateRequestVO;
 import com.kh.spring11.vo.room.RoomEnterRequestVO;
 import com.kh.spring11.vo.room.RoomEnterResponseVO;
+import com.kh.spring11.vo.room.RoomListResponseVO;
+import com.kh.spring11.vo.room.RoomListVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,9 +67,22 @@ public class RoomRestController {
 	}
 	
 	@GetMapping("/")
-	public List<RoomDto> list() {
-		return roomDao.selectList();
+	public RoomListResponseVO list(
+			//security filter chain에서 permitAll()로 처리된 경우만 null이 가능
+			@CurrentUser TokenParseResponseVO parseVO) {
+		
+		List<RoomListVO> rooms = roomDao.selectList(parseVO.getAccountId());
+		
+		return RoomListResponseVO.builder()
+					.count(rooms.size())
+					.rooms(rooms)
+				.build();
 	}
+	
+//	@GetMapping("/")
+//	public List<RoomDto> list() {
+//		return roomDao.selectList();
+//	}
 	
 	//방 참여 코드
 	@PostMapping("/enter")
@@ -89,7 +104,8 @@ public class RoomRestController {
 		
 		
 		//인원제한 걸려있는 지 검사
-		if(roomDto.getRoomLimit() == members.size()) {
+		if(roomDto.getRoomLimit() != null && 
+				roomDto.getRoomLimit() == members.size()) {
 			return RoomEnterResponseVO.builder()
 					.result(false)
 					.message("해당 방의 정원이 모두 찼습니다")
@@ -101,10 +117,9 @@ public class RoomRestController {
 		//참여처리
 		roomDao.enter(request.getRoomNo(), parseVO.getAccountId());
 		
-				
 		//응답 반환 데이터
 		return RoomEnterResponseVO.builder()
-					.result(false)
+					.result(true)
 					.message(request.getRoomNo()+"번 채팅방에 입장하셨습니다")
 				.build();
 	}
