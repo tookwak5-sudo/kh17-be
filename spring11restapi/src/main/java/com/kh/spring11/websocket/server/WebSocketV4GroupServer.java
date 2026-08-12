@@ -48,8 +48,7 @@ public class WebSocketV4GroupServer {
 					.content(request.getContent())
 					.time(LocalDateTime.now())
 				.build();
-		
-		
+				
 		simpMessagingTemplate.convertAndSend("/public/"+roomNo+"/chat", response);
 	}
 	

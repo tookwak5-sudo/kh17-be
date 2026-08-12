@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.spring11.dto.RoomDto;
 import com.kh.spring11.vo.room.RoomListVO;
+import com.kh.spring11.vo.room.RoomUserVO;
 
 @Repository
 public class RoomDaoMybatis implements RoomDao {
@@ -64,6 +65,11 @@ public class RoomDaoMybatis implements RoomDao {
 	@Override
 	public List<String> getMembers(int roomNo) {
 		return sqlSession.selectList("mapper.room.member", roomNo);
+	}
+
+	@Override
+	public List<RoomUserVO> getMemberInfo(int roomNo) {
+		return sqlSession.selectList("mapper.room.memberInfo", roomNo);
 	}
 
 }

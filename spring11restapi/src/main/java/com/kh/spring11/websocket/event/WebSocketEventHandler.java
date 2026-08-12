@@ -18,6 +18,7 @@ import com.kh.spring11.service.FlashService;
 import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.websocket.vo.WebSocketV3SystemVO;
+import com.kh.spring11.websocket.vo.WebSocketV4SystemVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,12 +36,30 @@ public class WebSocketEventHandler {
 	//지정된 이벤트 상황이 발생하면 해당 메소드가 자동으로 실행되도록 설정
 	@EventListener
 	public void enter(SessionConnectEvent event) { //입장 이벤트
+		connectV3(event);//version 3 처리
+		connectV4(event); //version 4 처리
+	}
+	
+	@EventListener
+	public void leave(SessionDisconnectEvent event) { //퇴장 이벤트
+		disconnectV3(event);
+		disconnectV4(event);
+	}
+	
+	@EventListener
+	public void subscribe(SessionSubscribeEvent event) { //구독 이벤트
+		subscribeV3(event);
+		subscribeV4(event);
+	}
+	
+	private void connectV3(SessionConnectEvent event) {
 		log.debug("사용자 입장!");
 		
 		//사용자 정보 추출 (자동화를 쓰기 어려우며 직접 변환)
 		Principal principal = event.getUser(); //인증정보 추출(추상화)
 		//pricipal이 jwt형태가 아니면 반환 //다운캐스팅이 가능한 지 형태검사할 때 사용
 		if(!(principal instanceof JwtAuthenticationToken)) return;  
+		
 		JwtAuthenticationToken auth = (JwtAuthenticationToken)principal;
 		Jwt jwt = auth.getToken();
 		TokenParseResponseVO parseVO = jwtService.parseAccessToken(jwt);
@@ -58,8 +77,7 @@ public class WebSocketEventHandler {
 		simpMessagingTemplate.convertAndSend("/public/system", response);
 	}
 	
-	@EventListener
-	public void leave(SessionDisconnectEvent event) { //퇴장 이벤트
+	private void disconnectV3(SessionDisconnectEvent event) {
 		log.debug("사용자 퇴장!");
 		
 		//사용자 정보 추출 (자동화를 쓰기 어려우며 직접 변환)
@@ -83,8 +101,7 @@ public class WebSocketEventHandler {
 		simpMessagingTemplate.convertAndSend("/public/system", response);
 	}
 	
-	@EventListener
-	public void subscribe(SessionSubscribeEvent event) { //구독 이벤트
+	private void subscribeV3(SessionSubscribeEvent event) { //구독 이벤트
 		log.debug("사용자가 채널을 구독했습니다!");
 		
 		//구독한 채널의 이름을 알아내서 원하는 채널일 때 이벤트를 발생시키도록 처리
@@ -109,5 +126,18 @@ public class WebSocketEventHandler {
 		if(destination.equals("/private/users/"+parseVO.getAccountId())) { //구독한 사람들한테만 한번 더 발송
 			simpMessagingTemplate.convertAndSend("/private/users/"+parseVO.getAccountId(), flashService.list());
 		}
+	}
+	
+	//방번호(DestinationVariable)를 읽을 수 있을까?
+	//→ 한번에 읽어내는 명령은 없음
+	//→ 원하는 구간을 잘라내야함
+	private void connectV4(SessionConnectEvent event) {
+		//여기서 할게 없음 (방에 들어오는 시점이 여기가 아님... 여기는 Online이 되는 시점)
+	}
+	private void disconnectV4(SessionDisconnectEvent event) {
+		//여기선 할게 없음 (방에서 나가는 시점이 여기가 아님.. 여기는 Offline이 되는 시점)
+	}
+	private void subscribeV4(SessionSubscribeEvent event) {
+		//여기선 할게 없음
 	}
 }

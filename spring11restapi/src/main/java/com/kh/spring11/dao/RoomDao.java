@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.kh.spring11.dto.RoomDto;
 import com.kh.spring11.vo.room.RoomListVO;
+import com.kh.spring11.vo.room.RoomUserVO;
 
 public interface RoomDao {
 	int sequence();
@@ -16,4 +17,7 @@ public interface RoomDao {
 	void enter(int roomNo, String accountId);
 	void leave(int roomNo, String accountId);
 	List<String> getMembers(int roomNo);
+	List<RoomUserVO> getMemberInfo(int roomNo);
+	
+	
 }
