@@ -193,6 +193,7 @@ public class SecurityConfiguration {
 			"http://192.168.20.5:5173",
 			"http://192.168.20.31:5173",
 			"http://192.168.20.22:5173",
+			"https://snake-tones-anderson-refined.trycloudflare.com",
 			"http://kh.sysout.co.kr:5173"
 		));
 		//[2] 허용할 메소드 설정
