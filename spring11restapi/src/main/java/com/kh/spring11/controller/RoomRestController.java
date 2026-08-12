@@ -56,7 +56,7 @@ public class RoomRestController {
 		//잘못된 식 (roomOwner가 null일 수 있음 nullpoint exception) 왼쪽은 null이 오면 안됨
 		//if(roomOwner.equals(parseVO.getAccountId()));
 		//제대로된 식
-		if(parseVO.getAccountId().equals(roomOwner)) { //제대로된 식
+		if(!parseVO.getAccountId().equals(roomOwner)) { //제대로된 식
 			throw new GetOutException();
 			
 		}
