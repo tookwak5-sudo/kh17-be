@@ -14,6 +14,6 @@ public class RoomChatMessageVO {
 	private int messageRoom;
 	private String messageType;
 	private String messageContent;
-	private String messageSendId, messageSenderNickname, messageSenderLevel;
+	private String messageSenderId, messageSenderNickname, messageSenderLevel;
 	private Timestamp messageTime;
 }

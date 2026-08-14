@@ -1,14 +1,14 @@
 package com.kh.spring11.vo.message;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
 public class MessageVO {
-	private int messageNo;
-	private int messageRoom;
-	private String messageType;
-	private String messageContent;
-	private Timestamp messageTime;
+	private int no;
+	private int room;
+	private String type;
+	private String content;
+	private LocalDateTime time;
 }

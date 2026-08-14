@@ -5,5 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data @EqualsAndHashCode(callSuper = true) // 상속받은 클래스 정보와의 일치여부까지 고려하는 지를 설정해줌
 public class SystemMessageVO extends MessageVO {
-	private String messageLevel;
+	private int no;
+	private String level;
 }

@@ -61,7 +61,7 @@ public class WebSocketV4GroupServer {
 					.messageNo(messageNo)
 					.messageRoom(roomNo)
 					.messageType(response.getType())
-					.messageSendId(response.getSenderId())
+					.messageSenderId(response.getSenderId())
 					.messageSenderLevel(response.getSenderLevel())
 					.messageSenderNickname(response.getSenderNickname())
 					.messageTime(Timestamp.valueOf(response.getTime()))
