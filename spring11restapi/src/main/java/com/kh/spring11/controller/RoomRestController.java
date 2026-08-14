@@ -26,6 +26,7 @@ import com.kh.spring11.vo.room.RoomCreateRequestVO;
 import com.kh.spring11.vo.room.RoomDetailResponseVO;
 import com.kh.spring11.vo.room.RoomEnterRequestVO;
 import com.kh.spring11.vo.room.RoomEnterResponseVO;
+import com.kh.spring11.vo.room.RoomKickRequestVO;
 import com.kh.spring11.vo.room.RoomLeaveRequestVO;
 import com.kh.spring11.vo.room.RoomListResponseVO;
 import com.kh.spring11.vo.room.RoomListVO;
@@ -38,11 +39,13 @@ import com.kh.spring11.websocket.vo.WebSocketV4SystemVO;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
-@Tag(name= "채팅방 api")
+@Tag(name = "채팅방 API")
 
+@Slf4j
 @RestController
-@RequestMapping("/api/room") //api주소를 가지고 제공해주는 하나의 서비스
+@RequestMapping("/api/room")
 public class RoomRestController {
 	@Autowired
 	private RoomDao roomDao;
@@ -51,11 +54,9 @@ public class RoomRestController {
 	@Autowired
 	private MessageDao messageDao;
 	
-	@ApiResponse(responseCode = "200", description = "방 생성 성공")
 	@PostMapping("/")
-	public void createRoom(
-			@Valid @RequestBody RoomCreateRequestVO request,
-			@CurrentUser TokenParseResponseVO parseVO) {
+	public void createRoom(@Valid @RequestBody RoomCreateRequestVO request,
+							@CurrentUser TokenParseResponseVO parseVO) {
 		int roomNo = roomDao.sequence();
 		String roomOwner = parseVO.getAccountId();
 		
@@ -68,33 +69,34 @@ public class RoomRestController {
 	}
 	
 	@DeleteMapping("/{roomNo}")
-	public void deleteRoom(@PathVariable int roomNo, @CurrentUser TokenParseResponseVO parseVO) {
+	public void deleteRoom(@PathVariable int roomNo,
+						@CurrentUser TokenParseResponseVO parseVO) {
 		RoomDto roomDto = roomDao.selectOne(roomNo);
 		if(roomDto == null) throw new TargetNotfoundException();
 		
-		String roomOwner = roomDto.getRoomOwner(); //null일 수 있음
-		//잘못된 식 (roomOwner가 null일 수 있음 nullpoint exception) 왼쪽은 null이 오면 안됨
-		//if(roomOwner.equals(parseVO.getAccountId()));
-		//제대로된 식
-		if(!parseVO.getAccountId().equals(roomOwner)) { //제대로된 식
+		String roomOwner = roomDto.getRoomOwner();//null일 수 있음
+		log.debug("roowOnwer = {}, user = {}", roomOwner, parseVO.getAccountId());
+		
+		//if(!roomOwner.equals(parseVO.getAccountId()))//잘못된 식(roowOwner가 null이면 에러남)
+		if(!parseVO.getAccountId().equals(roomOwner)) //제대로된 식
 			throw new GetOutException();
-			
-		}
+		
+		roomDao.delete(roomNo);
 	}
 	
 //	@GetMapping("/")
 //	public List<RoomDto> list() {
 //		return roomDao.selectList();
 //	}
-	
 	@GetMapping("/")
 	public RoomListResponseVO list(
 			//security filter chain에서 permitAll()로 처리된 경우만 null이 가능
 			@CurrentUser TokenParseResponseVO parseVO) {
 		
-		List<RoomListVO> rooms = parseVO != null ? 
-				roomDao.selectList(parseVO.getAccountId()) //있으면 로그인
-				: roomDao.selectList(); //없으면 일반유저
+		List<RoomListVO> rooms = 
+				parseVO != null ? 
+					roomDao.selectList(parseVO.getAccountId())
+					: roomDao.selectList();
 		
 		return RoomListResponseVO.builder()
 					.count(rooms.size())
@@ -102,34 +104,34 @@ public class RoomRestController {
 				.build();
 	}
 	
-	//방 상세
+	//방 상세 정보
 	@GetMapping("/{roomNo}")
 	public RoomDetailResponseVO detail(@PathVariable int roomNo,
 						@CurrentUser TokenParseResponseVO parseVO) {
-		
-		//방이 있는 지 검사 → 404
+		//방이 있는지 검사 → 404
 		RoomDto roomDto = roomDao.selectOne(roomNo);
 		if(roomDto == null) throw new TargetNotfoundException();
 		
-		//참여자 중에 사용자가 존재하는 지 검사 → 403
-//		List<String> members = roomDao.getMembers(roomNo);
-//		if(!members.contains(parseVO.getAccountId())) throw new GetOutException();
+		//참여자 중에 사용자가 존재하는지 검사 → 403
+		//List<String> members = roomDao.getMembers(roomNo);//id만
+		//if(!members.contains(parseVO.getAccountId())) throw new GetOutException();
 		
-		List<RoomUserVO> users =roomDao.getMemberInfo(roomNo); //id, 등급, 닉네임
-		if(users.stream() //유저중에서
-				.map(user->user.getAccountId()) //아이디만 꺼냈는데
-				.noneMatch(accountId->accountId.equals(parseVO.getAccountId())) ) { //하나도 없으면
-			throw new GetOutException(); //나가
+		List<RoomUserVO> users = roomDao.getMemberInfo(roomNo);//id, 등급, 닉네임
+		if(users.stream()
+			.map(user->user.getAccountId())
+			.noneMatch(accountId->accountId.equals(parseVO.getAccountId())) 
+		) {
+			throw new GetOutException();
 		}
 		
 		//응답 생성 및 반환
 		return RoomDetailResponseVO.builder()
-					.room(roomDto) //방정보
-					.users(users) //유저목록
+					.room(roomDto)//방정보
+					.users(users)//유저목록
 				.build();
 	}
 	
-	//방 참여 코드
+	//방 참여 관련
 	@PostMapping("/enter")
 	public RoomEnterResponseVO enter(
 			@Valid @RequestBody RoomEnterRequestVO request,
@@ -147,27 +149,25 @@ public class RoomRestController {
 					.build();
 		}
 		
-		
-		//인원제한 걸려있는 지 검사
-		if(roomDto.getRoomLimit() != null && 
+		//인원제한에 걸려있는지 검사 (null == 무제한)
+		if(roomDto.getRoomLimit() != null &&  
 				roomDto.getRoomLimit() == members.size()) {
 			return RoomEnterResponseVO.builder()
-					.result(false)
-					.message("해당 방의 정원이 모두 찼습니다")
-				.build();
+						.result(false)
+						.message("해당 방의 정원이 모두 찼습니다")
+					.build();
 		}
 		
 		//(+미래) 차단테이블이 따로 있다면 차단테이블을 조회해서 자격 여부를 판정
-		
-		//참여처리
+		//참여 처리
 		roomDao.enter(request.getRoomNo(), parseVO.getAccountId());
 		LocalDateTime current = LocalDateTime.now();
 		
 		//메세지 생성
 		WebSocketV4SystemVO response = WebSocketV4SystemVO.builder()
-				.content("["+parseVO.getAccountNickname()+"] 님이 입장하셨습니다")
-				.level("primary")
-				.time(current)
+			.content("["+parseVO.getAccountNickname()+"] 님이 입장하셨습니다")
+			.level("primary")
+			.time(current)
 		.build();
 		
 		//DB저장 처리
@@ -182,18 +182,17 @@ public class RoomRestController {
 				.build());
 		
 		//*** 중요 ***
-		//simpMessaging만 있으면 아무데서나 웹소켓을 보낼 수 있다
 		//enter가 발생하고 나서 (DB에 참여처리가 완료되고 나서) 웹소켓으로 인원변동을 알림
 		List<RoomUserVO> users = roomDao.getMemberInfo(request.getRoomNo());
 		simpMessagingTemplate.convertAndSend(
 			"/public/"+request.getRoomNo()+"/users", users
 		);
-		
 		//해당 방에 입장 메세지 발송
 		simpMessagingTemplate.convertAndSend(
-				"/public/" + request.getRoomNo() + "/system", response);
+			"/public/"+request.getRoomNo()+"/system", response
+		);
 		
-		//응답 반환 데이터
+		//응답 생성 및 반환
 		return RoomEnterResponseVO.builder()
 					.result(true)
 					.message(request.getRoomNo()+"번 채팅방에 입장하셨습니다")
@@ -202,94 +201,145 @@ public class RoomRestController {
 	
 	//방 나가기 매핑
 	@PostMapping("/leave")
-	public void leave(@Valid @RequestBody RoomLeaveRequestVO request,
-						@CurrentUser TokenParseResponseVO parseVO) {
-		//방 존재여부 검사
+	public void leave(@Valid @RequestBody RoomLeaveRequestVO request, 
+					@CurrentUser TokenParseResponseVO parseVO) {
+		//방 존재 여부 검사
 		RoomDto roomDto = roomDao.selectOne(request.getRoomNo());
 		if(roomDto == null) throw new TargetNotfoundException();
 		
-		//참여중인 지검사는 pass
+		//참여중인지 검사는 pass
 		
 		//참여자 제거
 		roomDao.leave(roomDto.getRoomNo(), parseVO.getAccountId());
 		
-		//시스템 메세지를 해당 방으로 발송
+		//시스템메세지를 해당 방으로 발송
 		LocalDateTime current = LocalDateTime.now();
 		
 		//시스템 메세지 준비
 		WebSocketV4SystemVO response = WebSocketV4SystemVO.builder()
-				.level("primary")
-				.content("[" + parseVO.getAccountNickname()+"] 님이 퇴장하셨습니다.")
-				.time(current)
+					.content("["+parseVO.getAccountNickname()+"] 님이 퇴장하셨습니다")
+					.level("primary")
+					.time(current)
 				.build();
-		//시스템 메세지를 DB에 저장
+		//시스템메세지를 DB에 저장
 		int messageNo = messageDao.sequence();
 		messageDao.insertSystem(RoomSystemMessageVO.builder()
-				.messageNo(messageNo)
-				.messageRoom(request.getRoomNo())
-				.messageType(response.getType())
-				.messageContent(response.getContent())
-				.messageTime(Timestamp.valueOf(response.getTime()))
-				.messageLevel(response.getLevel())
-			.build());
-		
-		
+					.messageNo(messageNo)
+					.messageRoom(request.getRoomNo())
+					.messageType(response.getType())
+					.messageContent(response.getContent())
+					.messageTime(Timestamp.valueOf(response.getTime()))
+					.messageLevel(response.getLevel())
+				.build());
 		//시스템 메세지 발송
 		simpMessagingTemplate.convertAndSend(
-			"/public/" + roomDto.getRoomNo()+"/system", response
+				"/public/"+roomDto.getRoomNo()+"/system", response
 		);
-		
 		//*** 중요 ***
-		//simpMessaging만 있으면 아무데서나 웹소켓을 보낼 수 있다
-		//leave가 발생하고 나서 (DB에 참여처리가 완료되고 나서) 웹소켓으로 인원변동을 알림
+		//leave가 발생하고 나서 (DB에 제거처리가 완료되고 나서) 웹소켓으로 인원변동을 알림
 		List<RoomUserVO> users = roomDao.getMemberInfo(request.getRoomNo());
 		simpMessagingTemplate.convertAndSend(
 			"/public/"+request.getRoomNo()+"/users", users
-		);		
+		);
 		
 	}
+	
+	
+	//방 추방 매핑
+		@PostMapping("/kick")
+		public void kick(@Valid @RequestBody RoomKickRequestVO request, 
+						@CurrentUser TokenParseResponseVO parseVO) {
+			//방 존재 여부 검사
+			RoomDto roomDto = roomDao.selectOne(request.getRoomNo());
+			if(roomDto == null) throw new TargetNotfoundException();
+			
+			//방장인지 검사
+			if(!parseVO.getAccountId().equals(roomDto.getRoomOwner()))
+				throw new GetOutException();
+			
+			//참여자 제거
+			roomDao.leave(roomDto.getRoomNo(), request.getAccountId());
+			
+			//시스템메세지를 해당 방으로 발송
+			LocalDateTime current = LocalDateTime.now();
+			
+			//시스템 메세지 준비
+			WebSocketV4SystemVO response = WebSocketV4SystemVO.builder()
+						.content("["+request.getAccountId()+"] 님이 추방되셨습니다")
+						.level("danger")
+						.time(current)
+					.build();
+			//시스템메세지를 DB에 저장
+			int messageNo = messageDao.sequence();
+			messageDao.insertSystem(RoomSystemMessageVO.builder()
+						.messageNo(messageNo)
+						.messageRoom(request.getRoomNo())
+						.messageType(response.getType())
+						.messageContent(response.getContent())
+						.messageTime(Timestamp.valueOf(response.getTime()))
+						.messageLevel(response.getLevel())
+					.build());
+			//(+추가) 추방된 대상이 목록으로 튕겨질 수 있도록 행위를 요청 (action 채널)
+			simpMessagingTemplate.convertAndSend(
+					"/private/"+roomDto.getRoomName()+"/action/" + request.getAccountId(),
+					"leave"
+			);
+			
+			//시스템 메세지 발송
+			simpMessagingTemplate.convertAndSend(
+					"/public/"+roomDto.getRoomNo()+"/system", response
+			);
+			//*** 중요 ***
+			//추방이	 발생하고 나서 (DB에 제거처리가 완료되고 나서) 웹소켓으로 인원변동을 알림
+			List<RoomUserVO> users = roomDao.getMemberInfo(request.getRoomNo());
+			simpMessagingTemplate.convertAndSend(
+				"/public/"+request.getRoomNo()+"/users", users
+			);
+			
+		}
 	
 	//방 메세지 매핑
 	@ApiResponse(responseCode = "200", description = "메세지 조회 성공")
 	@GetMapping("/{roomNo}/messages")
 	public RoomMessagesResponseVO messages(@PathVariable int roomNo,
-					@CurrentUser TokenParseResponseVO parseVO) {
-		
-		//참여자 인지 검사
-		List<String> ids = roomDao.getMembers(roomNo); //방 참여자의 id조회
+						@CurrentUser TokenParseResponseVO parseVO) {
+		//참여자인지 검사
+		List<String> ids = roomDao.getMembers(roomNo);//방 참여자 ID 추출
 		if(!ids.contains(parseVO.getAccountId()))
-				throw new GetOutException();//403(권한 부족)
+			throw new GetOutException();//403
 		
 		//메세지 불러오기
 		List<MessageVO> messages = messageDao.selectList(roomNo);
 		
-		//응답생ㅅ어
+		//응답 생성
 		return RoomMessagesResponseVO.builder()
 					.messages(messages)
 				.build();
 	}
-	
+		
 	@ApiResponse(responseCode = "200", description = "메세지 조회 성공")
 	@PostMapping("/{roomNo}/messages")
 	public RoomMessagesResponseVO messages(@PathVariable int roomNo,
-			@Valid @RequestBody RoomMessageRequestVO request,
-			@CurrentUser TokenParseResponseVO parseVO) {
-		//참여자 인지 검사
-		List<String> ids = roomDao.getMembers(roomNo); //방 참여자의 id조회
+				@Valid @RequestBody RoomMessageRequestVO request,
+				@CurrentUser TokenParseResponseVO parseVO) {
+		//참여자인지 검사
+		List<String> ids = roomDao.getMembers(roomNo);//방 참여자 ID 추출
 		if(!ids.contains(parseVO.getAccountId()))
-				throw new GetOutException();//403(권한 부족)
+			throw new GetOutException();//403
 		
 		//메세지 불러오기
 		//List<MessageVO> messages = messageDao.selectList(roomNo);
-//		List<MessageVO> messages = request.getLastMessageNo() == null ?
-//				messageDao.selectList(roomNo, request.getSize())
-//				: messageDao.selectList(roomNo, request.getSize(), request.getLastMessageNo());
+		//List<MessageVO> messages = request.getLastMessageNo() == null ?
+		//		messageDao.selectList(roomNo, request.getSize())
+		//		: messageDao.selectList(roomNo, request.getSize(), request.getLastMessageNo());
 		List<MessageVO> messages = messageDao.selectList(roomNo, request);
 		int count = messageDao.count(roomNo, request);
-		//응답생성
+		
+		//응답 생성
 		return RoomMessagesResponseVO.builder()
 					.messages(messages)
 					.last(messages.size() >= count)
 				.build();
 	}
+	
 }
