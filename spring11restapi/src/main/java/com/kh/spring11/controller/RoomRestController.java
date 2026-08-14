@@ -1,7 +1,10 @@
 package com.kh.spring11.controller;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CurrentUser;
+import com.kh.spring11.dao.MessageDao;
 import com.kh.spring11.dao.RoomDao;
 import com.kh.spring11.dto.RoomDto;
 import com.kh.spring11.error.GetOutException;
@@ -25,6 +29,8 @@ import com.kh.spring11.vo.room.RoomEnterResponseVO;
 import com.kh.spring11.vo.room.RoomListResponseVO;
 import com.kh.spring11.vo.room.RoomListVO;
 import com.kh.spring11.vo.room.RoomUserVO;
+import com.kh.spring11.websocket.vo.RoomSystemMessageVO;
+import com.kh.spring11.websocket.vo.WebSocketV4SystemVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,6 +45,8 @@ public class RoomRestController {
 	private RoomDao roomDao;
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+	@Autowired
+	private MessageDao messageDao;
 	
 	@ApiResponse(responseCode = "200", description = "방 생성 성공")
 	@PostMapping("/")
@@ -150,6 +158,25 @@ public class RoomRestController {
 		
 		//참여처리
 		roomDao.enter(request.getRoomNo(), parseVO.getAccountId());
+		LocalDateTime current = LocalDateTime.now();
+		
+		//메세지 생성
+		WebSocketV4SystemVO response = WebSocketV4SystemVO.builder()
+				.content("["+parseVO.getAccountNickname()+"] 님이 입장하셨습니다")
+				.level("primary")
+				.time(current)
+		.build();
+		
+		//DB저장 처리
+		int messageNo = messageDao.sequence();
+		messageDao.insertSystem(RoomSystemMessageVO.builder()
+					.messageNo(messageNo)
+					.messageRoom(request.getRoomNo())
+					.messageType(response.getType())
+					.messageContent(response.getContent())
+					.messageTime(Timestamp.valueOf(response.getTime()))
+					.messageLevel(response.getLevel())
+				.build());
 		
 		//*** 중요 ***
 		//simpMessaging만 있으면 아무데서나 웹소켓을 보낼 수 있다
@@ -158,6 +185,10 @@ public class RoomRestController {
 		simpMessagingTemplate.convertAndSend(
 			"/public/"+request.getRoomNo()+"/users", users
 		);
+		
+		//해당 방에 입장 메세지 발송
+		simpMessagingTemplate.convertAndSend(
+				"/public/" + request.getRoomNo() + "/system", response);
 		
 		//응답 반환 데이터
 		return RoomEnterResponseVO.builder()
