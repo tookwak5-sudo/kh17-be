@@ -281,7 +281,7 @@ public class RoomRestController {
 					.build());
 			//(+추가) 추방된 대상이 목록으로 튕겨질 수 있도록 행위를 요청 (action 채널)
 			simpMessagingTemplate.convertAndSend(
-					"/private/"+roomDto.getRoomName()+"/action/" + request.getAccountId(),
+					"/private/"+roomDto.getRoomNo()+"/action/" + request.getAccountId(),
 					"leave"
 			);
 			
