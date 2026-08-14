@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kh.spring11.websocket.vo.RoomChatMessageVO;
-import com.kh.spring11.websocket.vo.RoomSystemMessageVO;
+import com.kh.spring11.vo.room.RoomChatMessageVO;
+import com.kh.spring11.vo.room.RoomSystemMessageVO;
 
 @Repository
 public class MessageDaoMybatis implements MessageDao {

@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.apache.logging.log4j.message.TimestampMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +27,8 @@ import com.kh.spring11.vo.room.RoomEnterRequestVO;
 import com.kh.spring11.vo.room.RoomEnterResponseVO;
 import com.kh.spring11.vo.room.RoomListResponseVO;
 import com.kh.spring11.vo.room.RoomListVO;
+import com.kh.spring11.vo.room.RoomSystemMessageVO;
 import com.kh.spring11.vo.room.RoomUserVO;
-import com.kh.spring11.websocket.vo.RoomSystemMessageVO;
 import com.kh.spring11.websocket.vo.WebSocketV4SystemVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

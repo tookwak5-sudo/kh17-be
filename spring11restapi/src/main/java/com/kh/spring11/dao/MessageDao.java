@@ -1,7 +1,7 @@
 package com.kh.spring11.dao;
 
-import com.kh.spring11.websocket.vo.RoomChatMessageVO;
-import com.kh.spring11.websocket.vo.RoomSystemMessageVO;
+import com.kh.spring11.vo.room.RoomChatMessageVO;
+import com.kh.spring11.vo.room.RoomSystemMessageVO;
 
 public interface MessageDao {
 	int sequence();

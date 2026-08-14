@@ -49,4 +49,8 @@
 			#{messageLevel}
 		)
 	</insert>
+	
+	<!-- 메세지 조회 -->
+	<select id="messageList" resultType=""></select>
+	
 </mapper>

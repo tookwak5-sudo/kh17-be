@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import com.kh.spring11.dao.MessageDao;
 import com.kh.spring11.service.JwtService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
-import com.kh.spring11.websocket.vo.RoomChatMessageVO;
+import com.kh.spring11.vo.room.RoomChatMessageVO;
 import com.kh.spring11.websocket.vo.WebSocketV4ChatVO;
 import com.kh.spring11.websocket.vo.WebSocketV4RequestVO;
 
