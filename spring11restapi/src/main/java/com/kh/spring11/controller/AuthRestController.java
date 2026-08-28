@@ -193,6 +193,7 @@ public class AuthRestController {
 						AccountRefreshDto.builder()
 						.accountId(accountId)
 						.userAgent(userAgent)
+						.userAddress(req.getRemoteAddr())
 					.build()
 				);
 			}
