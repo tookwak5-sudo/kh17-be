@@ -75,9 +75,6 @@ public class AuthRestController {
 			@RequestBody AuthLoginRequestVO request,
 			HttpServletRequest req) {
 		
-		System.out.println("========== LOGIN CONTROLLER ==========");
-	    System.out.println("accountId = " + request.getAccountId());
-		
 		// 로그인 처리를 수행하고 결과를 얻어낸다
 		AuthLoginResponseVO response = authService.login(request);
 		
