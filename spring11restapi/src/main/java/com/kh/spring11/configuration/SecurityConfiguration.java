@@ -140,6 +140,9 @@ public class SecurityConfiguration {
 					.requestMatchers(HttpMethod.GET, "/api/room/").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/room/**").authenticated()
 					
+					//뷰 허용
+					.requestMatchers(HttpMethod.GET, "/views/**").permitAll()
+					
 					//나머지 모두 허용
 					.anyRequest().permitAll()
 //					.anyRequest().authenticated()
