@@ -1,0 +1,44 @@
+package com.kh.spring12.pokemon;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
+
+import com.kh.spring12.entity.Pokemon;
+import com.kh.spring12.repo.PokemonRepository;
+
+import lombok.extern.slf4j.Slf4j;
+
+// [기존 상식]
+//- 조회는 최소한 3개를 만들어야 한다(목록, 검색, 상세)
+//- 가능한 경우 페이징도 되어야 한다
+//- 목록/검색의 반환형은 List<Pokemon> 이다
+//- 상세의 반환형은 Pokemon or Null/Exception 이다
+
+@Slf4j
+@SpringBootTest
+public class PokemonSelectTest3 {
+	@Autowired
+	private PokemonRepository pokemonRepository;
+	
+	@Test
+	public void test() {
+		//JPA에서 제공하는 메소드를 이용해서 조회
+		//-> 전기 속성만 조회
+		//                              (Example이라 부름)
+		//+ select * from pokemon where [pokemon_type= '전기'];
+		
+		List<Pokemon> list = pokemonRepository.findAll(
+			Example.of(Pokemon.builder().pokemonType("전기").build()), //검색에 사용할 Example 정보
+			Sort.by("pokemonNo").ascending()
+		);
+		System.out.println("개수 = " + list.size());
+		for(Pokemon p : list) {
+			System.out.println("->" + p);
+		}
+	}
+}
