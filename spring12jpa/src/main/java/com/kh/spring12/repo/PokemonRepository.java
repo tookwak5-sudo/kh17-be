@@ -81,4 +81,27 @@ public interface PokemonRepository extends JpaRepository<Pokemon, Long>{
 			order by p.pokemonName, p.pokemonNo
 	""")
 	Page<Pokemon> searchByKeyword(Pageable pageable, String keyword);
+	
+	//[3] Native SQL 사용
+	//- 네이밍메소드, JPQL로도 안되는 경우가 존재 (특정 DB에서만 가능한 기능)
+	//- JPA 입장에서 봄변 최악이지만 그건 JPA의 사정일 뿐 필요한 순간이 반드시 존재 (ex: 트리정렬, 함수호출)
+	//- @Query에 nativeQuery=true 설정 후 구문을 작성한다(DB구문)
+	@Query(nativeQuery = true, value = """
+		select * from pokemon	
+	""")
+	List<Pokemon> selectList2();
+	
+	@Query(nativeQuery = true, value = """
+		select * from pokemon
+		where instr(pokemon_name, :keyword) > 0
+		order by pokemon_name, pokemon_no	
+	""")
+	List<Pokemon> searchByKeyword2(String keyword);
+	
+	@Query(nativeQuery = true, value = """
+		select * from pokemon
+		where pokemon_name like :keyword || '%'
+		order by pokemon_name, pokemon_no	
+	""")
+	Page<Pokemon> searchByKeyword2(Pageable pageable, String keyword);
 }
