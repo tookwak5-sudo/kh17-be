@@ -29,4 +29,8 @@ public interface PokemonRepository extends JpaRepository<Pokemon, Long>{
 	List<Pokemon> findByPokemonNameStartingWithOrderByPokemonNoAsc(String keyword);
 	List<Pokemon> findByPokemonNameStartingWithOrderByPokemonNameAsc(String keyword);
 	List<Pokemon> findByPokemonNameStartingWithOrderByPokemonNameAscPokemonNoAsc(String keyword);
+	
+	//페이징 적용
+	//- 페이징은 조회 결과 외에도 정보가 많이 필요하다 (ex : 마지막인지, 전체가 몇갠지, 현재 어디인지, ...) → Page<T> 형태로 반환
+		
 }
