@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 public class Pokemon {
 	@Id//이 항목은 Primary Key이다! (단, 가급적이면 raw type 사용은 자제할 것)
 	@GeneratedValue(
-			generator = "pokemon_seq", //생성돈 @SequenceGenerator 중에 name이 pokemon_seq인 항목을 연결해라!
+			generator = "pokemon_seq", //생성된 @SequenceGenerator 중에 name이 pokemon_seq인 항목을 연결해라!
 			strategy = GenerationType.AUTO //미리 지정한 DB의 종류와 버전에 맞게 자동으로 처리해라!
 	)//이 항목은 생성 시 시퀀스를 사용한다
 	@Column
