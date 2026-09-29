@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity //jpa가 관리하는 얘다
-@Table(name = "comment")
+@Table(name = "comments")
 @SequenceGenerator(
 		name = "comment_seq",
 		sequenceName = "comment_seq",

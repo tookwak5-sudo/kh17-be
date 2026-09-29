@@ -8,25 +8,35 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.kh.spring12.entity.post.Comment;
 import com.kh.spring12.entity.post.Post;
+import com.kh.spring12.error.TargetNotfoundException;
+import com.kh.spring12.repo.CommentRepository;
 import com.kh.spring12.repo.PostRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
-public class PostInsertTest01 {
+public class CommentInsertTest02 {
 	
 	@Autowired
 	private PostRepository postRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 	
 	@Test
 	public void test() {
 		
-		postRepository.save(
-				Post.builder()
-					.postTitle("안녕하세요")
-					.postContent("반갑습니다 테스트중입니다1")
-				.build()
+		long postNo = 1L;
+		
+		Post post = postRepository.findById(postNo).orElseThrow(()->new TargetNotfoundException());
+		
+		Comment result = commentRepository.save(
+			Comment.builder()
+				.commentContent("댓글 테스트입니다!")
+				.post(post)
+			.build()
 		);
+		
+		System.out.println(result);
 	}
 }

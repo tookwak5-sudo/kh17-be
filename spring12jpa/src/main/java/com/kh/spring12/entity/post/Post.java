@@ -41,8 +41,9 @@ public class Post {
 	private String postContent;
 	@Column(nullable = false)
 	private String postTitle;
-	@Column
-	private Long postReadcount;
+	@Column(nullable = false)
+	@Builder.Default
+	private Long postReadcount = 0L;
 	@CreationTimestamp
 	private LocalDateTime postWtime;
 	@UpdateTimestamp
