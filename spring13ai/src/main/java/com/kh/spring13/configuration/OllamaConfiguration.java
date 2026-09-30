@@ -3,6 +3,9 @@ package com.kh.spring13.configuration;
 import java.time.Duration;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.model.ollama.autoconfigure.OllamaChatProperties;
 import org.springframework.ai.model.ollama.autoconfigure.OllamaConnectionProperties;
@@ -47,9 +50,19 @@ public class OllamaConfiguration {
 		return chatModel;
 	}
 	
+	//메모리
 	@Bean
-	public ChatClient chatClient(ChatModel chatModel) { //이용할 때는 범용적 형태(업케스팅o)
-		ChatClient chatClient = ChatClient.builder(chatModel).build();
-		return chatClient;
+	public MessageWindowChatMemory chatMemory () {
+		return MessageWindowChatMemory.builder()
+					.maxMessages(10)//기억할 누적 대화 개수
+				.build();
+	}
+	
+	@Bean
+	public ChatClient chatClient(ChatModel chatModel, ChatMemory chatMemory) {
+		return ChatClient
+					.builder(chatModel)
+					.defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+				.build();
 	}
 }

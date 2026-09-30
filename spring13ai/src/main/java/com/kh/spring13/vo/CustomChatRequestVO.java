@@ -10,4 +10,5 @@ public class CustomChatRequestVO {
 	private String role;
 	private String subject;
 	private Integer length;
+	private String id;
 }

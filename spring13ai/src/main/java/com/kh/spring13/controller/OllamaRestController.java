@@ -34,6 +34,9 @@ public class OllamaRestController {
 	
 	@PostMapping("/chat")
 	public CustomChatResponseVO chat(@RequestBody CustomChatRequestVO request) {
+		 System.out.println("객체 = " + request);
+		    System.out.println("클래스 = " + request.getClass().getName());
+		    System.out.println("id = [" + request.getId() + "]");
 		return ollamaService.ask(request);
 	}
 }

@@ -14,12 +14,16 @@ public class PromptTemplateTest03 {
 	
 	@Test
 	public void test() {
-		CustomChatRequestVO request = CustomChatRequestVO.builder()
-					.role("대학 교수")
-					.subject("qwen이랑 kanna중 누가 더 똑똑함?")
-					.length(1000)
-				.build();
+//		CustomChatRequestVO request = CustomChatRequestVO.builder()
+//					.role("대학 교수")
+//					.subject("qwen이랑 kanna중 누가 더 똑똑함?")
+//					.length(1000)
+//				.build();
 		
+		CustomChatRequestVO request = new CustomChatRequestVO();
+		request.setRole("대학 교수");
+		request.setSubject("qwen이랑 kanna중 누가 더 똑똑함?");
+		request.setLength(1000);
 		
 		//프롬프트 템플릿을 사용하여 AI 서버에 요청하기
 		String response = chatClient

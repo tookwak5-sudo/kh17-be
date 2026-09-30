@@ -1,6 +1,7 @@
 package com.kh.spring13.service;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,10 @@ public class OllamaService {
 		String response = chatClient.prompt()
 				.system("너는 컴퓨터공학과 학부생을 가르치는 전공 교수님이야. 짧고 간결하게 핵심만 가르치듯이 요약해서 말하도록 해")
 				.user(prompt)
-			.call().content();
+				//메모리 설정을 한 경우 Conversation ID를 부여
+				.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "test"))//가짜로 부여(메모리 없는 경우 제거)
+			.call()
+				.content();
 		
 		return removeThinking(response);
 	}
@@ -24,6 +28,8 @@ public class OllamaService {
 		String response = chatClient.prompt()
 				.system("You are a 6-year-old old child, 호기심 많은 말투로 이야기하고 잘 모르겠는 단어는 재질문 하도록 해")
 				.user(prompt)
+				//메모리 설정을 한 경우 Conversation ID를 부여
+				.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "test"))//가짜로 부여(메모리 없는 경우 제거)
 			.call().content();
 		
 		return removeThinking(response);
@@ -34,6 +40,8 @@ public class OllamaService {
 						+ "- NEVER place \"허허\" at the beginning or in the middle of a sentence.\r\n"
 						+ "- You must place the word \"허허\" EXCLUSIVELY at the very end of the final sentence, right before the period.")
 				.user(prompt)
+				//메모리 설정을 한 경우 Conversation ID를 부여
+				.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, "test"))//가짜로 부여(메모리 없는 경우 제거)
 			.call().content();
 		
 		return removeThinking(response);
@@ -59,7 +67,11 @@ public class OllamaService {
 							.param("subject", request.getSubject())
 							.param("length", request.getLength())
 				)
+				//메모리 설정을 한 경우 Conversation ID를 부여
+				.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, request.getId()))
 				.call().content();
+		
+		response = removeThinking(response);
 		
 		return CustomChatResponseVO.builder()
 					.content(response)
