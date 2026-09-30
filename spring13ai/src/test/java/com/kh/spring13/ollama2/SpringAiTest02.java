@@ -4,19 +4,39 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.model.ollama.autoconfigure.OllamaChatProperties;
+import org.springframework.ai.model.ollama.autoconfigure.OllamaConnectionProperties;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest
-public class SpringAiTest01 {
+public class SpringAiTest02 {
+	
+	@Autowired
+	private OllamaConnectionProperties connectionProperties;
+	@Autowired
+	private OllamaChatProperties chatProperties;
+	
+//	@Test
+	public void print() {
+		System.out.println(connectionProperties.getBaseUrl());
+		System.out.println(chatProperties.getModel());
+		System.out.println(chatProperties.getTemperature());
+		System.out.println(chatProperties.getThink());
+		System.out.println(chatProperties.toOptions().getKeepAlive());
+		System.out.println(chatProperties.toOptions().getNumCtx());
+	}
 	
 	@Test
 	public void test() {
-
+		
+		long start =System.currentTimeMillis();
+		
 		//spring-ai에서 제공하는 객체들로 ollama server에 요청을 보내고 응답을 받자
 		JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory();
 		factory.setReadTimeout(Duration.ofMinutes(5L));
@@ -24,19 +44,13 @@ public class SpringAiTest01 {
 		RestClient.Builder builder = RestClient.builder().requestFactory(factory);
 		
 		OllamaApi ollamaApi = OllamaApi.builder()
-					.baseUrl("http://localhost:11434")
+					.baseUrl(connectionProperties.getBaseUrl())
 					.restClientBuilder(builder)
 				.build();
 		
 		OllamaChatModel chatModel = OllamaChatModel.builder()
 					.ollamaApi(ollamaApi)
-					.options(
-						OllamaChatOptions.builder()
-							.model("qwen3:4b")
-							.temperature(0.3)
-							.disableThinking()
-						.build()
-					)
+					.options(chatProperties.toOptions())
 				.build();
 		
 		ChatClient chatClient = ChatClient.builder(chatModel).build();
@@ -54,5 +68,7 @@ public class SpringAiTest01 {
 		}
 		
 		System.out.println(response.strip());
+		
+//		System.out.println("총 소용시간 : " + )
 	}
 }
